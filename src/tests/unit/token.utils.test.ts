@@ -9,7 +9,7 @@ import {
   hashToken,
   verifyAccessToken,
   verifyRefreshToken,
-} from '../../src/utils/token';
+} from '@utils/token';
 
 describe('Token Utilities', () => {
   const payload = {
