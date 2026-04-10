@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@config/database';
 import request from 'supertest';
 
 import app from '@/app';
-
-const prisma = new PrismaClient();
 
 describe('User Auth API', () => {
   const testUser = {
@@ -136,15 +134,22 @@ describe('User Auth API', () => {
   // ── Get Me ────────────────────────────────────────────────────────────────
   describe('GET /api/v1/auth/user/me', () => {
     it('should return user profile when authenticated', async () => {
+      const uniqueUser = {
+        ...testUser,
+        email: `me-${Date.now()}@example.com`,
+      };
+
       // Register + verify + login
-      await request(app).post('/api/v1/auth/user/register').send(testUser);
+      const registerRes = await request(app).post('/api/v1/auth/user/register').send(uniqueUser);
+      expect(registerRes.status).toBe(201);
+
       await prisma.user.update({
-        where: { email: testUser.email },
+        where: { email: uniqueUser.email },
         data: { isEmailVerified: true },
       });
       const loginRes = await request(app)
         .post('/api/v1/auth/user/login')
-        .send({ email: testUser.email, password: testUser.password });
+        .send({ email: uniqueUser.email, password: uniqueUser.password });
 
       const { accessToken } = loginRes.body.data as { accessToken: string };
 
@@ -153,7 +158,7 @@ describe('User Auth API', () => {
         .set('Authorization', `Bearer ${accessToken}`);
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.email).toBe(testUser.email);
+      expect(res.body.data.user.email).toBe(uniqueUser.email);
     });
 
     it('should return 401 without token', async () => {

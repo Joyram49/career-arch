@@ -8,6 +8,7 @@ import type { Request, Response } from 'express';
 const rateLimitHandler = (_req: Request, res: Response): void => {
   sendError(res, 'Too many requests. Please slow down and try again later.', 429);
 };
+const skipRateLimitInTests = (): boolean => process.env['NODE_ENV'] === 'test';
 
 // ── General API rate limiter ───────────────────────────────────────────────
 export const generalLimiter = rateLimit({
@@ -18,6 +19,7 @@ export const generalLimiter = rateLimit({
   handler: rateLimitHandler,
   keyGenerator: (req: Request): string =>
     ipKeyGenerator(req.ip ?? req.socket.remoteAddress ?? 'unknown'),
+  skip: skipRateLimitInTests,
 });
 
 // ── Login rate limiter (strict — 5 per 15 min) ────────────────────────────
@@ -39,6 +41,7 @@ export const loginLimiter = rateLimit({
     const ip = ipKeyGenerator(req.ip ?? req.socket.remoteAddress ?? 'unknown');
     return `${ip}:${email}`;
   },
+  skip: skipRateLimitInTests,
 });
 
 // ── Registration rate limiter ─────────────────────────────────────────────
@@ -50,6 +53,7 @@ export const registerLimiter = rateLimit({
   handler: rateLimitHandler,
   keyGenerator: (req: Request): string =>
     ipKeyGenerator(req.ip ?? req.socket.remoteAddress ?? 'unknown'),
+  skip: skipRateLimitInTests,
 });
 
 // ── Forgot password limiter (very strict — prevents email flooding) ────────
@@ -61,4 +65,5 @@ export const forgotPasswordLimiter = rateLimit({
   handler: rateLimitHandler,
   keyGenerator: (req: Request): string =>
     ipKeyGenerator(req.ip ?? req.socket.remoteAddress ?? 'unknown'),
+  skip: skipRateLimitInTests,
 });

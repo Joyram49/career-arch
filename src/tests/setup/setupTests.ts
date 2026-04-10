@@ -1,3 +1,4 @@
+import { redis } from '@config/redis';
 import { jest } from '@jest/globals';
 
 // ── Mock the entire email service ──────────────────────────────────────────
@@ -18,3 +19,9 @@ jest.mock('@services/email.service', () => ({
 // Keeps test output clean. console.error stays visible so failures still show.
 jest.spyOn(console, 'log').mockImplementation(() => undefined);
 jest.spyOn(console, 'info').mockImplementation(() => undefined);
+
+afterAll(async () => {
+  if (redis.status === 'ready' || redis.status === 'connect') {
+    await redis.quit();
+  }
+});
