@@ -1,0 +1,8 @@
+node_modules
+.env
+.env.production
+.env.development
+.env.docker
+.env.test
+
+/src/generated/prisma
