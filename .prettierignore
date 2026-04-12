@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+coverage
+.env
+.env.docker
+.env.example
+.env.production
+.env.development
+
+docs

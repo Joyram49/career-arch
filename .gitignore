@@ -1,0 +1,26 @@
+node_modules
+.env
+.env.production
+.env.development
+.env.docker
+.env.test
+
+
+/src/generated/prisma
+
+# Build and coverage output
+dist
+coverage
+
+# Runtime logs
+logs
+*.log
+
+# Tooling caches
+.eslintcache
+.tsbuildinfo
+
+# Local editor/system files
+.DS_Store
+Thumbs.db
+
