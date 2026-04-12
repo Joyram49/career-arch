@@ -1,6 +1,6 @@
 # 📧 Email Templates & Notifications — CareerArch
 
-> Email Service: **SendGrid** via **Nodemailer**
+> Email Service: **BREVO** via **Nodemailer**
 > All emails use HTML templates stored in `/backend/src/templates/emails/`
 
 ---
@@ -126,7 +126,8 @@ CareerArch Team
 ## Env Variables for Email
 
 ```env
-SENDGRID_API_KEY=SG.xxxxx
+BREVO_SMTP_KEY=BV.xxxxx
+BREVO_SMTP_USER=
 MAIL_FROM_ADDRESS=noreply@CareerArch.com
 MAIL_FROM_NAME=CareerArch
 MAIL_BASE_URL=https://CareerArch.com

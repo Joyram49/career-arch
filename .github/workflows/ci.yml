@@ -114,7 +114,8 @@ jobs:
       BCRYPT_ROUNDS: 4
 
       # ── Email — placeholder (email service is mocked in tests)
-      SENDGRID_API_KEY: SG.test-placeholder-not-real
+      BREVO_SMTP_USER: BV.test-placeholder-not-real
+      BREVO_SMTP_KEY: BV.test-placeholder-not-real
       MAIL_FROM_ADDRESS: test@careerarch.com
       MAIL_FROM_NAME: CareerArch Test
 

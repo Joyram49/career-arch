@@ -13,7 +13,7 @@
 | Auth             | **JWT (jsonwebtoken)**           | Stateless access/refresh token           |
 | 2FA              | **speakeasy + qrcode**           | TOTP-based two-factor auth               |
 | Password Hashing | **bcryptjs**                     | Secure password storage                  |
-| Email            | **Nodemailer + SendGrid**        | Transactional emails                     |
+| Email            | **Nodemailer + BREVO**        | Transactional emails                     |
 | Payment          | **Stripe SDK**                   | Subscriptions + one-time incentives      |
 | File Upload      | **Multer + AWS S3 / Cloudinary** | Resume/profile image uploads             |
 | Background Jobs  | **BullMQ + Redis**               | Email queues, async tasks                |
@@ -65,7 +65,7 @@
 | Redis Hosting    | **Upstash Redis**                |
 | File Storage     | **AWS S3 / Cloudinary**          |
 | Monitoring       | **Sentry**                       |
-| Email Service    | **SendGrid**                     |
+| Email Service    | **BREVO**                     |
 
 ---
 
