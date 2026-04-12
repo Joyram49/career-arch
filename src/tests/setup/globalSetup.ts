@@ -11,8 +11,8 @@ export default async function globalSetup(): Promise<void> {
   process.env['JWT_REFRESH_EXPIRY'] = '7d';
   process.env['JWT_REFRESH_EXPIRY_REMEMBER_ME'] = '30d';
   process.env['BCRYPT_ROUNDS'] = '4'; // Low rounds for faster tests
-  process.env['BREVO_API_KEY'] = 'BV.test-key';
-  process.env['BREVO_API_USER'] = 'BV.test-user';
+  process.env['BREVO_SMTP_KEY'] = 'BV.test-key';
+  process.env['BREVO_SMTP_USER'] = 'BV.test-user';
   process.env['MAIL_FROM_ADDRESS'] = 'test@careerarch.com';
   process.env['FRONTEND_URL'] = 'http://localhost:3000';
   process.env['API_URL'] = 'http://localhost:5000/api/v1';
