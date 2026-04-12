@@ -1,12 +1,16 @@
 import { sendError } from '@utils/apiResponse';
-import { RATE_LIMIT } from '@utils/constants';
+import { HTTP_STATUS, RATE_LIMIT } from '@utils/constants';
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
 import type { Request, Response } from 'express';
 
 // ── Generic handler for all rate limit responses ───────────────────────────
 const rateLimitHandler = (_req: Request, res: Response): void => {
-  sendError(res, 'Too many requests. Please slow down and try again later.', 429);
+  sendError(
+    res,
+    'Too many requests. Please slow down and try again later.',
+    HTTP_STATUS.TOO_MANY_REQUESTS,
+  );
 };
 const skipRateLimitInTests = (): boolean => process.env['NODE_ENV'] === 'test';
 
@@ -32,7 +36,7 @@ export const loginLimiter = rateLimit({
     sendError(
       res,
       'Too many login attempts. Account temporarily locked. Please try again in 15 minutes.',
-      429,
+      HTTP_STATUS.TOO_MANY_REQUESTS,
     );
   },
   keyGenerator: (req: Request): string => {

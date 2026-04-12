@@ -56,7 +56,7 @@ export async function registerUser(data: {
   // Generate email verification token
   const rawToken = generateSecureToken();
   const hashedToken = hashToken(rawToken);
-  const verifyExpiry = getExpiryDate('24h');
+  const verifyExpiry = getExpiryDate('2m');
 
   // Create user + profile + subscription in one transaction
   await prisma.$transaction(async (tx) => {
@@ -158,7 +158,7 @@ export async function resendVerificationEmail(email: string): Promise<{ message:
 
   const rawToken = generateSecureToken();
   const hashedToken = hashToken(rawToken);
-  const verifyExpiry = getExpiryDate('24h');
+  const verifyExpiry = getExpiryDate('2m');
 
   await prisma.user.update({
     where: { id: user.id },

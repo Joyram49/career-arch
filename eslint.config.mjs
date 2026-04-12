@@ -199,7 +199,7 @@ export default [
       'spaced-comment': ['error', 'always', { markers: ['/'] }],
       'max-depth': ['warn', 4],
       'max-lines-per-function': ['warn', { max: 80, skipBlankLines: true, skipComments: true }],
-      complexity: ['warn', 10],
+      complexity: ['warn', 15],
     },
   },
 

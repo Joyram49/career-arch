@@ -68,10 +68,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "coverage"
-  ]
+  "exclude": ["node_modules", "dist", "coverage"]
 }
-

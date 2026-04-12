@@ -23,14 +23,14 @@ export const userRegisterSchema = z.object({
     password: passwordSchema,
     firstName: z
       .string()
+      .trim()
       .min(2, 'First name must be at least 2 characters')
-      .max(50, 'First name must be at most 50 characters')
-      .trim(),
+      .max(50, 'First name must be at most 50 characters'),
     lastName: z
       .string()
+      .trim()
       .min(2, 'Last name must be at least 2 characters')
-      .max(50, 'Last name must be at most 50 characters')
-      .trim(),
+      .max(50, 'Last name must be at most 50 characters'),
   }),
 });
 
