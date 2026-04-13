@@ -1,4 +1,4 @@
-name: CI — CareerArch Backend
+name: CI/CD — CareerArch Backend
 
 on:
   push:
@@ -12,7 +12,6 @@ env:
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
   # JOB 1 — Lint & Type Check
-  # No DB needed. Just installs, generates Prisma types, then checks code.
   # ─────────────────────────────────────────────────────────────────────────
   lint:
     name: Lint & Type Check
@@ -34,8 +33,6 @@ jobs:
       - name: Generate Prisma client
         run: npm run db:generate
         env:
-          # Prisma generate needs a DATABASE_URL format to validate schema.
-          # It does NOT connect to this URL — any valid format works here.
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lint_placeholder
 
       - name: TypeScript type check
@@ -49,15 +46,12 @@ jobs:
 
   # ─────────────────────────────────────────────────────────────────────────
   # JOB 2 — Tests
-  # Spins up real PostgreSQL + Redis containers on the CI runner.
-  # Does NOT use Supabase — that is production only.
   # ─────────────────────────────────────────────────────────────────────────
   test:
     name: Tests
     runs-on: ubuntu-latest
     needs: lint
 
-    # ── Service containers (run alongside the job) ─────────────────────────
     services:
       postgres:
         image: postgres:16-alpine
@@ -83,43 +77,24 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    # ── Environment variables for the test job ─────────────────────────────
-    # These cover every field Zod validates in env.ts so the app starts.
-    # Sensitive values come from GitHub Secrets.
-    # Non-sensitive test values are hardcoded here — that is fine.
     env:
       NODE_ENV: test
-
-      # ── Server
       PORT: 5001
       API_VERSION: v1
       FRONTEND_URL: http://localhost:3000
       API_URL: http://localhost:5001/api/v1
-
-      # ── Database — points to the service container above, NOT Supabase
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/careerarch_test
-      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/careerarch_test
-
-      # ── Redis — points to the service container above
       REDIS_URL: redis://localhost:6379/1
-
-      # ── JWT — from GitHub Secrets
       JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
       JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
       JWT_ACCESS_EXPIRY: 15m
       JWT_REFRESH_EXPIRY: 7d
       JWT_REFRESH_EXPIRY_REMEMBER_ME: 30d
-
-      # ── Bcrypt — low rounds for fast tests
       BCRYPT_ROUNDS: 4
-
-      # ── Email — placeholder (email service is mocked in tests)
-      BREVO_SMTP_USER: BV.test-placeholder-not-real
-      BREVO_SMTP_KEY: BV.test-placeholder-not-real
+      BREVO_SMTP_USER: test-smtp-user
+      BREVO_SMTP_KEY: test-smtp-key
       MAIL_FROM_ADDRESS: test@careerarch.com
       MAIL_FROM_NAME: CareerArch Test
-
-      # ── Stripe — test placeholders (Stripe is not called in tests)
       STRIPE_SECRET_KEY: sk_test_placeholder
       STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_test_placeholder
@@ -127,29 +102,19 @@ jobs:
       STRIPE_PREMIUM_PRICE_ID: price_test_premium
       STRIPE_INCENTIVE_AMOUNT: 5000
       STRIPE_CURRENCY: usd
-
-      # ── AWS — placeholders (S3 is not called in tests)
       AWS_ACCESS_KEY_ID: test-key-id
       AWS_SECRET_ACCESS_KEY: test-secret-key
       AWS_REGION: us-east-1
       AWS_S3_BUCKET: test-bucket
-
-      # ── OAuth — placeholders
       GOOGLE_CLIENT_ID: test-google-client-id
       GOOGLE_CLIENT_SECRET: test-google-secret
       GOOGLE_CALLBACK_URL: http://localhost:5001/api/v1/auth/google/callback
       LINKEDIN_CLIENT_ID: test-linkedin-client-id
       LINKEDIN_CLIENT_SECRET: test-linkedin-secret
-
-      # ── Rate limiting — relaxed for tests
       RATE_LIMIT_WINDOW_MS: 900000
       RATE_LIMIT_MAX: 10000
       LOGIN_RATE_LIMIT_MAX: 1000
-
-      # ── Sentry — disabled in tests
       SENTRY_DSN: ''
-
-      # ── CORS
       ALLOWED_ORIGINS: http://localhost:3000
 
     steps:
@@ -168,9 +133,7 @@ jobs:
       - name: Generate Prisma client
         run: npm run db:generate
 
-      - name: Run migrations on test DB
-        # db:migrate:prod = prisma migrate deploy (non-interactive, safe for CI)
-        # Uses DATABASE_URL from the env block above (the service container)
+      - name: Run database migrations
         run: npm run db:migrate:prod
 
       - name: Run tests
@@ -186,7 +149,6 @@ jobs:
 
   # ─────────────────────────────────────────────────────────────────────────
   # JOB 3 — Build
-  # Verifies the TypeScript compiles cleanly to dist/.
   # ─────────────────────────────────────────────────────────────────────────
   build:
     name: Build
@@ -220,3 +182,26 @@ jobs:
           name: dist
           path: dist/
           retention-days: 7
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # JOB 4 — Deploy to Render (only on push to main)
+  # ─────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render Deploy
+        run: |
+          curl -f -X POST \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache": false}'
+
+      - name: Wait and verify deployment
+        run: |
+          echo "Deployment triggered. Check status at:"
+          echo "https://dashboard.render.com/web/${{ secrets.RENDER_SERVICE_ID }}"
