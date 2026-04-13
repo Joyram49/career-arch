@@ -5,7 +5,7 @@ WORKDIR /app
 # ── Stage 1: Production dependencies only ─────────────────────────────────
 FROM base AS deps
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 # ── Stage 2: Full dependencies + build ────────────────────────────────────
 FROM base AS builder
