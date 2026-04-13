@@ -6,7 +6,7 @@
 
 ## Entity Relationship Overview
 
-```
+```text
 User ──────────────── Subscription
  │                         │
  ├── Application ──── Job ─┤── Organization
@@ -421,9 +421,14 @@ model Notification {
 
 ## Key Design Decisions
 
-1. **Separate User & Organization models** — Different auth flows, profile fields, and permissions
-2. **Unique application constraint** — `[jobId, userId]` prevents duplicate applications
-3. **RequiredPlan on Job** — Orgs can mark certain jobs as requiring Basic/Premium subscription
-4. **HiringIncentive auto-created** — Triggered when application status changes to `HIRED`
+1. **Separate User & Organization models** — Different auth flows, profile
+   fields, and permissions
+2. **Unique application constraint** — `[jobId, userId]` prevents duplicate
+   applications
+3. **RequiredPlan on Job** — Orgs can mark certain jobs as requiring
+   Basic/Premium subscription
+4. **HiringIncentive auto-created** — Triggered when application status changes
+   to `HIRED`
 5. **RefreshToken table** — Stored in DB for revocation; also cached in Redis
-6. **Soft delete** — Use `isActive: false` instead of hard deletes for audit trail
+6. **Soft delete** — Use `isActive: false` instead of hard deletes for audit
+   trail

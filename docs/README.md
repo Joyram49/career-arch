@@ -1,12 +1,15 @@
 # 🏢 CareerArch — Glassdoor-Clone Job Portal
 
-> A full-stack, production-grade job portal platform with role-based dashboards, subscription billing, and automated hiring incentives.
+> A full-stack, production-grade job portal platform with role-based dashboards,
+> subscription billing, and automated hiring incentives.
 
 ---
 
 ## 📌 Project Overview
 
-**CareerArch** is an industry-standard job portal platform inspired by Glassdoor. It connects talent (job seekers) with organizations (employers) through a feature-rich, secure, and scalable platform.
+**CareerArch** is an industry-standard job portal platform inspired by
+Glassdoor. It connects talent (job seekers) with organizations (employers)
+through a feature-rich, secure, and scalable platform.
 
 ### Core Roles
 
@@ -70,7 +73,7 @@
 
 ## 📁 Repository Structure
 
-```
+```tree
 CareerArch/
 ├── backend/                    # Node.js + Express API
 │   ├── src/

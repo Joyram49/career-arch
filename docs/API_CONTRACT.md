@@ -1,8 +1,7 @@
 # 📡 API Contract — CareerArch
 
-> Base URL: `https://api.CareerArch.com/api/v1`
-> Auth: Bearer JWT in `Authorization` header
-> All responses follow the format:
+> Base URL: `https://api.CareerArch.com/api/v1` Auth: Bearer JWT in
+> `Authorization` header All responses follow the format:
 >
 > ```json
 > { "success": true, "message": "...", "data": {...}, "meta": {...} }
@@ -86,7 +85,7 @@
 
 **Query params for `/jobs`:**
 
-```
+```queryparams
 ?q=developer         # keyword search
 &location=NYC
 &type=FULL_TIME
