@@ -10,7 +10,7 @@ backend/
 │   │   ├── database.ts                 # Prisma client instance
 │   │   ├── redis.ts                    # ioredis client
 │   │   ├── stripe.ts                   # Stripe SDK init
-│   │   ├── email.ts                    # Nodemailer/SendGrid setup
+│   │   ├── email.ts                    # Nodemailer/BREVO setup
 │   │   ├── s3.ts                       # AWS S3 client
 │   │   ├── env.ts                      # Validated env (envalid)
 │   │   └── logger.ts                   # Winston logger

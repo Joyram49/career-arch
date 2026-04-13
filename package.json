@@ -38,7 +38,6 @@
     "@aws-sdk/s3-request-presigner": "^3.723.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
-    "@sendgrid/mail": "^8.1.6",
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.73.3",
     "cookie-parser": "^1.4.7",

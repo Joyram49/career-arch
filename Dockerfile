@@ -2,11 +2,12 @@ FROM node:20-alpine AS base
 
 WORKDIR /app
 
-# Install dependencies only when needed
+# ── Stage 1: Production dependencies only ─────────────────────────────────
 FROM base AS deps
 COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
+# ── Stage 2: Full dependencies + build ────────────────────────────────────
 FROM base AS builder
 COPY package*.json ./
 RUN npm ci
@@ -14,21 +15,38 @@ COPY . .
 RUN npm run db:generate
 RUN npm run build
 
-# Production image
-FROM base AS runner
+# ── Stage 3: Development (ts-node + nodemon, no build needed) ─────────────
+FROM base AS development
+ENV NODE_ENV=development
+
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run db:generate
+
+EXPOSE 5000
+
+CMD ["npm", "run", "dev"]
+
+# ── Stage 4: Production runner ────────────────────────────────────────────
+FROM base AS production
 ENV NODE_ENV=production
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 careerarch
 
-# Copy built assets
+# Copy production node_modules
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy compiled output
 COPY --from=builder /app/dist ./dist
+
+# Copy prisma schema + generated client
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-# Create logs directory
+# Create logs directory with correct ownership
 RUN mkdir -p logs && chown -R careerarch:nodejs logs
 
 USER careerarch

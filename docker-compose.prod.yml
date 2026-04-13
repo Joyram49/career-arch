@@ -1,0 +1,20 @@
+services:
+  api:
+    build:
+      context: .
+      target: production
+    container_name: careerarch-api
+    restart: unless-stopped
+    environment:
+      - IS_DOCKER=true
+      - NODE_ENV=production
+    env_file:
+      - .env.production
+      - .env.docker
+    ports:
+      - '5000:5000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

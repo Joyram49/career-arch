@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      target: development
+    container_name: careerarch-api-dev
+    restart: unless-stopped
+    environment:
+      - IS_DOCKER=true
+      - NODE_ENV=development
+    env_file:
+      - .env.development
+      - .env.docker
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: npm run dev
