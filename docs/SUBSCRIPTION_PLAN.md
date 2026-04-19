@@ -170,7 +170,7 @@ export async function checkApplicationEligibility(userId: string, job: Job) {
 ## Stripe Env Variables Required
 
 ```env
-STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_SECRET_KEY=sk_live_###############
 STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 STRIPE_WEBHOOK_SECRET=whsec_xxx
 STRIPE_BASIC_PRICE_ID=price_xxx

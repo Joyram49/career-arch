@@ -6,6 +6,8 @@ node_modules
 .env.test
 
 
+
+
 /src/generated/prisma
 
 # Build and coverage output
@@ -15,6 +17,7 @@ coverage
 # Runtime logs
 logs
 *.log
+/logs
 
 # Tooling caches
 .eslintcache
