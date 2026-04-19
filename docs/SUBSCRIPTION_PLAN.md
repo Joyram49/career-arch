@@ -21,7 +21,8 @@
 
 ## Auto-Assign Free Plan on Registration
 
-When a user registers successfully, a background job automatically creates a `Subscription` record:
+When a user registers successfully, a background job automatically creates a
+`Subscription` record:
 
 ```typescript
 // services/subscription.service.ts
@@ -29,8 +30,8 @@ export async function assignFreeSubscription(userId: string) {
   await prisma.subscription.create({
     data: {
       userId,
-      plan: "FREE",
-      status: "ACTIVE",
+      plan: 'FREE',
+      status: 'ACTIVE',
     },
   });
 }
@@ -42,7 +43,7 @@ This is called inside the user registration controller after email verification.
 
 ## Stripe Product & Price IDs
 
-```
+```text
 STRIPE_BASIC_PRICE_ID=price_xxxxxxxx      # $9.99/month recurring
 STRIPE_PREMIUM_PRICE_ID=price_yyyyyyyy    # $24.99/month recurring
 STRIPE_INCENTIVE_AMOUNT=5000              # $50.00 in cents (fixed per hire)
@@ -52,7 +53,7 @@ STRIPE_INCENTIVE_AMOUNT=5000              # $50.00 in cents (fixed per hire)
 
 ## Subscription Upgrade Flow
 
-```
+```flowchart
 User clicks "Upgrade to Basic"
         │
         ▼
@@ -106,7 +107,7 @@ Send "Subscription Activated" email
 
 When an organization marks an application as **HIRED**:
 
-```
+```flowchart
 Org updates application status → HIRED
         │
         ▼
@@ -169,7 +170,7 @@ export async function checkApplicationEligibility(userId: string, job: Job) {
 ## Stripe Env Variables Required
 
 ```env
-STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_SECRET_KEY=sk_live_###############
 STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 STRIPE_WEBHOOK_SECRET=whsec_xxx
 STRIPE_BASIC_PRICE_ID=price_xxx

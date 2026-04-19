@@ -41,7 +41,7 @@ API_URL=http://localhost:5000/api/v1
 BREVO_SMTP_KEY=
 BREVO_SMTP_USER=
 MAIL_FROM_ADDRESS=noreply@careerarch.com
-STRIPE_SECRET_KEY=sk_test_xxxx
+STRIPE_SECRET_KEY=sk_test_#######
 STRIPE_PUBLISHABLE_KEY=pk_test_xxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxx
 STRIPE_BASIC_PRICE_ID=price_xxxx
@@ -89,11 +89,11 @@ npm run db:seed
 
 After seeding, these accounts are available:
 
-| Role         | Email                   | Password     |
-| ------------ | ----------------------- | ------------ |
-| Admin        | admin@careerarch.com    | Admin@123456 |
-| User         | demo@careerarch.com     | User@123456  |
-| Organization | techcorp@careerarch.com | Org@123456   |
+| Role         | Email                     | Password     |
+| ------------ | ------------------------- | ------------ |
+| Admin        | <admin@careerarch.com>    | Admin@123456 |
+| User         | <demo@careerarch.com>     | User@123456  |
+| Organization | <techcorp@careerarch.com> | Org@123456   |
 
 ---
 

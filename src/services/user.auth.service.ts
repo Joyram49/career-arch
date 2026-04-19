@@ -28,6 +28,8 @@ import { generateSecret, generateURI, verifySync } from 'otplib';
 import qrcode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 
+import { logger } from '@/config/logger';
+
 import type { ITokenPair, ITwoFactorSetupResponse, IUserAuthResponse } from '@app-types/index';
 
 // ─────────────────────────────────────────────
@@ -56,7 +58,7 @@ export async function registerUser(data: {
   // Generate email verification token
   const rawToken = generateSecureToken();
   const hashedToken = hashToken(rawToken);
-  const verifyExpiry = getExpiryDate('2m');
+  const verifyExpiry = getExpiryDate('15m');
 
   // Create user + profile + subscription in one transaction
   await prisma.$transaction(async (tx) => {
@@ -158,7 +160,7 @@ export async function resendVerificationEmail(email: string): Promise<{ message:
 
   const rawToken = generateSecureToken();
   const hashedToken = hashToken(rawToken);
-  const verifyExpiry = getExpiryDate('2m');
+  const verifyExpiry = getExpiryDate('15m');
 
   await prisma.user.update({
     where: { id: user.id },
@@ -235,7 +237,7 @@ export async function loginUser(data: {
       email: user.email,
     });
 
-    // Store in Redis with 5 min expiry — flagged as pending 2FA
+    // Store in Redis with 5 min expiry — flagged as pending 2FA (setex(key, seconds, value))
     await redis.setex(RedisKeys.twoFaTempToken(user.id), RedisExpiry.TWO_FA_TEMP, '1');
 
     return { requires2FA: true, tempToken };
@@ -532,7 +534,11 @@ export async function verifyAndEnableTwoFa(
     throw new ConflictError('Two-factor authentication is already enabled');
   }
 
-  const isValid = verifySync({ token: otp, secret: user.twoFactorSecret }).valid;
+  const isValid = verifySync({
+    token: otp,
+    secret: user.twoFactorSecret,
+  }).valid;
+  logger.info('user info', { user, otp, isValid });
   if (!isValid) {
     throw new BadRequestError('Invalid OTP. Please scan the QR code again and try.');
   }

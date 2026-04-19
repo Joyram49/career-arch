@@ -1,6 +1,6 @@
 # 📁 Backend Folder Structure — CareerArch
 
-```
+```tree
 backend/
 ├── src/
 │   ├── app.ts                          # Express app setup
@@ -137,7 +137,7 @@ backend/
 
 ## Frontend Folder Structure
 
-```
+```tree
 frontend/
 ├── app/
 │   ├── (auth)/
