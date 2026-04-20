@@ -1,4 +1,3 @@
-import * as OrgAuthService from '@services/org.auth.service';
 import { sendCreated, sendSuccess } from '@utils/apiResponse';
 import {
   ACCESS_COOKIE_OPTIONS,
@@ -6,6 +5,8 @@ import {
   REFRESH_COOKIE_OPTIONS,
   REFRESH_COOKIE_OPTIONS_REMEMBER_ME,
 } from '@utils/constants';
+
+import * as OrgAuthService from '@/services/auth/org.auth.service';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { Request, Response } from 'express';

@@ -32,7 +32,7 @@
 
 | Layer            | Technology                                      | Reason                              |
 | ---------------- | ----------------------------------------------- | ----------------------------------- |
-| Framework        | **Next.js 14 (App Router)**                     | SSR, SEO, routing, API routes       |
+| Framework        | **Next.js 15 (App Router)**                     | SSR, SEO, routing, API routes       |
 | Language         | **TypeScript**                                  | Consistency with backend            |
 | Styling          | **Tailwind CSS v3**                             | Utility-first, fast iteration       |
 | UI Components    | **shadcn/ui**                                   | Accessible, customizable components |
