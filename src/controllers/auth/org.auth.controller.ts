@@ -137,6 +137,14 @@ export async function verifyTwoFa(req: Request, res: Response): Promise<Response
   return sendSuccess(res, { backupCodes: result.backupCodes }, result.message);
 }
 
+// ── Disable 2FA ────────────────────────────────────────────────────
+export async function disableTwoFa(req: Request, res: Response): Promise<Response> {
+  const { sub } = (req as IAuthenticatedRequest).user;
+  const { password, otp } = req.body as { password: string; otp: string };
+  const result = await OrgAuthService.disableTwoFa(sub, password, otp);
+  return sendSuccess(res, null, result.message);
+}
+
 // ── Get Me ─────────────────────────────────────────────────────────────────
 export async function getMe(req: Request, res: Response): Promise<Response> {
   const { sub } = (req as IAuthenticatedRequest).user;

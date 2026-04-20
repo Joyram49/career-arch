@@ -30,6 +30,8 @@ import { generateSecret, generateURI, verifySync } from 'otplib';
 import qrcode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 
+import { logger } from '@/config/logger';
+
 import type { IOrgAuthResponse, ITokenPair, ITwoFactorSetupResponse } from '@app-types/index';
 import type { Role } from '@prisma/client';
 
@@ -386,6 +388,8 @@ export async function setupOrgTwoFa(orgId: string): Promise<ITwoFactorSetupRespo
     label: org.email,
     secret,
   });
+
+  logger.info('otp auth url value', { otpAuthUrl });
   const qrCodeUrl = await qrcode.toDataURL(otpAuthUrl);
 
   await prisma.organization.update({
@@ -433,6 +437,47 @@ export async function verifyAndEnableOrgTwoFa(
     message: '2FA enabled successfully. Store your backup codes safely.',
     backupCodes,
   };
+}
+
+// ─────────────────────────────────────────────
+// DISABLE 2FA
+// ─────────────────────────────────────────────
+
+export async function disableTwoFa(
+  userId: string,
+  password: string,
+  otp: string,
+): Promise<{ message: string }> {
+  const user = await prisma.organization.findUnique({
+    where: { id: userId },
+  });
+  if (user === null) throw new NotFoundError('User not found!');
+
+  if (!user.twoFactorEnabled) {
+    throw new BadRequestError('Two-factor authentication is not enabled.');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw new UnauthorizedError('Incorrect password.');
+  }
+
+  if (user.twoFactorSecret === null) {
+    throw new BadRequestError('2FA secret not found');
+  }
+
+  const isOtpValid = verifySync({ token: otp, secret: user.twoFactorSecret }).valid;
+
+  if (!isOtpValid) {
+    throw new UnauthorizedError('Invalid OTP code.');
+  }
+
+  await prisma.organization.update({
+    where: { id: userId },
+    data: { twoFactorEnabled: false, twoFactorSecret: null },
+  });
+
+  return { message: '2FA disabled successfully.' };
 }
 
 // ─────────────────────────────────────────────

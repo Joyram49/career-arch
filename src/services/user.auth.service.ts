@@ -565,10 +565,10 @@ export async function disableTwoFa(
   otp: string,
 ): Promise<{ message: string }> {
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (user === null) throw new NotFoundError('User not found');
+  if (user === null) throw new NotFoundError('User not found!');
 
   if (!user.twoFactorEnabled) {
-    throw new BadRequestError('Two-factor authentication is not enabled');
+    throw new BadRequestError('Two-factor authentication is not enabled.');
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);

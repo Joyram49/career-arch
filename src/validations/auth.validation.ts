@@ -118,9 +118,9 @@ export const orgRegisterSchema = z.object({
     password: passwordSchema,
     companyName: z
       .string()
+      .trim()
       .min(2, 'Company name must be at least 2 characters')
-      .max(100, 'Company name must be at most 100 characters')
-      .trim(),
+      .max(100, 'Company name must be at most 100 characters'),
   }),
 });
 
