@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { env } from './env';
 import { logger } from './logger';
 
-class RedisClient {
+export class RedisClient {
   private static instance: Redis | null = null;
 
   public static getInstance(): Redis {
