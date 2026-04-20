@@ -9,6 +9,7 @@ import {
   orgLoginSchema,
   orgRegisterSchema,
   resetPasswordSchema,
+  twoFaDisableSchema,
   twoFaValidateSchema,
   twoFaVerifySchema,
   verifyEmailSchema,
@@ -73,6 +74,12 @@ router.post(
   '/2fa/verify',
   validate(twoFaVerifySchema),
   asyncHandler(OrgAuthController.verifyTwoFa),
+);
+
+router.post(
+  '/2fa/disable',
+  validate(twoFaDisableSchema),
+  asyncHandler(OrgAuthController.disableTwoFa),
 );
 
 export default router;

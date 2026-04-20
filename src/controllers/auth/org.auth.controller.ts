@@ -1,4 +1,3 @@
-import * as OrgAuthService from '@services/org.auth.service';
 import { sendCreated, sendSuccess } from '@utils/apiResponse';
 import {
   ACCESS_COOKIE_OPTIONS,
@@ -6,6 +5,8 @@ import {
   REFRESH_COOKIE_OPTIONS,
   REFRESH_COOKIE_OPTIONS_REMEMBER_ME,
 } from '@utils/constants';
+
+import * as OrgAuthService from '@/services/auth/org.auth.service';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { Request, Response } from 'express';
@@ -135,6 +136,14 @@ export async function verifyTwoFa(req: Request, res: Response): Promise<Response
   const { otp } = req.body as { otp: string };
   const result = await OrgAuthService.verifyAndEnableOrgTwoFa(sub, otp);
   return sendSuccess(res, { backupCodes: result.backupCodes }, result.message);
+}
+
+// ── Disable 2FA ────────────────────────────────────────────────────
+export async function disableTwoFa(req: Request, res: Response): Promise<Response> {
+  const { sub } = (req as IAuthenticatedRequest).user;
+  const { password, otp } = req.body as { password: string; otp: string };
+  const result = await OrgAuthService.disableTwoFa(sub, password, otp);
+  return sendSuccess(res, null, result.message);
 }
 
 // ── Get Me ─────────────────────────────────────────────────────────────────

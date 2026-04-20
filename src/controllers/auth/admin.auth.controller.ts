@@ -1,6 +1,7 @@
-import * as AdminAuthService from '@services/admin.auth.service';
 import { sendSuccess } from '@utils/apiResponse';
 import { ACCESS_COOKIE_OPTIONS, COOKIE_NAMES, REFRESH_COOKIE_OPTIONS } from '@utils/constants';
+
+import * as AdminAuthService from '@/services/auth/admin.auth.service';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { Request, Response } from 'express';
