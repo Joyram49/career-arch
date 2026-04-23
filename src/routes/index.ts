@@ -1,8 +1,10 @@
 import { Router } from 'express';
 
+import adminOrgRoutes from './admin/admin.org.controller';
 import adminAuthRoutes from './auth/auth.admin.routes';
 import orgAuthRoutes from './auth/auth.org.routes';
 import userAuthRoutes from './auth/auth.user.routes';
+import orgRoutes from './org/org.routes';
 
 const router = Router();
 
@@ -11,7 +13,13 @@ router.use('/auth/user', userAuthRoutes);
 router.use('/auth/org', orgAuthRoutes);
 router.use('/auth/admin', adminAuthRoutes);
 
-// ── Placeholder routes (to be built in Phase 3) ───────────────────────────
+// ── Org Routes (Phase 3A) ──────────────────────────────────────────────────
+router.use('/org', orgRoutes);
+
+// ── Admin Routes (Phase 3A) ────────────────────────────────────────────────
+router.use('/admin', adminOrgRoutes);
+
+// ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {
   res.json({
     success: true,
