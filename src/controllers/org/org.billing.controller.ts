@@ -1,7 +1,10 @@
+import { type IAuthenticatedRequest } from '@app-types/index';
+
 import * as OrgBillingService from '@/services/billing/org.billing.service';
-import { type IAuthenticatedRequest } from '@/types';
 import { sendSuccess } from '@/utils/apiResponse';
 import { type SavePaymentMethodInput } from '@/validations/org.validation';
+
+import type { Request, Response } from 'express';
 
 // ── GET /org/billing ───────────────────────────────────────────────────────
 export async function getBillingInfo(req: Request, res: Response): Promise<Response> {

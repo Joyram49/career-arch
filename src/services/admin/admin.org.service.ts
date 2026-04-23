@@ -148,8 +148,6 @@ export async function listOrganizations(filters: {
   limit: number;
 }): Promise<{ data: IAdminOrgListItem[]; total: number }> {
   const where: Record<string, unknown> = {};
-  if (filters.isApproved !== undefined) where['isApproved'] = filters.isApproved;
-  if (filters.isActive !== undefined) where['isActive'] = filters.isActive;
 
   const skip = (filters.page - 1) * filters.limit;
 

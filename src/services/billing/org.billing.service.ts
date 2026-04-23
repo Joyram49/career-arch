@@ -9,8 +9,8 @@ import { stripe } from '@/config/stripe';
 import { BadRequestError, NotFoundError } from '@/utils/apiError';
 
 export interface IBillingInfo {
-  isPaymentMehodOnFile: boolean;
-  hasUnpaidIncentive: boolean;
+  isPaymentMethodOnFile: boolean;
+  hasUnpaidIncentives: boolean;
   card: {
     brand: string;
     last4: string;
@@ -56,8 +56,8 @@ export async function getOrgBillingInfo(orgId: string): Promise<IBillingInfo> {
           ? {
               brand: card.brand,
               last4: card.last4,
-              expMonth: card.exp_month,
-              expYear: card.exp_year,
+              expMonth: String(card.exp_month),
+              expYear: String(card.exp_year),
             }
           : null,
     };
@@ -178,7 +178,7 @@ export async function savePaymentMethod(
   }
 
   const pm = await stripe.paymentMethods.retrieve(paymentMethodId);
-  if (pm.custom !== org.stripeCustomerId) {
+  if (pm.customer !== org.stripeCustomerId) {
     throw new BadRequestError('Invalid payment method. Pelase try again.');
   }
 
@@ -208,8 +208,8 @@ export async function savePaymentMethod(
     card: {
       brand: pm.card.brand,
       last4: pm.card.last4,
-      expMonth: pm.card.exp_month,
-      expYear: pm.card.exp_year,
+      expMonth: String(pm.card.exp_month),
+      expYear: String(pm.card.exp_year),
     },
   };
 }

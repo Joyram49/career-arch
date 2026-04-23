@@ -13,12 +13,14 @@ export async function listOrganizations(req: Request, res: Response): Promise<Re
   const isApproved = query['isApproved'] !== undefined ? query['isApproved'] === 'true' : undefined;
   const isActive = query['isActive'] !== undefined ? query['isActive'] === 'true' : undefined;
 
-  const { data, total } = await AdminOrgService.listOrganizations({
-    isApproved,
-    isActive,
+  const filters: { isApproved?: boolean; isActive?: boolean; page: number; limit: number } = {
     page,
     limit,
-  });
+  };
+  if (isApproved !== undefined) filters.isApproved = isApproved;
+  if (isActive !== undefined) filters.isActive = isActive;
+
+  const { data, total } = await AdminOrgService.listOrganizations(filters);
 
   const meta = buildPaginationMeta(total, page, limit);
   return sendSuccess(res, { organizations: data }, 'Organizations retrieved', 200, meta);
