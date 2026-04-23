@@ -65,6 +65,7 @@ enum IncentiveStatus {
   PAID
   WAIVED
   DISPUTED
+  OVERDUE
 }
 
 enum PaymentStatus {
@@ -153,6 +154,9 @@ model Organization {
   isApproved          Boolean   @default(false)
   stripeCustomerId    String?
   lastLoginAt         DateTime?
+  stripeDefaultPaymentMethodId String?
+  isPaymentMethodOnFile        Boolean   @default(false)
+  hasUnpaidIncentives          Boolean   @default(false)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
