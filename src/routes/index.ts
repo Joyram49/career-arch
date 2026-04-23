@@ -17,7 +17,7 @@ router.use('/auth/admin', adminAuthRoutes);
 router.use('/org', orgRoutes);
 
 // ── Admin Routes (Phase 3A) ────────────────────────────────────────────────
-router.use('/admin', adminOrgRoutes);
+router.use('/admin/organizations', adminOrgRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {

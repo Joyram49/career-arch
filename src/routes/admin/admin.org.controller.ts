@@ -37,7 +37,7 @@ router.use(authenticate, authorize('ADMIN'));
  *         schema:
  *           type: integer
  */
-router.get('/organizations', asyncHandler(AdminOrgController.listOrganizations));
+router.get('/', asyncHandler(AdminOrgController.listOrganizations));
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ router.get('/organizations', asyncHandler(AdminOrgController.listOrganizations))
  *         schema:
  *           type: string
  */
-router.patch('/organizations/:id/approve', asyncHandler(AdminOrgController.approveOrganization));
+router.patch('/:id/approve', asyncHandler(AdminOrgController.approveOrganization));
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ router.patch('/organizations/:id/approve', asyncHandler(AdminOrgController.appro
  *     summary: Suspend an organization
  *     tags: [Admin]
  */
-router.patch('/organizations/:id/suspend', asyncHandler(AdminOrgController.suspendOrganization));
+router.patch('/:id/suspend', asyncHandler(AdminOrgController.suspendOrganization));
 
 /**
  * @swagger
@@ -72,6 +72,6 @@ router.patch('/organizations/:id/suspend', asyncHandler(AdminOrgController.suspe
  *     summary: Reactivate a suspended organization
  *     tags: [Admin]
  */
-router.patch('/organizations/:id/activate', asyncHandler(AdminOrgController.activateOrganization));
+router.patch('/:id/activate', asyncHandler(AdminOrgController.activateOrganization));
 
 export default router;
