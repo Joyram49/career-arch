@@ -4,6 +4,7 @@ import adminOrgRoutes from './admin/admin.org.controller';
 import adminAuthRoutes from './auth/auth.admin.routes';
 import orgAuthRoutes from './auth/auth.org.routes';
 import userAuthRoutes from './auth/auth.user.routes';
+import orgJobsRoutes from './org/org.jobs.routes';
 import orgRoutes from './org/org.routes';
 
 const router = Router();
@@ -15,6 +16,7 @@ router.use('/auth/admin', adminAuthRoutes);
 
 // ── Org Routes (Phase 3A) ──────────────────────────────────────────────────
 router.use('/org', orgRoutes);
+router.use('/org/jobs', orgJobsRoutes);
 
 // ── Admin Routes (Phase 3A) ────────────────────────────────────────────────
 router.use('/admin/organizations', adminOrgRoutes);
