@@ -1,10 +1,15 @@
 import * as OrgBillingController from '@controllers/org/org.billing.controller';
 import * as OrgProfileController from '@controllers/org/org.profile.controller';
+import * as TestController from '@controllers/test/payment-method.controller';
 import { authenticate } from '@middlewares/authenticate';
 import { authorize } from '@middlewares/authorize';
 import { validate } from '@middlewares/validate';
 import { asyncHandler } from '@utils/asyncHandler';
-import { savePaymentMethodSchema, updateOrgProfileSchema } from '@validations/org.validation';
+import {
+  createPaymentMethodSchema,
+  savePaymentMethodSchema,
+  updateOrgProfileSchema,
+} from '@validations/org.validation';
 import { Router } from 'express';
 
 const router = Router();
@@ -106,6 +111,61 @@ router.get('/billing', asyncHandler(OrgBillingController.getBillingInfo));
  *       to render the card form. The org must be approved before calling this.
  */
 router.post('/billing/setup-intent', asyncHandler(OrgBillingController.createSetUpIntent));
+
+/**
+ * @swagger
+ * /org/billing/test/create-payment-method:
+ *   post:
+ *     summary: (TEST ONLY) Create and attach a Stripe payment method without frontend
+ *     description: >
+ *       This is a temporary testing endpoint that creates a Stripe test payment method
+ *       using a predefined card and attaches it to the given customer.
+ *       It bypasses the normal SetupIntent + Stripe.js flow and should NOT be used in production.
+ *     tags: [Organization]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [customerId]
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *                 description: Stripe customer ID
+ *                 example: cus_UOB7zWkQeXyGT2
+ *     responses:
+ *       200:
+ *         description: Test payment method created and attached successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Test payment method created and attached
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     paymentMethodId:
+ *                       type: string
+ *                       example: pm_1234567890
+ *       400:
+ *         description: Bad request (missing customerId)
+ *       500:
+ *         description: Internal server error
+ */
+router.post(
+  '/billing/test/create-payment-method',
+  validate(createPaymentMethodSchema),
+  asyncHandler(TestController.createPaymentMethod),
+);
 
 /**
  * @swagger
