@@ -10,6 +10,7 @@ const config: Config = {
   moduleNameMapper: {
     '^uuid$': '<rootDir>/src/tests/setup/mocks/uuid.ts',
     '^otplib$': '<rootDir>/src/tests/setup/mocks/otplib.ts',
+    '^isomorphic-dompurify$': '<rootDir>/src/tests/setup/mocks/isomorphic-dompurify.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
@@ -41,11 +42,6 @@ const config: Config = {
       },
     ],
   },
-
-  // ── Transform ESM modules in node_modules ───────────────────────────────
-  transformIgnorePatterns: [
-    'node_modules/(?!(isomorphic-dompurify|@exodus/bytes|entities|linkifyjs)/)',
-  ],
 
   // ── Setup files ────────────────────────────────────────────────────────
   setupFiles: ['<rootDir>/src/tests/setup/env.ts'],
