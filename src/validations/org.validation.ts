@@ -28,6 +28,7 @@ export const updateOrgProfileSchema = z.object({
       .max(100, 'Company name must be at most 100 characters')
       .optional(),
     website: urlSchema,
+    logoUrl: urlSchema,
     industry: z
       .enum([
         'Technology',
@@ -88,6 +89,15 @@ export const savePaymentMethodSchema = z.object({
   }),
 });
 
+export const createPaymentMethodSchema = z.object({
+  body: z.object({
+    customerId: z
+      .string()
+      .min(1, 'Customer ID is required')
+      .startsWith('cus_', 'Invalid Customer ID format'),
+  }),
+});
 // ── Inferred Types ─────────────────────────────────────────────────────────
 export type UpdateOrgProfileInput = z.infer<typeof updateOrgProfileSchema>['body'];
 export type SavePaymentMethodInput = z.infer<typeof savePaymentMethodSchema>['body'];
+export type CreatePaymentMethodInput = z.infer<typeof createPaymentMethodSchema>['body'];

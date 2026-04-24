@@ -257,3 +257,40 @@ export async function removePaymentMethod(orgId: string): Promise<{ message: str
   });
   return { message: 'Payment method removed successfully' };
 }
+
+// ─────────────────────────────────────────────
+// CREATE PAYMENT METHOD (TEST CASE AFTER FRONTEND PART THIS WILL REMOVE)
+// ─────────────────────────────────────────────
+// Orgs can remove their card only if they have no PENDING/OVERDUE incentives.
+
+export async function createPaymentMethod(
+  customerId: string,
+): Promise<{ paymentMethodId: string }> {
+  if (customerId === null || customerId === undefined) {
+    throw new BadRequestError('Customer id is required');
+  }
+
+  // 1. Create PaymentMethod (test card)
+  const paymentMethod = await stripe.paymentMethods.create({
+    type: 'card',
+    card: {
+      token: 'tok_visa',
+    },
+  });
+
+  // 2. Attach to customer
+  await stripe.paymentMethods.attach(paymentMethod.id, {
+    customer: customerId,
+  });
+
+  // 3. (Optional) Set as default payment method
+  await stripe.customers.update(customerId, {
+    invoice_settings: {
+      default_payment_method: paymentMethod.id,
+    },
+  });
+
+  return {
+    paymentMethodId: paymentMethod.id,
+  };
+}

@@ -92,6 +92,7 @@ export async function updateOrgProfile(
   if (data.country !== undefined) profileData['country'] = data.country;
   if (data.linkedinUrl !== undefined) profileData['linkedinUrl'] = data.linkedinUrl;
   if (data.twitterUrl !== undefined) profileData['twitterUrl'] = data.twitterUrl;
+  if (data.logoUrl !== undefined) profileData['logoUrl'] = data.logoUrl;
 
   const updatedOrgProfile = await prisma.orgProfile.update({
     where: { orgId },
