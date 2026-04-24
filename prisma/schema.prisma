@@ -289,10 +289,33 @@ model Job {
   applications Application[]
   savedBy      SavedJob[]
   incentives   HiringIncentive[]
+  deletedJob   DeletedJob?
 
   @@index([status, publishedAt])
   @@index([orgId])
   @@map("jobs")
+}
+
+// ─────────────────────────────────────────────
+// DELETED JOB (Soft delete trash bin)
+// ─────────────────────────────────────────────
+// Holds a reference to the ARCHIVED Job row.
+// Restore must find the original Job row via FK.
+// BullMQ cleanup worker hard-deletes Job rows where deleteAt < now().
+// onDelete: Cascade ensures no orphan DeletedJob records.
+
+model DeletedJob {
+  id        String   @id @default(uuid())
+  jobId     String   @unique
+  orgId     String
+  deletedAt DateTime @default(now())
+  deleteAt  DateTime // auto-cleanup date (deletedAt + 30 days)
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([deleteAt])
+  @@index([orgId])
+  @@map("deleted_jobs")
 }
 
 // ─────────────────────────────────────────────
