@@ -42,6 +42,11 @@ const config: Config = {
     ],
   },
 
+  // ── Transform ESM modules in node_modules ───────────────────────────────
+  transformIgnorePatterns: [
+    'node_modules/(?!(isomorphic-dompurify|@exodus/bytes|entities|linkifyjs)/)',
+  ],
+
   // ── Setup files ────────────────────────────────────────────────────────
   setupFiles: ['<rootDir>/src/tests/setup/env.ts'],
   globalSetup: '<rootDir>/src/tests/setup/globalSetup.ts',
