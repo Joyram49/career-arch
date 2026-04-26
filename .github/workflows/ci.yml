@@ -95,17 +95,16 @@ jobs:
       BREVO_SMTP_KEY: test-smtp-key
       MAIL_FROM_ADDRESS: test@careerarch.com
       MAIL_FROM_NAME: CareerArch Test
-      STRIPE_SECRET_KEY: sk_test_placeholder
+      STRIPE_SECRET_KEY: sk_test
       STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_test_placeholder
       STRIPE_BASIC_PRICE_ID: price_test_basic
       STRIPE_PREMIUM_PRICE_ID: price_test_premium
       STRIPE_INCENTIVE_AMOUNT: 5000
       STRIPE_CURRENCY: usd
-      AWS_ACCESS_KEY_ID: test-key-id
-      AWS_SECRET_ACCESS_KEY: test-secret-key
-      AWS_REGION: us-east-1
-      AWS_S3_BUCKET: test-bucket
+      CLOUDINARY_API_KEY: test-key-id
+      CLOUDINARY_API_SECRET: test-secret-key
+      CLOUDINARY_CLOUD_NAME: test-name
       GOOGLE_CLIENT_ID: test-google-client-id
       GOOGLE_CLIENT_SECRET: test-google-secret
       GOOGLE_CALLBACK_URL: http://localhost:5001/api/v1/auth/google/callback
