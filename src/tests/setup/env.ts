@@ -17,15 +17,16 @@ process.env['BREVO_SMTP_USER'] = process.env['BREVO_SMTP_USER'] ?? 'BV.test-user
 process.env['MAIL_FROM_ADDRESS'] = process.env['MAIL_FROM_ADDRESS'] ?? 'test@careerarch.com';
 process.env['FRONTEND_URL'] = process.env['FRONTEND_URL'] ?? 'http://localhost:3000';
 process.env['API_URL'] = process.env['API_URL'] ?? 'http://localhost:5000/api/v1';
-process.env['STRIPE_SECRET_KEY'] = process.env['STRIPE_SECRET_KEY'] ?? 'sk_test_test';
+process.env['STRIPE_SECRET_KEY'] = process.env['STRIPE_SECRET_KEY'] ?? 'sk_test';
 process.env['STRIPE_PUBLISHABLE_KEY'] = process.env['STRIPE_PUBLISHABLE_KEY'] ?? 'pk_test_test';
 process.env['STRIPE_WEBHOOK_SECRET'] = process.env['STRIPE_WEBHOOK_SECRET'] ?? 'whsec_test';
 process.env['STRIPE_BASIC_PRICE_ID'] = process.env['STRIPE_BASIC_PRICE_ID'] ?? 'price_test_basic';
 process.env['STRIPE_PREMIUM_PRICE_ID'] =
   process.env['STRIPE_PREMIUM_PRICE_ID'] ?? 'price_test_premium';
-process.env['AWS_ACCESS_KEY_ID'] = process.env['AWS_ACCESS_KEY_ID'] ?? 'test';
-process.env['AWS_SECRET_ACCESS_KEY'] = process.env['AWS_SECRET_ACCESS_KEY'] ?? 'test';
-process.env['AWS_S3_BUCKET'] = process.env['AWS_S3_BUCKET'] ?? 'test-bucket';
+process.env['CLOUDINARY_API_KEY'] = process.env['CLOUDINARY_API_KEY'] ?? 'test';
+process.env['CLOUDINARY_API_SECRET'] = process.env['CLOUDINARY_API_SECRET'] ?? 'test';
+
+process.env['CLOUDINARY_CLOUD_NAME'] = process.env['CLOUDINARY_CLOUD_NAME'] ?? 'test-bucket';
 process.env['GOOGLE_CLIENT_ID'] = process.env['GOOGLE_CLIENT_ID'] ?? 'test';
 process.env['GOOGLE_CLIENT_SECRET'] = process.env['GOOGLE_CLIENT_SECRET'] ?? 'test';
 process.env['GOOGLE_CALLBACK_URL'] =
