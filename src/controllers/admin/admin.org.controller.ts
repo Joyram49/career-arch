@@ -1,28 +1,17 @@
 import * as AdminOrgService from '@services/admin/admin.org.service';
 import { sendSuccess } from '@utils/apiResponse';
-import { buildPaginationMeta, parsePagination } from '@utils/pagination';
+
+import { QueryBuilder } from '@/utils/queryBuilder';
+import { adminListOrgSchema } from '@/validations/admin.validation';
 
 import type { Request, Response } from 'express';
 
 // ── GET /admin/organizations ───────────────────────────────────────────────
 export async function listOrganizations(req: Request, res: Response): Promise<Response> {
-  const { page, limit } = parsePagination(req.query);
+  const query = new QueryBuilder(req, adminListOrgSchema.shape.query).build();
 
-  // Optional filters from query string
-  const query = req.query as Record<string, string>;
-  const isApproved = query['isApproved'] !== undefined ? query['isApproved'] === 'true' : undefined;
-  const isActive = query['isActive'] !== undefined ? query['isActive'] === 'true' : undefined;
+  const { data, meta } = await AdminOrgService.listOrganizations(query);
 
-  const filters: { isApproved?: boolean; isActive?: boolean; page: number; limit: number } = {
-    page,
-    limit,
-  };
-  if (isApproved !== undefined) filters.isApproved = isApproved;
-  if (isActive !== undefined) filters.isActive = isActive;
-
-  const { data, total } = await AdminOrgService.listOrganizations(filters);
-
-  const meta = buildPaginationMeta(total, page, limit);
   return sendSuccess(res, { organizations: data }, 'Organizations retrieved', 200, meta);
 }
 

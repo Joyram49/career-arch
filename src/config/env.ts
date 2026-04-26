@@ -58,11 +58,10 @@ const envSchema = z.object({
   STRIPE_INCENTIVE_AMOUNT: z.coerce.number().default(5000),
   STRIPE_CURRENCY: z.string().default('usd'),
 
-  // ── AWS S3 ───────────────────────────────────────────────────────
-  AWS_ACCESS_KEY_ID: z.string().min(1),
-  AWS_SECRET_ACCESS_KEY: z.string().min(1),
-  AWS_REGION: z.string().default('us-east-1'),
-  AWS_S3_BUCKET: z.string().min(1),
+  // ── Cloudinary ───────────────────────────────────────────────────────
+  CLOUDINARY_CLOUD_NAME: z.string().trim().min(1, { error: 'cloud name is required' }),
+  CLOUDINARY_API_KEY: z.string().trim().min(1, { error: 'cloud api key is required' }),
+  CLOUDINARY_API_SECRET: z.string().trim().min(1, { error: 'cloud secret key is required' }),
 
   // ── OAuth ────────────────────────────────────────────────────────
   GOOGLE_CLIENT_ID: z.string().min(1),

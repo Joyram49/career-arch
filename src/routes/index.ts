@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
-import adminOrgRoutes from './admin/admin.org.controller';
+import adminOrgRoutes from './admin/admin.org.routes';
+import adminUserRoutes from './admin/admin.user.routes';
 import adminAuthRoutes from './auth/auth.admin.routes';
 import orgAuthRoutes from './auth/auth.org.routes';
 import userAuthRoutes from './auth/auth.user.routes';
 import orgJobsRoutes from './org/org.jobs.routes';
 import orgRoutes from './org/org.routes';
+import userRoutes from './user/user.routes';
 
 const router = Router();
 
@@ -14,12 +16,16 @@ router.use('/auth/user', userAuthRoutes);
 router.use('/auth/org', orgAuthRoutes);
 router.use('/auth/admin', adminAuthRoutes);
 
-// ── Org Routes (Phase 3A) ──────────────────────────────────────────────────
+// ── User Profile Routes ────────────────────────────────────────────────────
+router.use('/user', userRoutes);
+
+// ── Org Routes  ──────────────────────────────────────────────────
 router.use('/org', orgRoutes);
 router.use('/org/jobs', orgJobsRoutes);
 
-// ── Admin Routes (Phase 3A) ────────────────────────────────────────────────
+// ── Admin Routes  ────────────────────────────────────────────────
 router.use('/admin/organizations', adminOrgRoutes);
+router.use('/admin/users', adminUserRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {
