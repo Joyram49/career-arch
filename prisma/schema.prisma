@@ -234,6 +234,28 @@ model RefreshToken {
 }
 
 // ─────────────────────────────────────────────
+// PLAN CATALOGUE  (admin-managed, synced to Stripe)
+// ─────────────────────────────────────────────
+
+model PlanCatalogue {
+  id                String           @id @default(uuid())
+  key               SubscriptionPlan @unique
+  displayName       String
+  description       String?
+  monthlyPriceCents Int              @default(0)   // 0 = free, 999 = $9.99, 2499 = $24.99
+  stripeProductId   String?                        // prod_xxx  (null for FREE)
+  stripePriceId     String?                        // price_xxx (null for FREE)
+  isActive          Boolean          @default(true)
+  sortOrder         Int              @default(0)
+  features          Json                           // see design doc §4b
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@map("plan_catalogue")
+}
+
+
+// ─────────────────────────────────────────────
 // SUBSCRIPTION
 // ─────────────────────────────────────────────
 
@@ -247,6 +269,9 @@ model Subscription {
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean            @default(false)
+  applyCountThisMonth  Int                @default(0)
+  applyCountResetAt    DateTime           @default(now())
+  savedJobCount        Int                @default(0)
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
