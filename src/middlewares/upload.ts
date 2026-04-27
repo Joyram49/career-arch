@@ -43,7 +43,6 @@ export const uploadAvatarMiddleware = multer({
     files: 1,
   },
 });
-
 /**
  * Use as: uploadResumeMiddleware.single('resume')
  * Field name must be 'resume'

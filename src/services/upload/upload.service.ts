@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import path from 'path';
 
 import cloudinary from '@config/cloudinary';
 import { logger } from '@config/logger';
@@ -8,11 +7,10 @@ import { FILE_UPLOAD } from '@utils/constants';
 
 // ── Key generators ─────────────────────────────────────────────────────────
 
-function generateAvatarPublicId(userId: string, originalName: string): string {
-  const ext = path.extname(originalName).toLowerCase();
+function generateAvatarPublicId(userId: string): string {
   const random = crypto.randomBytes(8).toString('hex');
 
-  return `career-arch/avatars/${userId}/${random}${ext}`;
+  return `career-arch/avatars/${userId}/${random}`;
 }
 
 function generateResumePublicId(userId: string): string {
@@ -37,7 +35,7 @@ export async function uploadAvatarToCloudinary(
     throw new BadRequestError('Avatar file size exceeds the 2 MB limit');
   }
 
-  const publicId = generateAvatarPublicId(userId, file.originalname);
+  const publicId = generateAvatarPublicId(userId);
 
   const result = await cloudinary.uploader.upload(
     `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
