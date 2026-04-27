@@ -2,6 +2,8 @@ import * as UserService from '@services/profile/user.profile.service';
 import { sendSuccess } from '@utils/apiResponse';
 import { COOKIE_NAMES } from '@utils/constants';
 
+import { type UpdateProfileInput } from '@/validations/user.validation';
+
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { Request, Response } from 'express';
 
@@ -17,10 +19,8 @@ export async function getProfile(req: Request, res: Response): Promise<Response>
 
 export async function updateProfile(req: Request, res: Response): Promise<Response> {
   const { sub } = (req as IAuthenticatedRequest).user;
-  const user = await UserService.updateUserProfile(
-    sub,
-    req.body as Parameters<typeof UserService.updateUserProfile>[1],
-  );
+  const body = req.body as unknown as UpdateProfileInput;
+  const user = await UserService.updateUserProfile(sub, body);
   return sendSuccess(res, { user }, 'Profile updated successfully');
 }
 
