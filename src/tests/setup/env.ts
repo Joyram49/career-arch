@@ -23,9 +23,6 @@ process.env['API_URL'] = process.env['API_URL'] ?? 'http://localhost:5000/api/v1
 process.env['STRIPE_SECRET_KEY'] = process.env['STRIPE_SECRET_KEY'] ?? 'sk_test';
 process.env['STRIPE_PUBLISHABLE_KEY'] = process.env['STRIPE_PUBLISHABLE_KEY'] ?? 'pk_test_test';
 process.env['STRIPE_WEBHOOK_SECRET'] = process.env['STRIPE_WEBHOOK_SECRET'] ?? 'whsec_test';
-process.env['STRIPE_BASIC_PRICE_ID'] = process.env['STRIPE_BASIC_PRICE_ID'] ?? 'price_test_basic';
-process.env['STRIPE_PREMIUM_PRICE_ID'] =
-  process.env['STRIPE_PREMIUM_PRICE_ID'] ?? 'price_test_premium';
 process.env['CLOUDINARY_API_KEY'] = process.env['CLOUDINARY_API_KEY'] ?? 'test';
 process.env['CLOUDINARY_API_SECRET'] = process.env['CLOUDINARY_API_SECRET'] ?? 'test';
 

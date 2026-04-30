@@ -11,6 +11,7 @@ const config: Config = {
     '^uuid$': '<rootDir>/src/tests/setup/mocks/uuid.ts',
     '^otplib$': '<rootDir>/src/tests/setup/mocks/otplib.ts',
     '^isomorphic-dompurify$': '<rootDir>/src/tests/setup/mocks/isomorphic-dompurify.ts',
+    '^@config/stripe$': '<rootDir>/src/tests/setup/mocks/stripe.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',

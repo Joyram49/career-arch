@@ -3,24 +3,22 @@ import request from 'supertest';
 import app from '@/app';
 import { prisma } from '@/config/database';
 
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-
 // ─────────────────────────────────────────────
 // TEST SETUP
 // ─────────────────────────────────────────────
 
 const adminUser = { email: 'admin-sub-test@careerarch.com', password: 'Admin@123456' };
-const testUser = {
-  email: `sub-test-${Date.now()}@example.com`,
+const baseTestUser = {
   password: 'Test@123456',
   firstName: 'Sub',
   lastName: 'Tester',
 };
+const createdUserEmails: string[] = [];
 
 let adminToken: string;
 let userToken: string;
 let testUserId: string;
-let basicPlanId: string;
+let basicPlanId: string | undefined;
 
 async function loginAdmin(): Promise<string> {
   // Ensure admin exists
@@ -37,16 +35,22 @@ async function loginAdmin(): Promise<string> {
 }
 
 async function registerAndLoginUser(): Promise<{ token: string; userId: string }> {
-  await request(app).post('/api/v1/auth/user/register').send(testUser);
+  const userData = {
+    ...baseTestUser,
+    email: `sub-test-${Date.now()}-${createdUserEmails.length}@example.com`,
+  };
+  createdUserEmails.push(userData.email);
+
+  await request(app).post('/api/v1/auth/user/register').send(userData);
 
   const user = await prisma.user.update({
-    where: { email: testUser.email },
+    where: { email: userData.email },
     data: { isEmailVerified: true },
   });
 
   const res = await request(app)
     .post('/api/v1/auth/user/login')
-    .send({ email: testUser.email, password: testUser.password });
+    .send({ email: userData.email, password: userData.password });
 
   return {
     token: (res.body.data as { accessToken: string }).accessToken,
@@ -59,10 +63,10 @@ async function registerAndLoginUser(): Promise<{ token: string; userId: string }
 // ─────────────────────────────────────────────
 
 afterAll(async () => {
-  await prisma.subscription.deleteMany({ where: { user: { email: testUser.email } } });
-  await prisma.refreshToken.deleteMany({ where: { user: { email: testUser.email } } });
-  await prisma.userProfile.deleteMany({ where: { user: { email: testUser.email } } });
-  await prisma.user.deleteMany({ where: { email: testUser.email } });
+  await prisma.subscription.deleteMany({ where: { user: { email: { in: createdUserEmails } } } });
+  await prisma.refreshToken.deleteMany({ where: { user: { email: { in: createdUserEmails } } } });
+  await prisma.userProfile.deleteMany({ where: { user: { email: { in: createdUserEmails } } } });
+  await prisma.user.deleteMany({ where: { email: { in: createdUserEmails } } });
   await prisma.admin.deleteMany({ where: { email: adminUser.email } });
   await prisma.$disconnect();
 });
@@ -183,10 +187,11 @@ describe('Admin Plan CRUD', () => {
   });
 
   it('PUT /admin/plans/:id — should update plan display name', async () => {
-    if (basicPlanId === undefined) return;
+    expect(basicPlanId).toBeDefined();
+    const planId = basicPlanId as string;
 
     const res = await request(app)
-      .put(`/api/v1/admin/plans/${basicPlanId}`)
+      .put(`/api/v1/admin/plans/${planId}`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ displayName: 'Basic Pro' });
 
@@ -195,10 +200,11 @@ describe('Admin Plan CRUD', () => {
   });
 
   it('PATCH /admin/plans/:id/toggle — should toggle active status', async () => {
-    if (basicPlanId === undefined) return;
+    expect(basicPlanId).toBeDefined();
+    const planId = basicPlanId as string;
 
     const res = await request(app)
-      .patch(`/api/v1/admin/plans/${basicPlanId}/toggle`)
+      .patch(`/api/v1/admin/plans/${planId}/toggle`)
       .set('Authorization', `Bearer ${adminToken}`);
 
     expect(res.status).toBe(200);
@@ -206,7 +212,7 @@ describe('Admin Plan CRUD', () => {
 
     // Toggle back
     await request(app)
-      .patch(`/api/v1/admin/plans/${basicPlanId}/toggle`)
+      .patch(`/api/v1/admin/plans/${planId}/toggle`)
       .set('Authorization', `Bearer ${adminToken}`);
   });
 
@@ -335,35 +341,37 @@ describe('User Subscription', () => {
 // ─────────────────────────────────────────────
 
 describe('Apply Limit Gating', () => {
-  it('should block apply when monthly limit reached', async () => {
-    if (testUserId === undefined) return;
+  it('should mark subscription as exhausted when monthly limit is reached', async () => {
+    expect(testUserId).toBeDefined();
+    const userId = testUserId;
 
     // Exhaust the apply count
     await prisma.subscription.update({
-      where: { userId: testUserId },
+      where: { userId },
       data: { applyCountThisMonth: 5, applyCountResetAt: new Date() },
     });
 
     // The checkApplyLimit middleware will reject before hitting application logic
     // We test via a dummy route — in real integration test, use POST /applications
-    const sub = await prisma.subscription.findUnique({ where: { userId: testUserId } });
+    const sub = await prisma.subscription.findUnique({ where: { userId } });
     expect(sub?.applyCountThisMonth).toBe(5);
   });
 
-  it('should auto-reset counter when new month starts', async () => {
-    if (testUserId === undefined) return;
+  it('should detect a stale monthly reset timestamp', async () => {
+    expect(testUserId).toBeDefined();
+    const userId = testUserId;
 
     // Simulate last reset being in the previous month
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
 
     await prisma.subscription.update({
-      where: { userId: testUserId },
+      where: { userId },
       data: { applyCountThisMonth: 5, applyCountResetAt: lastMonth },
     });
 
     // Next request to apply should reset it — tested via middleware unit test
-    const sub = await prisma.subscription.findUnique({ where: { userId: testUserId } });
+    const sub = await prisma.subscription.findUnique({ where: { userId } });
     expect(sub?.applyCountResetAt.getTime()).toBeLessThan(new Date().getTime());
   });
 });

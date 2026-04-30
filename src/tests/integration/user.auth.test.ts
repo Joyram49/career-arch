@@ -4,19 +4,25 @@ import request from 'supertest';
 import app from '@/app';
 
 describe('User Auth API', () => {
+  const testRunId = Date.now();
   const testUser = {
-    email: 'testuser@example.com',
+    email: `testuser-${testRunId}@example.com`,
     password: 'Test@123456',
     firstName: 'Test',
     lastName: 'User',
   };
+  let createdUserEmails = new Set<string>([testUser.email]);
 
   // Clean up test data after each test
   afterEach(async () => {
-    await prisma.subscription.deleteMany({ where: { user: { email: testUser.email } } });
-    await prisma.refreshToken.deleteMany({ where: { user: { email: testUser.email } } });
-    await prisma.userProfile.deleteMany({ where: { user: { email: testUser.email } } });
-    await prisma.user.deleteMany({ where: { email: testUser.email } });
+    const emails = [...createdUserEmails];
+
+    await prisma.subscription.deleteMany({ where: { user: { email: { in: emails } } } });
+    await prisma.refreshToken.deleteMany({ where: { user: { email: { in: emails } } } });
+    await prisma.userProfile.deleteMany({ where: { user: { email: { in: emails } } } });
+    await prisma.user.deleteMany({ where: { email: { in: emails } } });
+
+    createdUserEmails = new Set<string>([testUser.email]);
   });
 
   afterAll(async () => {
@@ -136,8 +142,9 @@ describe('User Auth API', () => {
     it('should return user profile when authenticated', async () => {
       const uniqueUser = {
         ...testUser,
-        email: `me-${Date.now()}@example.com`,
+        email: `me-${testRunId}-${Date.now()}@example.com`,
       };
+      createdUserEmails.add(uniqueUser.email);
 
       // Register + verify + login
       const registerRes = await request(app).post('/api/v1/auth/user/register').send(uniqueUser);
