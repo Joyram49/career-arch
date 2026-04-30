@@ -1,8 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { prisma } from '@config/database';
-import request from 'supertest';
-
-import app from '@/app';
+jest.mock('@config/stripe', () => ({
+  stripe: {
+    products: {
+      create: jest.fn().mockResolvedValue({
+        id: 'prod_test123',
+      }),
+    },
+    prices: {
+      create: jest.fn().mockResolvedValue({
+        id: 'price_test123',
+      }),
+    },
+    checkout: {
+      sessions: {
+        create: jest.fn().mockResolvedValue({
+          url: 'https://checkout.stripe.com/test',
+        }),
+      },
+    },
+  },
+}));
 
 // ─────────────────────────────────────────────
 // TEST SETUP
