@@ -36,7 +36,7 @@ router.use('/org/jobs', orgJobsRoutes);
 router.use('/admin/organizations', adminOrgRoutes);
 router.use('/admin/users', adminUserRoutes);
 router.use('/admin/plans', adminPlansRoutes);
-router.use('./admin/subscriptions', adminSubscriptionsRoutes);
+router.use('/admin/subscriptions', adminSubscriptionsRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {
