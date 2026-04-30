@@ -1,3 +1,8 @@
+import { prisma } from '@config/database';
+import request from 'supertest';
+
+import app from '@/app';
+
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 jest.mock('@config/stripe', () => ({
   stripe: {
