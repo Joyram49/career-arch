@@ -202,6 +202,12 @@ export default [
       complexity: ['warn', 15],
     },
   },
+  {
+    files: ['src/config/database.ts'],
+    rules: {
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+    },
+  },
 
   // ─── Test Files (relaxed rules) ───────────────────────────────────
   {

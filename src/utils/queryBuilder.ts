@@ -48,7 +48,7 @@ export class QueryBuilder<S extends ZodTypeAny> {
         .join(', ');
       throw new Error(`Query validation failed — ${messages}`);
     }
-    return result.data as z.infer<S>;
+    return result.data;
   }
 }
 

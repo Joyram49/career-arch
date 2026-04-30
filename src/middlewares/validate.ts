@@ -1,7 +1,5 @@
 import { sendError } from '@utils/apiResponse';
 
-import { logger } from '@/config/logger';
-
 import type { IFieldError } from '@app-types/index';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import type { ZodError, ZodTypeAny } from 'zod';
@@ -20,10 +18,7 @@ export const validate =
       cookies: req.cookies,
     };
 
-    logger.info('payload from middleware', { payload });
     const result = schema.safeParse(payload);
-
-    logger.info('result from middleware', { result });
 
     if (!result.success) {
       const errors: IFieldError[] = formatZodErrors(result.error);
@@ -36,8 +31,6 @@ export const validate =
     if (parsed.body !== undefined) {
       req.body = parsed.body;
     }
-
-    logger.info('parsed', { parsed });
 
     next();
   };

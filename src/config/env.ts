@@ -29,6 +29,7 @@ const envSchema = z.object({
 
   // ── Database ─────────────────────────────────────────────────────
   DATABASE_URL: z.string().url(),
+  DIRECT_URL: z.string().url(),
 
   // ── Redis ────────────────────────────────────────────────────────
   REDIS_URL: z.string().url(),
@@ -53,8 +54,6 @@ const envSchema = z.object({
   STRIPE_SECRET_KEY: z.string().min(1),
   STRIPE_PUBLISHABLE_KEY: z.string().min(1),
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
-  STRIPE_BASIC_PRICE_ID: z.string().min(1),
-  STRIPE_PREMIUM_PRICE_ID: z.string().min(1),
   STRIPE_INCENTIVE_AMOUNT: z.coerce.number().default(5000),
   STRIPE_CURRENCY: z.string().default('usd'),
 

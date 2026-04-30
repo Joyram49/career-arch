@@ -174,7 +174,7 @@ export async function listOrganizations(query: AdminListOrgQuery): Promise<{
   } = query;
 
   // extractPagination guarantees concrete integers — never undefined or NaN.
-  const { page, limit, skip } = extractPagination(query as unknown as Record<string, unknown>);
+  const { page, limit, skip } = extractPagination(query);
 
   // ── Where clause ──────────────────────────────────────────────────────────
 

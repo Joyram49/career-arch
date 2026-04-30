@@ -1,12 +1,10 @@
-export type * from './auth.types';
-export type * from './email.types';
-export type * from './response.type';
 // ─────────────────────────────────────────────
-// COMMON TYPES
+// EMAIL TYPES
 // ─────────────────────────────────────────────
 
-export type SortOrder = 'asc' | 'desc';
-
-export interface IIdParam {
-  id: string;
+export interface IEmailJobData {
+  to: string;
+  subject: string;
+  template: string;
+  variables: Record<string, string | number | boolean>;
 }
