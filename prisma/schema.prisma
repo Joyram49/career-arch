@@ -7,7 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ─────────────────────────────────────────────
@@ -75,6 +77,13 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum PaymentType {
+  SUBSCRIPTION
+  REFUND
+  INCENTIVE
+  OTHER
+}
+
 // ─────────────────────────────────────────────
 // USER
 // ─────────────────────────────────────────────
@@ -102,6 +111,7 @@ model User {
   savedJobs     SavedJob[]
   refreshTokens RefreshToken[]
   notifications Notification[]
+  payments      Payment[]
 
   @@map("users")
 }
@@ -139,26 +149,26 @@ model UserProfile {
 // ─────────────────────────────────────────────
 
 model Organization {
-  id                  String    @id @default(uuid())
-  email               String    @unique
-  password            String
-  role                Role      @default(ORGANIZATION)
-  isEmailVerified     Boolean   @default(false)
-  emailVerifyToken    String?
-  emailVerifyExpiry   DateTime?
-  twoFactorEnabled    Boolean   @default(false)
-  twoFactorSecret     String?
-  passwordResetToken  String?
-  passwordResetExpiry DateTime?
-  isActive            Boolean   @default(true)
-  isApproved          Boolean   @default(false)
-  stripeCustomerId    String?
-  lastLoginAt         DateTime?
+  id                           String    @id @default(uuid())
+  email                        String    @unique
+  password                     String
+  role                         Role      @default(ORGANIZATION)
+  isEmailVerified              Boolean   @default(false)
+  emailVerifyToken             String?
+  emailVerifyExpiry            DateTime?
+  twoFactorEnabled             Boolean   @default(false)
+  twoFactorSecret              String?
+  passwordResetToken           String?
+  passwordResetExpiry          DateTime?
+  isActive                     Boolean   @default(true)
+  isApproved                   Boolean   @default(false)
+  stripeCustomerId             String?
+  lastLoginAt                  DateTime?
   stripeDefaultPaymentMethodId String?
   isPaymentMethodOnFile        Boolean   @default(false)
   hasUnpaidIncentives          Boolean   @default(false)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
 
   profile       OrgProfile?
   jobs          Job[]
@@ -175,21 +185,21 @@ model Organization {
 // ─────────────────────────────────────────────
 
 model OrgProfile {
-  id           String   @id @default(uuid())
-  orgId        String   @unique
-  companyName  String
-  logoUrl      String?
-  website      String?
-  industry     String?
-  companySize  String?
-  foundedYear  Int?
-  description  String?
-  location     String?
-  country      String?
-  linkedinUrl  String?
-  twitterUrl   String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(uuid())
+  orgId       String   @unique
+  companyName String
+  logoUrl     String?
+  website     String?
+  industry    String?
+  companySize String?
+  foundedYear Int?
+  description String?
+  location    String?
+  country     String?
+  linkedinUrl String?
+  twitterUrl  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
@@ -217,13 +227,13 @@ model Admin {
 // ─────────────────────────────────────────────
 
 model RefreshToken {
-  id         String    @id @default(uuid())
-  token      String    @unique
-  userId     String?
-  orgId      String?
-  isRevoked  Boolean   @default(false)
-  expiresAt  DateTime
-  createdAt  DateTime  @default(now())
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String?
+  orgId     String?
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
@@ -242,18 +252,17 @@ model PlanCatalogue {
   key               SubscriptionPlan @unique
   displayName       String
   description       String?
-  monthlyPriceCents Int              @default(0)   // 0 = free, 999 = $9.99, 2499 = $24.99
-  stripeProductId   String?                        // prod_xxx  (null for FREE)
-  stripePriceId     String?                        // price_xxx (null for FREE)
+  monthlyPriceCents Int              @default(0) // 0 = free, 999 = $9.99, 2499 = $24.99
+  stripeProductId   String? // prod_xxx  (null for FREE)
+  stripePriceId     String? // price_xxx (null for FREE)
   isActive          Boolean          @default(true)
   sortOrder         Int              @default(0)
-  features          Json                           // see design doc §4b
+  features          Json // see design doc §4b
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 
   @@map("plan_catalogue")
 }
-
 
 // ─────────────────────────────────────────────
 // SUBSCRIPTION
@@ -274,6 +283,7 @@ model Subscription {
   savedJobCount        Int                @default(0)
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
+  payments             Payment[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -348,18 +358,18 @@ model DeletedJob {
 // ─────────────────────────────────────────────
 
 model Application {
-  id               String            @id @default(uuid())
-  jobId            String
-  userId           String
-  status           ApplicationStatus @default(PENDING)
-  coverLetter      String?
-  resumeUrl        String?
-  answers          Json?
-  notes            String?
-  emailSentToUser  Boolean           @default(false)
-  emailSentToOrg   Boolean           @default(false)
-  appliedAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id              String            @id @default(uuid())
+  jobId           String
+  userId          String
+  status          ApplicationStatus @default(PENDING)
+  coverLetter     String?
+  resumeUrl       String?
+  answers         Json?
+  notes           String?
+  emailSentToUser Boolean           @default(false)
+  emailSentToOrg  Boolean           @default(false)
+  appliedAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   job       Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
   user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -421,18 +431,28 @@ model Payment {
   id                    String        @id @default(uuid())
   orgId                 String?
   userId                String?
-  type                  String
+  type                  PaymentType
+  subscriptionId        String?
   amount                Float
   currency              String        @default("USD")
   status                PaymentStatus @default(PENDING)
-  stripePaymentIntentId String?
-  stripeInvoiceId       String?
-  metadata              Json?
+  stripePaymentIntentId String?       @unique
+  stripeInvoiceId       String?       @unique
+  stripeRefundId        String?       @unique
+  stripeChargeId        String?
+  description           String?
+  metaData              Json?
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
 
-  organization Organization? @relation(fields: [orgId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
 
+  @@index([userId])
+  @@index([orgId])
+  @@index([subscriptionId])
+  @@index([type])
   @@map("payments")
 }
 

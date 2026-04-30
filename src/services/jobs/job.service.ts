@@ -396,7 +396,7 @@ export async function listDeletedJobs(
   ]);
 
   return {
-    data: deletedJobs as IDeletedJobResponse[],
+    data: deletedJobs,
     meta: buildPaginationMeta(total, page, limit),
   };
 }

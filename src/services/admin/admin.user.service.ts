@@ -6,7 +6,7 @@ import { buildPaginationMeta } from '@utils/pagination';
 
 import { extractPagination } from '@/utils/queryBuilder';
 
-import type { Prisma, SubscriptionPlan } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import type { AdminListUsersQuery } from '@validations/user.validation';
 
 // ── Response types ─────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ export async function listUsers(query: AdminListUsersQuery): Promise<{
 }> {
   const { search, isActive, isEmailVerified, plan, sortBy, sortOrder } = query;
 
-  const { limit, page, skip } = extractPagination(query as unknown as Record<string, unknown>);
+  const { limit, page, skip } = extractPagination(query);
 
   // Build `where` dynamically
   const where: Prisma.UserWhereInput = {};
@@ -81,7 +81,7 @@ export async function listUsers(query: AdminListUsersQuery): Promise<{
   }
 
   if (plan !== undefined) {
-    where.subscription = { plan: plan as SubscriptionPlan };
+    where.subscription = { plan };
   }
 
   if (search !== undefined && search.length > 0) {

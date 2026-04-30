@@ -2,6 +2,9 @@ process.env['NODE_ENV'] = 'test';
 process.env['DATABASE_URL'] =
   process.env['TEST_DATABASE_URL'] ??
   'postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db';
+process.env['DIRECT_URL'] =
+  process.env['TEST_DIRECT_URL'] ??
+  'postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db';
 process.env['REDIS_URL'] = process.env['TEST_REDIS_URL'] ?? 'redis://localhost:6379/1';
 process.env['JWT_ACCESS_SECRET'] =
   process.env['JWT_ACCESS_SECRET'] ?? 'test-access-secret-minimum-32-chars!!';

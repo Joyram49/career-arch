@@ -3,6 +3,10 @@ import { verifyEmailConnection } from '@config/email';
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 import { redis } from '@config/redis';
+import {
+  scheduleMonthlyReset,
+  subscriptionResetWorker,
+} from '@jobs/queues/subscription-reset.queue';
 import { config } from 'dotenv';
 
 import app from './app';
@@ -21,7 +25,12 @@ async function start(): Promise<void> {
     // 2. Verify email transport (non-blocking)
     void verifyEmailConnection();
 
-    // 3. Start HTTP server
+    // 3. Schedule monthly subscription reset cron (BullMQ)
+    if (env.NODE_ENV !== 'test') {
+      await scheduleMonthlyReset();
+    }
+
+    // 4. Start HTTP server
     server = app.listen(PORT, () => {
       logger.info(`🚀 CareerArch API running on port ${PORT}`);
       logger.info(`📖 API Docs: http://localhost:${PORT}/api-docs`);
@@ -53,6 +62,7 @@ function shutdown(signal: string): void {
       logger.info('HTTP server closed');
 
       try {
+        await subscriptionResetWorker.close();
         await disconnectDatabase();
         await redis.quit();
         logger.info('✅ Graceful shutdown complete');

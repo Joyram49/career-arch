@@ -28,3 +28,15 @@ logs
 Thumbs.db
 
 Makefile
+
+.agents
+agents/*
+agents
+
+.vscode
+vscode
+.windsurf
+windsurf
+
+
+skills-lock.json
