@@ -1,53 +1,9 @@
-import { prisma } from '@config/database';
 import request from 'supertest';
 
 import app from '@/app';
+import { prisma } from '@/config/database';
 
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-jest.mock('@config/stripe', () => ({
-  stripe: {
-    products: {
-      create: jest.fn().mockResolvedValue({ id: 'prod_test123' }),
-      update: jest.fn(),
-    },
-    prices: {
-      create: jest.fn().mockResolvedValue({ id: 'price_test123' }),
-      update: jest.fn(),
-    },
-    checkout: {
-      sessions: {
-        create: jest.fn().mockResolvedValue({
-          url: 'https://checkout.stripe.com/test',
-        }),
-      },
-    },
-    customers: {
-      create: jest.fn().mockResolvedValue({
-        id: 'cus_test123',
-      }),
-    },
-    subscriptions: {
-      retrieve: jest.fn().mockResolvedValue({
-        items: {
-          data: [
-            {
-              id: 'sub_item_123',
-              current_period_start: 1710000000,
-              current_period_end: 1712592000,
-            },
-          ],
-        },
-        cancel_at_period_end: false,
-      }),
-      update: jest.fn().mockResolvedValue({}),
-    },
-    invoices: {
-      list: jest.fn().mockResolvedValue({
-        data: [],
-      }),
-    },
-  },
-}));
 
 // ─────────────────────────────────────────────
 // TEST SETUP
