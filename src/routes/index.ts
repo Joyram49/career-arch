@@ -11,13 +11,8 @@ import orgJobsRoutes from './org/org.jobs.routes';
 import orgRoutes from './org/org.routes';
 import subscriptionRoutes from './subscription/subscription.routes';
 import userRoutes from './user/user.routes';
-import webHookRoutes from './webhooks/webhook.routes';
 
 const router = Router();
-
-// ── Webhook routes (raw body — must be before express.json() on these paths)
-// Mounted at /webhooks/* so the raw parser only applies here
-router.use('/webhooks', webHookRoutes);
 
 // ── Auth Routes ────────────────────────────────────────────────────────────
 router.use('/auth/user', userAuthRoutes);

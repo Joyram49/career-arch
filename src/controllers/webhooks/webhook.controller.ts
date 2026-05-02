@@ -34,8 +34,6 @@ export async function handleStripeWebhook(req: Request, res: Response): Promise<
     return sendError(res, `Webhook Error: ${message}`, 400);
   }
 
-  logger.info(`Stripe webhook received: ${event.type}`);
-
   try {
     await routeStripeEvent(event);
   } catch (err) {
@@ -55,8 +53,8 @@ export async function handleStripeWebhook(req: Request, res: Response): Promise<
 async function routeStripeEvent(event: Stripe.Event): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (event.type) {
-    case 'checkout.session.completed':
-      await SubscriptionService.handleCheckoutCompleted(event.data.object);
+    case 'customer.subscription.created':
+      await SubscriptionService.handleSubscriptionCreated(event.data.object);
       break;
 
     case 'invoice.payment_succeeded':

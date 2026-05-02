@@ -2,12 +2,12 @@ name: CI/CD — CareerArch Backend
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main, develop]
+    branches: [ main, develop ]
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -33,8 +33,9 @@ jobs:
       - name: Generate Prisma client
         run: npm run db:generate
         env:
-          DATABASE_URL: postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db
-          DIRECT_URL: postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db
+          # Prisma generate does not connect; placeholder URL for schema resolution.
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/careerarch_db
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/careerarch_db
 
       - name: TypeScript type check
         run: npm run typecheck
@@ -63,9 +64,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
 
       redis:
@@ -73,10 +72,8 @@ jobs:
         ports:
           - 6379:6379
         options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout
+          5s --health-retries 5
 
     env:
       NODE_ENV: test
@@ -84,8 +81,9 @@ jobs:
       API_VERSION: v1
       FRONTEND_URL: http://localhost:3000
       API_URL: http://localhost:5001/api/v1
-      DATABASE_URL: postgresql://postgres:joyram%40J9@localhost:5432/careerarch_test
-      DIRECT_URL: postgresql://postgres:joyram%40J9@localhost:5432/careerarch_test
+      # Must match the postgres service container (POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB).
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/careerarch_test
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/careerarch_test
       REDIS_URL: redis://localhost:6379/1
       JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
       JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
@@ -113,7 +111,7 @@ jobs:
       RATE_LIMIT_WINDOW_MS: 900000
       RATE_LIMIT_MAX: 10000
       LOGIN_RATE_LIMIT_MAX: 1000
-      SENTRY_DSN: ''
+      SENTRY_DSN: ""
       ALLOWED_ORIGINS: http://localhost:3000
 
     steps:
@@ -124,7 +122,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -132,8 +130,9 @@ jobs:
       - name: Generate Prisma client
         run: npm run db:generate
 
+      # Use prisma directly so CI does not depend on a checked-in .env.production (gitignored).
       - name: Run database migrations
-        run: npm run db:migrate:prod
+        run: npx prisma migrate deploy
 
       - name: Run tests
         run: npm run test:ci
@@ -162,7 +161,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -170,8 +169,8 @@ jobs:
       - name: Generate Prisma client
         run: npm run db:generate
         env:
-          DATABASE_URL: postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db
-          DIRECT_URL: postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/careerarch_db
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/careerarch_db
 
       - name: Build TypeScript
         run: npm run build
