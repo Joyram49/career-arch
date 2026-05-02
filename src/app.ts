@@ -3,6 +3,7 @@ import { morganStream } from '@config/logger';
 import { errorHandler, notFoundHandler } from '@middlewares/errorHandler';
 import { generalLimiter } from '@middlewares/rateLimiter';
 import router from '@routes/index';
+import webHookRoutes from '@routes/webhooks/webhook.routes';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -59,7 +60,11 @@ app.use(
 // ── HTTP Parameter Pollution protection ───────────────────────────────────
 app.use(hpp());
 
-// ── Body Parsers ───────────────────────────────────────────────────────────
+// ── Stripe Webhooks (MUST be before JSON body parser) ──────────────────────
+// Stripe signature verification requires the raw request body (Buffer).
+app.use(`/api/${env.API_VERSION}/webhooks`, webHookRoutes);
+
+// ── Body Parsers (for all non-webhook routes) ──────────────────────────────
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 

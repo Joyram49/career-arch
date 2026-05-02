@@ -273,8 +273,8 @@ model Subscription {
   userId               String             @unique
   plan                 SubscriptionPlan   @default(FREE)
   status               SubscriptionStatus @default(ACTIVE)
-  stripeSubscriptionId String?
-  stripeCustomerId     String?
+  stripeSubscriptionId String?            @unique
+  stripeCustomerId     String?            @unique
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean            @default(false)

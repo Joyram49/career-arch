@@ -14,6 +14,7 @@ import {
 import { BadRequestError, NotFoundError } from '@utils/apiError';
 import { format, startOfMonth } from 'date-fns';
 
+import { logger } from '@/config/logger';
 import { getPlanFeatures } from '@/services/admin/admin.plan.service';
 import { parseFeatures } from '@/utils/planFeaturesSchema';
 
@@ -293,38 +294,26 @@ export async function listInvoices(userId: string): Promise<IInvoiceResponse[]> 
 // Called by webhook.controller — not exposed via HTTP directly
 // ─────────────────────────────────────────────
 
-// eslint-disable-next-line complexity
-export async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<void> {
-  const userId = session.metadata?.['userId'];
-  const targetPlan = session.metadata?.['targetPlan'] as unknown as SubscriptionPlan;
+export async function handleSubscriptionCreated(subscription: Stripe.Subscription): Promise<void> {
+  const userId = subscription.metadata['userId'];
+  const targetPlan = subscription.metadata['targetPlan'] as SubscriptionPlan | undefined;
 
-  if (userId === undefined) {
+  if (userId === undefined || targetPlan === undefined) {
     throw new BadRequestError('User ID is required');
   }
 
-  const stripeSubId =
-    typeof session.subscription === 'string'
-      ? session.subscription
-      : (session.subscription?.id ?? null);
-
-  if (stripeSubId === null) return;
-
-  const stripeSub = await stripe.subscriptions.retrieve(stripeSubId);
+  const stripeSubId = subscription.id;
 
   await prisma.subscription.update({
     where: { userId },
     data: {
       plan: targetPlan,
-      status: 'ACTIVE',
+      status: 'INACTIVE',
       stripeSubscriptionId: stripeSubId,
       stripeCustomerId:
-        typeof session.customer === 'string' ? session.customer : (session.customer?.id ?? null),
-      currentPeriodStart: new Date(
-        stripeSub.items.data[0]?.current_period_start ?? new Date().getTime() * 1000,
-      ),
-      currentPeriodEnd: new Date(
-        stripeSub.items.data[0]?.current_period_end ?? new Date().getTime() * 1000,
-      ),
+        typeof subscription.customer === 'string'
+          ? subscription.customer
+          : subscription.customer.id,
       cancelAtPeriodEnd: false,
     },
   });
@@ -340,44 +329,52 @@ export async function handleCheckoutCompleted(session: Stripe.Checkout.Session):
   }
 }
 
+// eslint-disable-next-line complexity
 export async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
+  const invoiceId = typeof invoice.id === 'string' ? invoice.id : null;
+  if (invoiceId === null) return;
+
+  logger.info('invoice', { invoice });
+
   const customerId =
     typeof invoice.customer === 'string' ? invoice.customer : (invoice.customer?.id ?? null);
 
   if (customerId === null) return;
 
-  const paymentType = invoice.metadata?.['type'] ?? 'OTHER';
+  const subscriptionId =
+    typeof invoice.lines.data[0]?.subscription === 'string'
+      ? invoice.lines.data[0].subscription
+      : (invoice.lines.data[0]?.subscription?.id ?? null);
 
-  const sub = await prisma.subscription.findFirst({
-    where: { stripeCustomerId: customerId },
-  });
+  if (subscriptionId === null) return;
 
-  if (sub === null) return;
-
-  // Determine period from invoice
   const periodStart = new Date(invoice.period_start * 1000);
   const periodEnd = new Date(invoice.period_end * 1000);
-
   const monthYear = format(periodStart, 'MMMM yyyy');
-  if (invoice.id == null) {
-    return;
-  }
 
-  if (paymentType === 'SUBSCRIPTION') {
-    // update subscription from database
+  // ─────────────────────────────
+  // ✅ SUBSCRIPTION PAYMENT
+  // ─────────────────────────────
+  if (subscriptionId.length > 0) {
+    const sub = await prisma.subscription.findUnique({
+      where: { stripeSubscriptionId: subscriptionId },
+    });
+
+    if (!sub) return;
+
+    // Update subscription
     await prisma.subscription.update({
       where: { id: sub.id },
       data: {
         status: 'ACTIVE',
         currentPeriodStart: periodStart,
         currentPeriodEnd: periodEnd,
-        // Reset monthly apply counter on renewal
         applyCountThisMonth: 0,
         applyCountResetAt: startOfMonth(new Date()),
       },
     });
 
-    // insert payment into database
+    // Insert payment (idempotency important)
     await prisma.payment.create({
       data: {
         userId: sub.userId,
@@ -386,24 +383,28 @@ export async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<v
         amount: invoice.amount_paid,
         currency: invoice.currency,
         status: 'SUCCEEDED',
-        stripeInvoiceId: invoice.id,
-        description: `Basic Plan — ${monthYear}`,
+        stripeInvoiceId: invoiceId,
+        description: `${sub.plan} Plan — ${monthYear}`,
       },
     });
-  } else if (paymentType === 'INCENTIVE') {
-    // insert organization incentive payment into database
-    await prisma.payment.create({
-      data: {
-        orgId: invoice.metadata?.['orgId'] ?? null,
-        type: 'INCENTIVE',
-        amount: invoice.amount_paid,
-        currency: invoice.currency,
-        status: 'SUCCEEDED',
-        stripeInvoiceId: invoice.id,
-        description: `Organization Incentive — ${monthYear}`,
-      },
-    });
+
+    return;
   }
+
+  // ─────────────────────────────
+  // ✅ NON-SUBSCRIPTION PAYMENT
+  // ─────────────────────────────
+  await prisma.payment.create({
+    data: {
+      orgId: invoice.metadata?.['orgId'] ?? null,
+      type: 'INCENTIVE',
+      amount: invoice.amount_paid,
+      currency: invoice.currency,
+      status: 'SUCCEEDED',
+      stripeInvoiceId: invoiceId,
+      description: `Organization Incentive — ${monthYear}`,
+    },
+  });
 }
 
 export async function handlePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
