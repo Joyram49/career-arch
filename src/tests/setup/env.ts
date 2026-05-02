@@ -1,8 +1,19 @@
+import path from 'path';
+
+import dotenv from 'dotenv';
+
+// Load optional repo-root `.env.test` first (local dev). GitHub Actions has no file here.
+dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
+
 process.env['NODE_ENV'] = 'test';
+
+// Do not clobber DATABASE_URL / DIRECT_URL already set by CI (GitHub Actions) or `.env.test`.
 process.env['DATABASE_URL'] =
+  process.env['DATABASE_URL'] ??
   process.env['TEST_DATABASE_URL'] ??
   'postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db';
 process.env['DIRECT_URL'] =
+  process.env['DIRECT_URL'] ??
   process.env['TEST_DIRECT_URL'] ??
   'postgresql://postgres:joyram%40J9@localhost:5432/careerarch_db';
 process.env['REDIS_URL'] = process.env['TEST_REDIS_URL'] ?? 'redis://localhost:6379/1';
