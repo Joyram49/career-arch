@@ -2,12 +2,6 @@ import { prisma } from '@config/database';
 import { env } from '@config/env';
 import { redis, RedisExpiry, RedisKeys } from '@config/redis';
 import {
-  sendOrgVerificationEmail,
-  sendPasswordChangedEmail,
-  sendPasswordResetEmail,
-  sendTwoFaEnabledEmail,
-} from '@services/email.service';
-import {
   BadRequestError,
   ConflictError,
   ForbiddenError,
@@ -31,6 +25,7 @@ import qrcode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 
 import { logger } from '@/config/logger';
+import { enqueueEmail } from '@/jobs/queues/email.queue';
 
 import type { IOrgAuthResponse, ITokenPair, ITwoFactorSetupResponse } from '@app-types/index';
 import type { Role } from '@prisma/client';
@@ -71,7 +66,13 @@ export async function registerOrg(data: {
   });
 
   const verifyUrl = `${env.FRONTEND_URL}/org/verify-email?token=${rawToken}`;
-  await sendOrgVerificationEmail(data.email, data.companyName, verifyUrl);
+
+  enqueueEmail({
+    name: 'org:verify-email',
+    to: data.email,
+    companyName: data.companyName,
+    verifyUrl,
+  });
 
   return {
     message:
@@ -318,7 +319,13 @@ export async function forgotOrgPassword(email: string): Promise<{ message: strin
 
   const resetUrl = `${env.FRONTEND_URL}/org/reset-password?token=${rawToken}`;
   const name = org.profile?.companyName ?? 'Organization';
-  await sendPasswordResetEmail(email, name, resetUrl);
+
+  enqueueEmail({
+    name: 'org:password-reset',
+    to: email,
+    companyName: name,
+    resetUrl,
+  });
 
   return genericResponse;
 }
@@ -362,7 +369,12 @@ export async function resetOrgPassword(data: {
   });
 
   const name = org.profile?.companyName ?? 'Organization';
-  await sendPasswordChangedEmail(org.email, name);
+
+  enqueueEmail({
+    name: 'org:password-changed',
+    to: org.email,
+    companyName: name,
+  });
 
   return { message: 'Password reset successful. Please log in with your new password.' };
 }
@@ -425,12 +437,25 @@ export async function verifyAndEnableOrgTwoFa(
     throw new BadRequestError('Invalid OTP. Please try again.');
   }
 
-  await prisma.organization.update({
+  const updatedOrg = await prisma.organization.update({
     where: { id: orgId },
     data: { twoFactorEnabled: true },
+    include: {
+      profile: {
+        select: {
+          companyName: true,
+        },
+      },
+    },
   });
 
-  await sendTwoFaEnabledEmail(org.email, 'Team');
+  const name = updatedOrg.profile?.companyName ?? 'Organizations';
+
+  enqueueEmail({
+    name: 'org:2fa-enabled',
+    to: org.email,
+    companyName: name,
+  });
 
   const backupCodes = generateBackupCodes();
   return {

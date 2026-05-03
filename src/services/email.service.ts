@@ -177,6 +177,91 @@ export async function sendApplicationReceivedOrg(
   });
 }
 
+// status helper
+function getStatusMessage(
+  status: string,
+  jobTitle: string,
+  companyName: string,
+  firstName: string,
+): string {
+  switch (status) {
+    case 'UNDER_REVIEW':
+      return `Your application for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong> is currently under review. The hiring team is evaluating your profile.`;
+
+    case 'SHORTLISTED':
+      return `Great news, ${firstName}! 🎉 You’ve been shortlisted for the <strong>${jobTitle}</strong> role at <strong>${companyName}</strong>. The employer is interested in moving forward with your application.`;
+
+    case 'INTERVIEW_SCHEDULED':
+      return `Your application for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> has progressed to the interview stage. Please check your dashboard for interview details and next steps.`;
+
+    case 'OFFERED':
+      return `Congratulations! 🏆 You’ve received an offer for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>. Review the offer details and take your next step from your dashboard.`;
+
+    case 'HIRED':
+      return `Amazing news, ${firstName}! 🎊 You’ve been successfully hired for the <strong>${jobTitle}</strong> role at <strong>${companyName}</strong>. Wishing you great success in your new journey!`;
+
+    case 'REJECTED':
+      return `We appreciate your interest in the <strong>${jobTitle}</strong> role at <strong>${companyName}</strong>. Unfortunately, the employer has decided to move forward with other candidates this time. Keep applying — the right opportunity is ahead.`;
+
+    default:
+      return `There has been an update regarding your application for <strong>${jobTitle}</strong> at <strong>${companyName}</strong>.`;
+  }
+}
+
+export async function sendApplicationStatusUpdateEmail(
+  email: string,
+  firstName: string,
+  jobTitle: string,
+  companyName: string,
+  status: string,
+  dashboardUrl: string,
+): Promise<void> {
+  const subjectMap: Record<string, string> = {
+    UNDER_REVIEW: `🔍 Your application is under review — ${jobTitle}`,
+    SHORTLISTED: `🎉 You've been shortlisted — ${jobTitle} at ${companyName}`,
+    INTERVIEW_SCHEDULED: `📅 Interview scheduled — ${jobTitle} at ${companyName}`,
+    OFFERED: `🏆 You've received an offer — ${jobTitle} at ${companyName}`,
+    HIRED: `🎊 Congratulations, you're hired! — ${jobTitle}`,
+    REJECTED: `Application update — ${jobTitle} at ${companyName}`,
+  };
+
+  const statusClassMap: Record<string, string> = {
+    UNDER_REVIEW: 'status-info',
+    SHORTLISTED: 'status-success',
+    INTERVIEW_SCHEDULED: 'status-warning',
+    OFFERED: 'status-success',
+    HIRED: 'status-success',
+    REJECTED: 'status-danger',
+  };
+
+  const statusLabelMap: Record<string, string> = {
+    UNDER_REVIEW: '🔍 Under Review',
+    SHORTLISTED: '🎉 Shortlisted',
+    INTERVIEW_SCHEDULED: '📅 Interview Scheduled',
+    OFFERED: '🏆 Offer Received',
+    HIRED: '🎊 Hired',
+    REJECTED: '❌ Not Selected',
+  };
+
+  const subject = subjectMap[status] ?? `Application update — ${jobTitle}`;
+
+  const statusMessage = getStatusMessage(status, jobTitle, companyName, firstName);
+
+  await sendEmail({
+    to: email,
+    subject,
+    template: 'application-status-update',
+    variables: {
+      FIRST_NAME: firstName,
+      JOB_TITLE: jobTitle,
+      COMPANY_NAME: companyName,
+      STATUS: statusLabelMap[status] ?? status,
+      STATUS_MESSAGE: statusMessage,
+      STATUS_CLASS: statusClassMap[status] ?? 'status-info',
+      DASHBOARD_URL: dashboardUrl,
+    },
+  });
+}
 // ─────────────────────────────────────────────
 // SUBSCRIPTION EMAILS
 // ─────────────────────────────────────────────

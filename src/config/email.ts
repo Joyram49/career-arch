@@ -27,13 +27,6 @@ export async function verifyEmailConnection(): Promise<void> {
   }
 }
 
-export interface IEmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  text?: string;
-}
-
 export const defaultMailOptions = {
   from: `"${env.MAIL_FROM_NAME}" <${env.MAIL_FROM_ADDRESS}>`,
 } as const;
