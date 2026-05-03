@@ -2,12 +2,6 @@ import { prisma } from '@config/database';
 import { env } from '@config/env';
 import { redis, RedisExpiry, RedisKeys } from '@config/redis';
 import {
-  sendPasswordChangedEmail,
-  sendPasswordResetEmail,
-  sendTwoFaEnabledEmail,
-  sendVerificationEmail,
-} from '@services/email.service';
-import {
   BadRequestError,
   ConflictError,
   ForbiddenError,
@@ -29,6 +23,7 @@ import qrcode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 
 import { logger } from '@/config/logger';
+import { enqueueEmail } from '@/jobs/queues/email.queue';
 
 import type { ITokenPair, ITwoFactorSetupResponse, IUserAuthResponse } from '@app-types/index';
 
@@ -91,7 +86,12 @@ export async function registerUser(data: {
 
   // Send verification email (outside transaction to not block it)
   const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
-  await sendVerificationEmail(data.email, data.firstName, verifyUrl);
+  enqueueEmail({
+    name: 'user:verify-email',
+    to: data.email,
+    firstName: data.firstName,
+    verifyUrl,
+  });
 
   return { message: 'Registration successful. Please check your email to verify your account.' };
 }
@@ -162,6 +162,7 @@ export async function resendVerificationEmail(email: string): Promise<{ message:
   const hashedToken = hashToken(rawToken);
   const verifyExpiry = getExpiryDate('15m');
 
+  // set token and expiry time to user table
   await prisma.user.update({
     where: { id: user.id },
     data: {
@@ -172,7 +173,12 @@ export async function resendVerificationEmail(email: string): Promise<{ message:
 
   const firstName = user.profile?.firstName ?? 'User';
   const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
-  await sendVerificationEmail(email, firstName, verifyUrl);
+  enqueueEmail({
+    name: 'user:verify-email',
+    to: email,
+    firstName,
+    verifyUrl,
+  });
 
   return genericResponse;
 }
@@ -416,7 +422,12 @@ export async function forgotPassword(email: string): Promise<{ message: string }
 
   const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${rawToken}`;
   const firstName = user.profile?.firstName ?? 'User';
-  await sendPasswordResetEmail(email, firstName, resetUrl);
+  enqueueEmail({
+    name: 'user:password-reset',
+    to: user.email,
+    firstName,
+    resetUrl,
+  });
 
   return genericResponse;
 }
@@ -462,7 +473,11 @@ export async function resetPassword(data: {
   });
 
   const firstName = user.profile?.firstName ?? 'User';
-  await sendPasswordChangedEmail(user.email, firstName);
+  enqueueEmail({
+    name: 'user:password-changed',
+    to: user.email,
+    firstName,
+  });
 
   return { message: 'Password reset successful. Please log in with your new password.' };
 }
@@ -549,7 +564,11 @@ export async function verifyAndEnableTwoFa(
   });
 
   const firstName = user.profile?.firstName ?? 'User';
-  await sendTwoFaEnabledEmail(user.email, firstName);
+  enqueueEmail({
+    name: 'user:2fa-enabled',
+    to: user.email,
+    firstName,
+  });
 
   const backupCodes = generateBackupCodes();
   return { message: '2FA enabled successfully. Store your backup codes safely.', backupCodes };
