@@ -1,3 +1,4 @@
+import * as SavedJobController from '@controllers/user/saved.job.controller';
 import * as UserController from '@controllers/user/user.profile.controller';
 import { authenticate } from '@middlewares/authenticate';
 import { authorize } from '@middlewares/authorize';
@@ -10,6 +11,9 @@ import {
   updateProfileSchema,
 } from '@validations/user.validation';
 import { Router } from 'express';
+
+import { checkSaveJobLimit } from '@/middlewares/checkSaveJobLimit';
+import { jobIdParamForSaveSchema } from '@/validations/application.validation';
 
 const router = Router();
 
@@ -121,6 +125,72 @@ router.delete(
   '/account',
   validate(deactivateAccountSchema),
   asyncHandler(UserController.deactivateAccount),
+);
+
+// ─────────────────────────────────────────────
+// SAVED JOBS
+// ─────────────────────────────────────────────
+
+/**
+ * @swagger
+ * /user/saved-jobs:
+ *   get:
+ *     summary: List all saved jobs (paginated)
+ *     tags: [Saved Jobs]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 20 }
+ *       - in: query
+ *         name: sortOrder
+ *         schema: { type: string, enum: [asc, desc], default: desc }
+ */
+router.get('/saved-jobs', asyncHandler(SavedJobController.listSavedJobs));
+
+/**
+ * @swagger
+ * /user/jobs/{id}/save:
+ *   post:
+ *     summary: Save a job
+ *     tags: [Saved Jobs]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ */
+router.post(
+  '/jobs/:id/save',
+  validate(jobIdParamForSaveSchema),
+  checkSaveJobLimit,
+  asyncHandler(SavedJobController.saveJob),
+);
+
+/**
+ * @swagger
+ * /user/jobs/{id}/save:
+ *   delete:
+ *     summary: Remove a saved job
+ *     tags: [Saved Jobs]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ */
+router.delete(
+  '/jobs/:id/save',
+  validate(jobIdParamForSaveSchema),
+  asyncHandler(SavedJobController.unsaveJob),
 );
 
 export default router;

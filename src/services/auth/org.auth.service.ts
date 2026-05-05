@@ -422,7 +422,12 @@ export async function verifyAndEnableOrgTwoFa(
   orgId: string,
   otp: string,
 ): Promise<{ message: string; backupCodes: string[] }> {
-  const org = await prisma.organization.findUnique({ where: { id: orgId } });
+  const org = await prisma.organization.findUnique({
+    where: { id: orgId },
+    include: {
+      profile: { select: { companyName: true } },
+    },
+  });
 
   if (org === null) throw new NotFoundError('Organization not found');
   if (org.twoFactorSecret === null) {
@@ -436,25 +441,17 @@ export async function verifyAndEnableOrgTwoFa(
   if (!isValid) {
     throw new BadRequestError('Invalid OTP. Please try again.');
   }
-
-  const updatedOrg = await prisma.organization.update({
+  await prisma.organization.update({
     where: { id: orgId },
     data: { twoFactorEnabled: true },
-    include: {
-      profile: {
-        select: {
-          companyName: true,
-        },
-      },
-    },
   });
 
-  const name = updatedOrg.profile?.companyName ?? 'Organizations';
+  const companyName = org.profile?.companyName ?? 'Team';
 
   enqueueEmail({
     name: 'org:2fa-enabled',
     to: org.email,
-    companyName: name,
+    companyName,
   });
 
   const backupCodes = generateBackupCodes();

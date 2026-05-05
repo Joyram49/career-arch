@@ -6,15 +6,11 @@ import {
 import { prisma } from '@config/database';
 import { env } from '@config/env';
 import { stripe } from '@config/stripe';
-import {
-  sendSubscriptionActivatedEmail,
-  sendSubscriptionCancelledEmail,
-  sendSubscriptionDowngradedEmail,
-} from '@services/email.service';
 import { BadRequestError, NotFoundError } from '@utils/apiError';
 import { format, startOfMonth } from 'date-fns';
 
 import { logger } from '@/config/logger';
+import { enqueueEmail } from '@/jobs/queues/email.queue';
 import { getPlanFeatures } from '@/services/admin/admin.plan.service';
 import { parseFeatures } from '@/utils/planFeaturesSchema';
 
@@ -226,7 +222,12 @@ export async function cancelSubscription(
     data: { cancelAtPeriodEnd: true },
   });
 
-  await sendSubscriptionCancelledEmail(userEmail, firstName, sub.currentPeriodEnd);
+  enqueueEmail({
+    name: 'subscription:cancelled',
+    to: userEmail,
+    firstName,
+    accessUntil: sub.currentPeriodEnd?.toISOString() ?? null,
+  });
 
   return {
     message: `Subscription cancelled. You have access until ${sub.currentPeriodEnd?.toDateString() ?? 'the end of your billing period'}.`,
@@ -325,11 +326,15 @@ export async function handleSubscriptionCreated(subscription: Stripe.Subscriptio
   });
 
   if (user !== null) {
-    await sendSubscriptionActivatedEmail(user.email, user.profile?.firstName ?? 'User', targetPlan);
+    enqueueEmail({
+      name: 'subscription:activated',
+      to: user.email,
+      firstName: user.profile?.firstName ?? 'User',
+      plan: targetPlan as 'BASIC' | 'PREMIUM',
+    });
   }
 }
 
-// eslint-disable-next-line complexity
 export async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
   const invoiceId = typeof invoice.id === 'string' ? invoice.id : null;
   if (invoiceId === null) return;
@@ -418,7 +423,8 @@ export async function handlePaymentFailed(invoice: Stripe.Invoice): Promise<void
     data: { status: 'PAST_DUE' },
   });
 
-  // Email sent by webhook controller after this resolves
+  // NOTE: Email is sent by webhook.controller after calling this function
+  // so we intentionally do NOT enqueue here — the controller handles it
 }
 
 export async function handleSubscriptionDeleted(stripeSub: Stripe.Subscription): Promise<void> {
@@ -444,7 +450,11 @@ export async function handleSubscriptionDeleted(stripeSub: Stripe.Subscription):
     },
   });
 
-  await sendSubscriptionDowngradedEmail(sub.user.email, sub.user.profile?.firstName ?? 'User');
+  enqueueEmail({
+    name: 'subscription:downgraded',
+    to: sub.user.email,
+    firstName: sub.user.profile?.firstName ?? 'User',
+  });
 }
 
 export async function handleSubscriptionUpdated(stripeSub: Stripe.Subscription): Promise<void> {

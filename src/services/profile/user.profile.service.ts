@@ -11,6 +11,8 @@ import { BadRequestError, NotFoundError, UnauthorizedError } from '@utils/apiErr
 import { extractJti, getTokenTtl, hashToken } from '@utils/token';
 import bcrypt from 'bcryptjs';
 
+import { enqueueEmail } from '@/jobs/queues/email.queue';
+
 import type { UpdateProfileInput } from '@validations/user.validation';
 
 // ── Response types ─────────────────────────────────────────────────────────
@@ -225,7 +227,7 @@ export async function changeUserPassword(
 ): Promise<{ message: string }> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { password: true },
+    include: { profile: { select: { firstName: true } } },
   });
   if (user === null) throw new NotFoundError('User not found');
 
@@ -260,6 +262,14 @@ export async function changeUserPassword(
       data: { isRevoked: true },
     });
   }
+
+  const firstName = user.profile?.firstName ?? 'User';
+
+  enqueueEmail({
+    name: 'user:password-changed',
+    to: user.email,
+    firstName,
+  });
 
   return { message: 'Password changed successfully. Please log in again on all devices.' };
 }

@@ -101,7 +101,6 @@ export async function createPlan(data: CreatePlanInput): Promise<IPlanCatalogueR
 // If only metadata changes → update Stripe Product only
 // ─────────────────────────────────────────────
 
-// eslint-disable-next-line complexity
 export async function updatePlan(
   id: string,
   data: UpdatePlanInput,
