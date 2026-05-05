@@ -4,12 +4,16 @@ import adminOrgRoutes from './admin/admin.org.routes';
 import adminPlansRoutes from './admin/admin.plan.routes';
 import adminSubscriptionsRoutes from './admin/admin.subscription.routes';
 import adminUserRoutes from './admin/admin.user.routes';
+import applicationRoutes from './application/application.routes';
+import orgApplicationRoutes from './application/org.application.routes';
 import adminAuthRoutes from './auth/auth.admin.routes';
 import orgAuthRoutes from './auth/auth.org.routes';
 import userAuthRoutes from './auth/auth.user.routes';
+import orgJobApplicationRoutes from './org/org.job.applications.routes';
 import orgJobsRoutes from './org/org.jobs.routes';
 import orgRoutes from './org/org.routes';
 import subscriptionRoutes from './subscription/subscription.routes';
+import publicJobRoutes from './user/public.job.routes';
 import userRoutes from './user/user.routes';
 
 const router = Router();
@@ -19,6 +23,13 @@ router.use('/auth/user', userAuthRoutes);
 router.use('/auth/org', orgAuthRoutes);
 router.use('/auth/admin', adminAuthRoutes);
 
+// ── Application Routes (user-side) ────────────────────────────────────────
+router.use('/applications', applicationRoutes);
+
+// ── Public Job Routes ──────────────────────────────────────────────────────
+// NOTE: /jobs/categories must be declared before /jobs/:slug in public.job.routes.ts
+router.use('/jobs', publicJobRoutes);
+
 // ── User Profile Routes ────────────────────────────────────────────────────
 router.use('/user', userRoutes);
 router.use('/subscription', subscriptionRoutes);
@@ -26,6 +37,13 @@ router.use('/subscription', subscriptionRoutes);
 // ── Org Routes  ──────────────────────────────────────────────────
 router.use('/org', orgRoutes);
 router.use('/org/jobs', orgJobsRoutes);
+
+// Org application routes: /org/jobs/:jobId/applications
+// Mounted separately from orgJobsRoutes to avoid param conflicts
+router.use('/org/jobs', orgJobApplicationRoutes);
+
+// Org-wide application management: /org/applications, /org/applications/:id/status
+router.use('/org/applications', orgApplicationRoutes);
 
 // ── Admin Routes  ────────────────────────────────────────────────
 router.use('/admin/organizations', adminOrgRoutes);

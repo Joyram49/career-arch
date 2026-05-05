@@ -23,7 +23,6 @@ import { Worker, type Job } from 'bullmq';
 
 export const emailWorker = new Worker<EmailJobPayload>(
   EMAIL_QUEUE_NAME,
-  // eslint-disable-next-line complexity
   async (job: Job<EmailJobPayload>): Promise<void> => {
     const payload = job.data;
 

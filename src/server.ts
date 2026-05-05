@@ -1,3 +1,5 @@
+import http from 'http';
+
 import { connectDatabase, disconnectDatabase } from '@config/database';
 import { verifyEmailConnection } from '@config/email';
 import { env } from '@config/env';
@@ -10,6 +12,9 @@ import {
 import { config } from 'dotenv';
 
 import app from './app';
+import { initSocket } from './config/socket';
+import { emailQueue } from './jobs/queues/email.queue';
+import { emailWorker } from './jobs/queues/email.worker';
 
 config();
 
@@ -30,7 +35,13 @@ async function start(): Promise<void> {
       await scheduleMonthlyReset();
     }
 
-    // 4. Start HTTP server
+    // 4. Create HTTP server from Express app
+    const httpServer = http.createServer(app);
+
+    // 5. Attach Socket.IO to the HTTP server
+    initSocket(httpServer);
+
+    // 6. Start HTTP server
     server = app.listen(PORT, () => {
       logger.info(`🚀 CareerArch API running on port ${PORT}`);
       logger.info(`📖 API Docs: http://localhost:${PORT}/api-docs`);
@@ -62,9 +73,16 @@ function shutdown(signal: string): void {
       logger.info('HTTP server closed');
 
       try {
+        // Close BullMQ workers first (finish in-flight jobs)
+        await emailWorker.close();
         await subscriptionResetWorker.close();
+
+        // Close BullMQ queue connections
+        await emailQueue.close();
+
         await disconnectDatabase();
         await redis.quit();
+
         logger.info('✅ Graceful shutdown complete');
         process.exit(0);
       } catch (error) {

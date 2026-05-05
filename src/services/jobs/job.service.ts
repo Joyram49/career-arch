@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /* eslint-disable no-nested-ternary */
 import { prisma } from '@config/database';
 import { BadRequestError, NotFoundError } from '@utils/apiError';

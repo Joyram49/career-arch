@@ -13,6 +13,8 @@ export default [
       'dist/**',
       'node_modules/**',
       'coverage/**',
+      'build/**',
+      'docs/**',
       '*.js',
       '*.mjs',
       '*.cjs',
@@ -199,7 +201,7 @@ export default [
       'spaced-comment': ['error', 'always', { markers: ['/'] }],
       'max-depth': ['warn', 4],
       'max-lines-per-function': ['warn', { max: 80, skipBlankLines: true, skipComments: true }],
-      complexity: ['warn', 15],
+      complexity: ['warn', 25],
     },
   },
   {

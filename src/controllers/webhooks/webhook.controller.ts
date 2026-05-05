@@ -3,9 +3,10 @@ import { prisma } from '@config/database';
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 import { stripe } from '@config/stripe';
-import { sendPaymentFailedEmail } from '@services/email.service';
 import * as SubscriptionService from '@services/subscription/subscription.service';
 import { sendError, sendSuccess } from '@utils/apiResponse';
+
+import { enqueueEmail } from '@/jobs/queues/email.queue';
 
 import type { Request, Response } from 'express';
 import type Stripe from 'stripe';
@@ -120,5 +121,10 @@ async function handlePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
 
   const planName = sub.plan === 'BASIC' ? 'Basic' : sub.plan === 'PREMIUM' ? 'Premium' : 'Free';
 
-  await sendPaymentFailedEmail(sub.user.email, sub.user.profile?.firstName ?? 'User', planName);
+  enqueueEmail({
+    name: 'subscription:payment-failed',
+    to: sub.user.email,
+    firstName: sub.user.profile?.firstName ?? 'User',
+    planName,
+  });
 }
