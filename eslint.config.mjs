@@ -13,6 +13,8 @@ export default [
       'dist/**',
       'node_modules/**',
       'coverage/**',
+      'build/**',
+      'docs/**',
       '*.js',
       '*.mjs',
       '*.cjs',

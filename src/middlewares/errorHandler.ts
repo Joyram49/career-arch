@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 import { Prisma } from '@prisma/client';
