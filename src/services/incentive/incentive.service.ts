@@ -389,15 +389,14 @@ export async function payIncentive(
     include: incentiveInclude(),
   });
 
-  if (updated === null || incentive.paidAt === null)
-    throw new NotFoundError('Incentive not found after update');
+  if (updated === null) throw new NotFoundError('Incentive not found after update');
 
   // 8. Send receipt email (fire-and-forget)
   enqueueEmail({
     name: 'incentive:paid',
     orgId,
-    applicationId: incentive.applicationId,
-    paidAt: incentive.paidAt,
+    applicationId: updated.applicationId,
+    paidAt: updated.paidAt ?? new Date(),
   });
 
   // Extract receipt URL from Stripe charges if available

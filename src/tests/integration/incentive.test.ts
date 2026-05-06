@@ -150,12 +150,28 @@ async function createTestJobAndApplication(
 
 afterAll(async () => {
   // Clean up in dependency order
-  await prisma.hiringIncentive.deleteMany({ where: { orgId: testOrgId } });
-  await prisma.application.deleteMany({ where: { jobId: testJobId } });
-  await prisma.job.deleteMany({ where: { orgId: testOrgId } });
-  await prisma.user.deleteMany({
-    where: { email: { contains: 'incentive-user-' } },
+  // Use the test-user email prefix to ensure we delete *all* rows created
+  // across the suite (not just those tied to testJobId/testOrgId).
+  await prisma.payment.deleteMany({ where: { orgId: testOrgId } });
+  await prisma.hiringIncentive.deleteMany({
+    where: {
+      OR: [
+        { orgId: testOrgId },
+        { application: { user: { email: { contains: 'incentive-user-' } } } },
+      ],
+    },
   });
+  await prisma.application.deleteMany({
+    where: { user: { email: { contains: 'incentive-user-' } } },
+  });
+  await prisma.job.deleteMany({ where: { orgId: testOrgId } });
+  await prisma.userProfile.deleteMany({
+    where: { user: { email: { contains: 'incentive-user-' } } },
+  });
+  await prisma.subscription.deleteMany({
+    where: { user: { email: { contains: 'incentive-user-' } } },
+  });
+  await prisma.user.deleteMany({ where: { email: { contains: 'incentive-user-' } } });
   await prisma.notification.deleteMany({ where: { orgId: testOrgId } });
   await prisma.refreshToken.deleteMany({ where: { orgId: testOrgId } });
   await prisma.orgProfile.deleteMany({ where: { orgId: testOrgId } });
