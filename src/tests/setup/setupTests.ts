@@ -16,6 +16,11 @@ jest.mock('@services/email.service', () => ({
   sendSubscriptionActivatedEmail: jest.fn(() => undefined),
   sendSubscriptionCancelledEmail: jest.fn(() => undefined),
   sendSubscriptionDowngradedEmail: jest.fn(() => undefined),
+  sendIncentiveDueEmail: jest.fn(() => undefined),
+  sendIncentivePaidEmail: jest.fn(() => undefined),
+  sendIncentiveOverdueEmail: jest.fn(() => undefined),
+  sendIncentiveWaivedEmail: jest.fn(() => undefined),
+  sendIncentiveDisputeReceivedEmail: jest.fn(() => undefined),
 }));
 
 // ── Silence console output during tests ────────────────────────────────────

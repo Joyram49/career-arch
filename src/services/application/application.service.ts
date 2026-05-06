@@ -1,7 +1,6 @@
 import { prisma } from '@config/database';
 import { env } from '@config/env';
 import {
-  emitIncentiveCreated,
   emitNewApplication,
   emitNotification,
   emitStatusUpdated,
@@ -12,6 +11,8 @@ import { BadRequestError, ConflictError, NotFoundError } from '@utils/apiError';
 import { buildPaginationMeta } from '@utils/pagination';
 
 import { extractPagination } from '@/utils/queryBuilder';
+
+import { createIncentiveForHire } from '../incentive/incentive.service';
 
 import type { ApplicationStatus, Prisma } from '@prisma/client';
 import type {
@@ -377,7 +378,7 @@ export async function updateApplicationStatus(
 
   // If HIRED → create hiring incentive
   if (data.status === 'HIRED') {
-    await createHiringIncentive(
+    await createIncentiveForHire(
       orgId,
       application.job.id,
       applicationId,
@@ -387,67 +388,6 @@ export async function updateApplicationStatus(
   }
 
   return updated;
-}
-
-// ─────────────────────────────────────────────
-// CREATE HIRING INCENTIVE  (called on HIRED)
-// ─────────────────────────────────────────────
-
-async function createHiringIncentive(
-  orgId: string,
-  jobId: string,
-  applicationId: string,
-  candidateName: string,
-  jobTitle: string,
-): Promise<void> {
-  // Idempotency guard — never double-create
-  const existing = await prisma.hiringIncentive.findUnique({
-    where: { applicationId },
-    select: { id: true },
-  });
-
-  if (existing !== null) return;
-
-  const dueAt = new Date();
-  dueAt.setDate(dueAt.getDate() + 7); // 7-day payment window
-
-  const incentive = await prisma.hiringIncentive.create({
-    data: {
-      orgId,
-      jobId,
-      applicationId,
-      amount: 50, // $50 fixed incentive
-      currency: 'USD',
-      status: 'PENDING',
-      dueAt,
-    },
-  });
-
-  // Mark org as having unpaid incentives
-  await prisma.organization.update({
-    where: { id: orgId },
-    data: { hasUnpaidIncentives: true },
-  });
-
-  // Emit real-time alert to org
-  emitIncentiveCreated(orgId, {
-    incentiveId: incentive.id,
-    amount: 50,
-    candidateName,
-    jobTitle,
-    dueAt,
-  });
-
-  // Create in-DB notification for org
-  await prisma.notification.create({
-    data: {
-      orgId,
-      recipientRole: 'ORGANIZATION',
-      title: 'Hiring Incentive Due 💰',
-      message: `$50 incentive due for hiring ${candidateName} — pay within 7 days`,
-      link: `/org/incentives`,
-    },
-  });
 }
 
 // ─────────────────────────────────────────────
