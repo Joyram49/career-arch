@@ -23,10 +23,9 @@ const router = Router();
  *     responses:
  *       200:
  *         description: List of category strings
- *
- * IMPORTANT: /jobs/categories MUST be declared before /jobs/:slug
- * or Express will treat "categories" as a slug value.
  */
+// IMPORTANT: /jobs/categories MUST be declared before /jobs/:slug
+// or Express will treat "categories" as a slug value.
 router.get('/categories', asyncHandler(PublicJobController.getCategories));
 
 /**

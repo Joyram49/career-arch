@@ -8,6 +8,8 @@ import { defaultMailOptions, transporter } from '@config/email';
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 
+import { prisma } from '@/config/database';
+
 import type { SubscriptionPlan } from '@prisma/client';
 
 // ─────────────────────────────────────────────
@@ -369,6 +371,187 @@ export async function sendPaymentFailedEmail(
       FIRST_NAME: firstName,
       PLAN_NAME: planName,
       UPDATE_PAYMENT_URL: `${env.FRONTEND_URL}/dashboard/user/subscription`,
+    },
+  });
+}
+
+// ─────────────────────────────────────────────
+// INCENTIVE EMAILS
+// ─────────────────────────────────────────────
+
+/**
+ * Shared helper — loads org email + profile and application relations.
+ * Avoids repeating the same two parallel queries in every incentive sender.
+ */
+async function loadIncentiveEmailData(
+  orgId: string,
+  applicationId: string,
+): Promise<{
+  orgEmail: string;
+  companyName: string;
+  candidateName: string;
+  jobTitle: string;
+} | null> {
+  const [org, application] = await Promise.all([
+    prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { email: true, profile: { select: { companyName: true } } },
+    }),
+    prisma.application.findUnique({
+      where: { id: applicationId },
+      include: {
+        user: { include: { profile: { select: { firstName: true, lastName: true } } } },
+        job: { select: { title: true } },
+      },
+    }),
+  ]);
+
+  if (org === null || application === null) return null;
+
+  return {
+    orgEmail: org.email,
+    companyName: org.profile?.companyName ?? 'Your Company',
+    candidateName:
+      `${application.user.profile?.firstName ?? ''} ${application.user.profile?.lastName ?? ''}`.trim(),
+    jobTitle: application.job.title,
+  };
+}
+
+export async function sendIncentiveDueEmail(
+  orgId: string,
+  applicationId: string,
+  dueAt: Date,
+): Promise<void> {
+  const data = await loadIncentiveEmailData(orgId, applicationId);
+  if (data === null) return;
+
+  const dueDate = dueAt.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  await sendEmail({
+    to: data.orgEmail,
+    subject: `🎉 You hired ${data.candidateName} — $50 incentive due by ${dueDate}`,
+    template: 'incentive-due',
+    variables: {
+      COMPANY_NAME: data.companyName,
+      CANDIDATE_NAME: data.candidateName,
+      JOB_TITLE: data.jobTitle,
+      AMOUNT: '50.00',
+      DUE_DATE: dueDate,
+      PAY_URL: `${env.FRONTEND_URL}/org/incentives`,
+    },
+  });
+}
+
+export async function sendIncentivePaidEmail(
+  orgId: string,
+  applicationId: string,
+  paidAt: Date,
+): Promise<void> {
+  const data = await loadIncentiveEmailData(orgId, applicationId);
+  if (data === null) return;
+
+  const paidDate = paidAt.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  await sendEmail({
+    to: data.orgEmail,
+    subject: '✅ Payment confirmed — hiring incentive receipt',
+    template: 'incentive-paid',
+    variables: {
+      COMPANY_NAME: data.companyName,
+      CANDIDATE_NAME: data.candidateName,
+      JOB_TITLE: data.jobTitle,
+      AMOUNT: '50.00',
+      PAID_DATE: paidDate,
+      RECEIPT_URL: `${env.FRONTEND_URL}/org/incentives`,
+    },
+  });
+}
+
+export async function sendIncentiveOverdueEmail(
+  orgId: string,
+  applicationId: string,
+): Promise<void> {
+  const data = await loadIncentiveEmailData(orgId, applicationId);
+  if (data === null) return;
+
+  // Fetch dueAt from the incentive record directly
+  const incentive = await prisma.hiringIncentive.findUnique({
+    where: { applicationId },
+    select: { dueAt: true },
+  });
+
+  const dueDate =
+    incentive?.dueAt != null
+      ? incentive.dueAt.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      : 'N/A';
+
+  await sendEmail({
+    to: data.orgEmail,
+    subject: '⚠️ Action required — hiring incentive payment overdue',
+    template: 'incentive-overdue',
+    variables: {
+      COMPANY_NAME: data.companyName,
+      CANDIDATE_NAME: data.candidateName,
+      JOB_TITLE: data.jobTitle,
+      AMOUNT: '50.00',
+      DUE_DATE: dueDate,
+      PAY_URL: `${env.FRONTEND_URL}/org/incentives`,
+    },
+  });
+}
+
+export async function sendIncentiveWaivedEmail(
+  orgId: string,
+  applicationId: string,
+  reason: string,
+): Promise<void> {
+  const data = await loadIncentiveEmailData(orgId, applicationId);
+  if (data === null) return;
+
+  await sendEmail({
+    to: data.orgEmail,
+    subject: '✅ Hiring incentive waived — no payment required',
+    template: 'incentive-waived',
+    variables: {
+      COMPANY_NAME: data.companyName,
+      CANDIDATE_NAME: data.candidateName,
+      JOB_TITLE: data.jobTitle,
+      AMOUNT: '50.00',
+      REASON: reason,
+    },
+  });
+}
+
+export async function sendIncentiveDisputeReceivedEmail(
+  orgId: string,
+  applicationId: string,
+  disputeReason: string,
+): Promise<void> {
+  const data = await loadIncentiveEmailData(orgId, applicationId);
+  if (data === null) return;
+
+  await sendEmail({
+    to: data.orgEmail,
+    subject: '📋 Dispute received — we will review within 2 business days',
+    template: 'incentive-dispute-received',
+    variables: {
+      COMPANY_NAME: data.companyName,
+      CANDIDATE_NAME: data.candidateName,
+      JOB_TITLE: data.jobTitle,
+      AMOUNT: '50.00',
+      DISPUTE_REASON: disputeReason,
     },
   });
 }

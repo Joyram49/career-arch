@@ -9,6 +9,10 @@ import {
   scheduleMonthlyReset,
   subscriptionResetWorker,
 } from '@jobs/queues/subscription-reset.queue';
+import {
+  incentiveOverdueWorker,
+  scheduleIncentiveOverdueCron,
+} from '@jobs/workers/incentive-overdue.worker';
 import { config } from 'dotenv';
 
 import app from './app';
@@ -30,9 +34,10 @@ async function start(): Promise<void> {
     // 2. Verify email transport (non-blocking)
     void verifyEmailConnection();
 
-    // 3. Schedule monthly subscription reset cron (BullMQ)
+    // 3. Schedule background jobs (BullMQ)
     if (env.NODE_ENV !== 'test') {
       await scheduleMonthlyReset();
+      await scheduleIncentiveOverdueCron();
     }
 
     // 4. Create HTTP server from Express app
@@ -79,6 +84,7 @@ function shutdown(signal: string): void {
 
         // Close BullMQ queue connections
         await emailQueue.close();
+        await incentiveOverdueWorker.close();
 
         await disconnectDatabase();
         await redis.quit();

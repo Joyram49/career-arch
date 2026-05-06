@@ -1,10 +1,15 @@
 import { logger } from '@config/logger';
 import { redis } from '@config/redis';
-import { EMAIL_QUEUE_NAME, type EmailJobPayload } from '@jobs/queues/email.queue';
+import { EMAIL_QUEUE_NAME, hasRecipient, type EmailJobPayload } from '@jobs/queues/email.queue';
 import {
   sendApplicationConfirmationUser,
   sendApplicationReceivedOrg,
   sendApplicationStatusUpdateEmail,
+  sendIncentiveDisputeReceivedEmail,
+  sendIncentiveDueEmail,
+  sendIncentiveOverdueEmail,
+  sendIncentivePaidEmail,
+  sendIncentiveWaivedEmail,
   sendOrgVerificationEmail,
   sendPasswordChangedEmail,
   sendPasswordResetEmail,
@@ -23,10 +28,15 @@ import { Worker, type Job } from 'bullmq';
 
 export const emailWorker = new Worker<EmailJobPayload>(
   EMAIL_QUEUE_NAME,
+  // eslint-disable-next-line max-lines-per-function
   async (job: Job<EmailJobPayload>): Promise<void> => {
     const payload = job.data;
 
-    logger.info(`[EmailWorker] Processing job "${payload.name}" → ${payload.to}`);
+    if (hasRecipient(payload)) {
+      logger.info(`[EmailWorker] Processing job "${payload.name}" → ${payload.to}`);
+    } else {
+      logger.info(`[EmailWorker] Processing job "${payload.name}" }`);
+    }
 
     switch (payload.name) {
       // ── Auth ────────────────────────────────────────────────────────────
@@ -119,6 +129,26 @@ export const emailWorker = new Worker<EmailJobPayload>(
         await sendPaymentFailedEmail(payload.to, payload.firstName, payload.planName);
         break;
 
+      case 'incentive:due':
+        await sendIncentiveDueEmail(payload.orgId, payload.applicationId, payload.dueAt);
+        break;
+      case 'incentive:overdue':
+        await sendIncentiveOverdueEmail(payload.orgId, payload.applicationId);
+        break;
+      case 'incentive:paid':
+        await sendIncentivePaidEmail(payload.orgId, payload.applicationId, payload.paidAt);
+        break;
+      case 'incentive:waived':
+        await sendIncentiveWaivedEmail(payload.orgId, payload.applicationId, payload.reason);
+        break;
+      case 'incentive:dispute-received':
+        await sendIncentiveDisputeReceivedEmail(
+          payload.orgId,
+          payload.applicationId,
+          payload.disputeReason,
+        );
+        break;
+
       default: {
         // TypeScript exhaustiveness check
         const _exhaustive: never = payload;
@@ -126,7 +156,11 @@ export const emailWorker = new Worker<EmailJobPayload>(
       }
     }
 
-    logger.info(`[EmailWorker] Completed job "${payload.name}" → ${payload.to}`);
+    if (hasRecipient(payload)) {
+      logger.info(`[EmailWorker] Completed job "${payload.name}" → ${payload.to}`);
+    } else {
+      logger.info(`[EmailWorker] Completed job "${payload.name}" `);
+    }
   },
   {
     connection: redis,

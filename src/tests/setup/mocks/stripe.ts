@@ -17,6 +17,12 @@ const stripeCheckoutSession = {
   url: 'https://checkout.stripe.com/c/pay/cs_test123',
 };
 
+const stripePaymentIntent = {
+  id: 'pi_test123',
+  status: 'succeeded',
+  latest_charge: 'ch_test123',
+};
+
 const stripeSubscription = {
   id: 'sub_test123',
   customer: stripeCustomer.id,
@@ -60,6 +66,9 @@ export const stripe = {
   },
   refunds: {
     create: async () => ({ id: 're_test123', status: 'succeeded' }),
+  },
+  paymentIntents: {
+    create: async () => stripePaymentIntent,
   },
   paymentMethods: {
     create: async () => ({ id: 'pm_test123', customer: stripeCustomer.id }),

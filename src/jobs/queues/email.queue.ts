@@ -24,7 +24,14 @@ export type EmailJobName =
   | 'subscription:activated'
   | 'subscription:cancelled'
   | 'subscription:downgraded'
-  | 'subscription:payment-failed';
+  | 'subscription:payment-failed'
+
+  // incentive
+  | 'incentive:due'
+  | 'incentive:paid'
+  | 'incentive:overdue'
+  | 'incentive:dispute-received'
+  | 'incentive:waived';
 
 // ── Per-job payload shapes ─────────────────────────────────────────────────
 
@@ -137,6 +144,40 @@ export interface ISubscriptionPaymentFailedPayload {
   planName: string;
 }
 
+export interface IIncentiveDuePayload {
+  name: 'incentive:due';
+  orgId: string;
+  applicationId: string;
+  dueAt: Date;
+}
+
+export interface IIncentivePaidPayload {
+  name: 'incentive:paid';
+  orgId: string;
+  applicationId: string;
+  paidAt: Date;
+}
+
+export interface IIncentiveOverDuePayload {
+  name: 'incentive:overdue';
+  orgId: string;
+  applicationId: string;
+}
+
+export interface IIncentiveWaivedPayload {
+  name: 'incentive:waived';
+  orgId: string;
+  applicationId: string;
+  reason: string;
+}
+
+export interface IIncentiveDisputeReceivedPayload {
+  name: 'incentive:dispute-received';
+  orgId: string;
+  applicationId: string;
+  disputeReason: string;
+}
+
 // ── Discriminated union — the worker pattern-matches on `name` ─────────────
 
 export type EmailJobPayload =
@@ -154,7 +195,12 @@ export type EmailJobPayload =
   | ISubscriptionActivatedPayload
   | ISubscriptionCancelledPayload
   | ISubscriptionDowngradedPayload
-  | ISubscriptionPaymentFailedPayload;
+  | ISubscriptionPaymentFailedPayload
+  | IIncentiveDuePayload
+  | IIncentivePaidPayload
+  | IIncentiveOverDuePayload
+  | IIncentiveDisputeReceivedPayload
+  | IIncentiveWaivedPayload;
 
 // ─────────────────────────────────────────────
 // QUEUE INSTANCE
@@ -195,8 +241,18 @@ emailQueue.on('error', (err) => {
  *   verifyUrl: 'https://...',
  * });
  */
+
+export function hasRecipient(
+  payload: EmailJobPayload,
+): payload is Extract<EmailJobPayload, { to: string }> {
+  return 'to' in payload && typeof payload.to === 'string';
+}
 export function enqueueEmail(payload: EmailJobPayload): void {
   emailQueue.add(payload.name, payload).catch((err: unknown) => {
-    logger.error(`Failed to enqueue email "${payload.name}" to ${payload.to}:`, err);
+    if (hasRecipient(payload)) {
+      logger.error(`Failed to enqueue email "${payload.name}" to ${payload.to}:`, err);
+    } else {
+      logger.error(`Failed to enqueue email "${payload.name}":`, err);
+    }
   });
 }
