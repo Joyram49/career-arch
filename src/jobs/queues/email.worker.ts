@@ -10,6 +10,8 @@ import {
   sendIncentiveOverdueEmail,
   sendIncentivePaidEmail,
   sendIncentiveWaivedEmail,
+  sendOrgApprovedEmail,
+  sendOrgRejectedEmail,
   sendOrgVerificationEmail,
   sendPasswordChangedEmail,
   sendPasswordResetEmail,
@@ -28,7 +30,7 @@ import { Worker, type Job } from 'bullmq';
 
 export const emailWorker = new Worker<EmailJobPayload>(
   EMAIL_QUEUE_NAME,
-  // eslint-disable-next-line max-lines-per-function
+  // eslint-disable-next-line max-lines-per-function, complexity
   async (job: Job<EmailJobPayload>): Promise<void> => {
     const payload = job.data;
 
@@ -147,6 +149,14 @@ export const emailWorker = new Worker<EmailJobPayload>(
           payload.applicationId,
           payload.disputeReason,
         );
+        break;
+
+      case 'org:approved':
+        await sendOrgApprovedEmail(payload.to, payload.companyName, payload.dashboardUrl);
+        break;
+
+      case 'org:rejected':
+        await sendOrgRejectedEmail(payload.to, payload.companyName, payload.reason);
         break;
 
       default: {

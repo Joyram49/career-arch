@@ -1,3 +1,5 @@
+import { deleteFromCloudinary, uploadAvatarToCloudinary } from '@services/upload/upload.service';
+
 import { prisma } from '@/config/database';
 import { NotFoundError } from '@/utils/apiError';
 import { type UpdateOrgProfileInput } from '@/validations/org.validation';
@@ -92,7 +94,6 @@ export async function updateOrgProfile(
   if (data.country !== undefined) profileData['country'] = data.country;
   if (data.linkedinUrl !== undefined) profileData['linkedinUrl'] = data.linkedinUrl;
   if (data.twitterUrl !== undefined) profileData['twitterUrl'] = data.twitterUrl;
-  if (data.logoUrl !== undefined) profileData['logoUrl'] = data.logoUrl;
 
   const updatedOrgProfile = await prisma.orgProfile.update({
     where: { orgId },
@@ -105,4 +106,38 @@ export async function updateOrgProfile(
     isPaymentMethodOnFile: org.isPaymentMethodOnFile,
     hasUnpaidIncentives: org.hasUnpaidIncentives,
   };
+}
+
+// ─────────────────────────────────────────────
+// UPLOAD ORG LOGO
+// ─────────────────────────────────────────────
+
+export async function uploadOrgLogo(
+  orgId: string,
+  file: Express.Multer.File,
+): Promise<{ logoUrl: string }> {
+  // Fetch existing logo URL so we can clean up Cloudinary after upload
+  const profile = await prisma.orgProfile.findUnique({
+    where: { orgId },
+    select: { logoUrl: true },
+  });
+
+  if (profile === null) {
+    throw new NotFoundError('Organization profile not found');
+  }
+
+  // Reuse the avatar upload util — same image constraints apply to logos
+  const newLogoUrl = await uploadAvatarToCloudinary(orgId, file);
+
+  await prisma.orgProfile.update({
+    where: { orgId },
+    data: { logoUrl: newLogoUrl },
+  });
+
+  // Delete old logo from Cloudinary — fire-and-forget
+  if (profile.logoUrl !== null) {
+    void deleteFromCloudinary(profile.logoUrl);
+  }
+
+  return { logoUrl: newLogoUrl };
 }
