@@ -555,3 +555,36 @@ export async function sendIncentiveDisputeReceivedEmail(
     },
   });
 }
+
+export async function sendOrgApprovedEmail(
+  email: string,
+  companyName: string,
+  dashboardUrl: string,
+): Promise<void> {
+  await sendEmail({
+    to: email,
+    subject: '🎉 Your organization has been approved — start posting jobs!',
+    template: 'org-approved',
+    variables: {
+      COMPANY_NAME: companyName,
+      DASHBOARD_URL: dashboardUrl,
+    },
+  });
+}
+
+export async function sendOrgRejectedEmail(
+  email: string,
+  companyName: string,
+  reason: string,
+): Promise<void> {
+  await sendEmail({
+    to: email,
+    subject: 'Your organization registration was rejected',
+    template: 'org-rejected',
+    variables: {
+      COMPANY_NAME: companyName,
+      REASON: reason,
+      SUPPORT_EMAIL: env.MAIL_FROM_ADDRESS,
+    },
+  });
+}

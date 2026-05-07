@@ -3,6 +3,7 @@ import * as OrgProfileController from '@controllers/org/org.profile.controller';
 import * as TestController from '@controllers/test/payment-method.controller';
 import { authenticate } from '@middlewares/authenticate';
 import { authorize } from '@middlewares/authorize';
+import { uploadAvatarMiddleware } from '@middlewares/upload';
 import { validate } from '@middlewares/validate';
 import { asyncHandler } from '@utils/asyncHandler';
 import {
@@ -81,6 +82,30 @@ router.put(
   '/profile',
   validate(updateOrgProfileSchema),
   asyncHandler(OrgProfileController.updateProfile),
+);
+
+/**
+ * @swagger
+ * /org/profile/logo:
+ *   post:
+ *     summary: Upload company logo (JPEG, PNG, WEBP — max 2 MB)
+ *     tags: [Organization]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               logo:
+ *                 type: string
+ *                 format: binary
+ */
+router.post(
+  '/profile/logo',
+  uploadAvatarMiddleware.single('logo'),
+  asyncHandler(OrgProfileController.uploadLogo),
 );
 
 // ─────────────────────────────────────────────

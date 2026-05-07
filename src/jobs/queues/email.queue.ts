@@ -31,7 +31,11 @@ export type EmailJobName =
   | 'incentive:paid'
   | 'incentive:overdue'
   | 'incentive:dispute-received'
-  | 'incentive:waived';
+  | 'incentive:waived'
+
+  // org
+  | 'org:approved'
+  | 'org:rejected';
 
 // ── Per-job payload shapes ─────────────────────────────────────────────────
 
@@ -178,6 +182,20 @@ export interface IIncentiveDisputeReceivedPayload {
   disputeReason: string;
 }
 
+export interface IOrgApprovedPayload {
+  name: 'org:approved';
+  to: string;
+  companyName: string;
+  dashboardUrl: string;
+}
+
+export interface IOrgRejectedPayload {
+  name: 'org:rejected';
+  to: string;
+  companyName: string;
+  reason: string;
+}
+
 // ── Discriminated union — the worker pattern-matches on `name` ─────────────
 
 export type EmailJobPayload =
@@ -200,7 +218,9 @@ export type EmailJobPayload =
   | IIncentivePaidPayload
   | IIncentiveOverDuePayload
   | IIncentiveDisputeReceivedPayload
-  | IIncentiveWaivedPayload;
+  | IIncentiveWaivedPayload
+  | IOrgApprovedPayload
+  | IOrgRejectedPayload;
 
 // ─────────────────────────────────────────────
 // QUEUE INSTANCE

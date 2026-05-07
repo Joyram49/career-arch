@@ -19,3 +19,16 @@ export async function updateProfile(req: Request, res: Response): Promise<Respon
   const profile = await OrgProfileService.updateOrgProfile(sub, body);
   return sendSuccess(res, { profile }, 'Organization profile updated successfully');
 }
+
+// ── POST /org/profile/logo ───────────────────────────────────────────────────────
+
+export async function uploadLogo(req: Request, res: Response): Promise<Response> {
+  const { sub } = (req as IAuthenticatedRequest).user;
+
+  if (req.file === undefined) {
+    return sendSuccess(res, null, 'No file uploaded', 400);
+  }
+
+  const result = await OrgProfileService.uploadOrgLogo(sub, req.file);
+  return sendSuccess(res, result, 'Logo uploaded successfully');
+}

@@ -13,6 +13,7 @@ import {
   incentiveOverdueWorker,
   scheduleIncentiveOverdueCron,
 } from '@jobs/workers/incentive-overdue.worker';
+import { jobCleanupWorker, scheduleJobCleanupCron } from '@jobs/workers/job-cleanup.worker';
 import { config } from 'dotenv';
 
 import app from './app';
@@ -38,6 +39,7 @@ async function start(): Promise<void> {
     if (env.NODE_ENV !== 'test') {
       await scheduleMonthlyReset();
       await scheduleIncentiveOverdueCron();
+      await scheduleJobCleanupCron();
     }
 
     // 4. Create HTTP server from Express app
@@ -85,6 +87,7 @@ function shutdown(signal: string): void {
         // Close BullMQ queue connections
         await emailQueue.close();
         await incentiveOverdueWorker.close();
+        await jobCleanupWorker.close();
 
         await disconnectDatabase();
         await redis.quit();

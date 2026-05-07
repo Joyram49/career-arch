@@ -1,6 +1,8 @@
 import { Router } from 'express';
 
+import adminDashboardRoutes from './admin/admin.dashboard.routes';
 import adminIncentiveRoutes from './admin/admin.incentive.routes';
+import adminJobsRoutes from './admin/admin.jobs.routes';
 import adminOrgRoutes from './admin/admin.org.routes';
 import adminPlansRoutes from './admin/admin.plan.routes';
 import adminSubscriptionsRoutes from './admin/admin.subscription.routes';
@@ -10,6 +12,7 @@ import orgApplicationRoutes from './application/org.application.routes';
 import adminAuthRoutes from './auth/auth.admin.routes';
 import orgAuthRoutes from './auth/auth.org.routes';
 import userAuthRoutes from './auth/auth.user.routes';
+import notificationRoutes from './notifications/notification.routes';
 import orgIncentiveRoutes from './org/org.incentive.routes';
 import orgJobApplicationRoutes from './org/org.job.applications.routes';
 import orgJobsRoutes from './org/org.jobs.routes';
@@ -36,6 +39,9 @@ router.use('/jobs', publicJobRoutes);
 router.use('/user', userRoutes);
 router.use('/subscription', subscriptionRoutes);
 
+// ── Notification Routes ───────────────────────────────────────────────────
+router.use('/notifications', notificationRoutes);
+
 // ── Org Routes  ──────────────────────────────────────────────────
 router.use('/org', orgRoutes);
 router.use('/org/jobs', orgJobsRoutes);
@@ -54,6 +60,8 @@ router.use('/admin/users', adminUserRoutes);
 router.use('/admin/plans', adminPlansRoutes);
 router.use('/admin/subscriptions', adminSubscriptionsRoutes);
 router.use('/admin/incentives', adminIncentiveRoutes);
+router.use('/admin/jobs', adminJobsRoutes);
+router.use('/admin/dashboard', adminDashboardRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {

@@ -7,6 +7,8 @@ import { stripe } from '@config/stripe';
 import { type Prisma } from '@prisma/client';
 import { BadRequestError, NotFoundError } from '@utils/apiError';
 
+import { env } from '@/config/env';
+import { enqueueEmail } from '@/jobs/queues/email.queue';
 import { buildPaginationMeta } from '@/utils/pagination';
 import { extractPagination } from '@/utils/queryBuilder';
 import { type AdminListOrgQuery } from '@/validations/admin.validation';
@@ -69,7 +71,13 @@ export async function approveOrganization(orgId: string): Promise<{ message: str
     },
   });
 
-  // TODO Phase 3G: await sendOrgApprovedEmail(org.email, org.profile?.companyName ?? 'Team');
+  // send approval email
+  enqueueEmail({
+    name: 'org:approved',
+    to: org.email,
+    companyName: org.profile?.companyName ?? 'Team',
+    dashboardUrl: `${env.FRONTEND_URL}/org/dashboard`,
+  });
 
   return {
     message: `Organization approved successfully. Stripe customer created: ${stripeCustomerId}`,
