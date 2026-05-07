@@ -1,7 +1,7 @@
 import * as AdminStatsController from '@controllers/admin/admin.stats.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import { Router } from 'express';
 
 const router = Router();

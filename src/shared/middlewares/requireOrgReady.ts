@@ -1,5 +1,5 @@
 import { prisma } from '@config/database';
-import { sendError } from '@utils/apiResponse';
+import { sendError } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';

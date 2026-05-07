@@ -1,5 +1,9 @@
-import { sendSuccess } from '@utils/apiResponse';
-import { ACCESS_COOKIE_OPTIONS, COOKIE_NAMES, REFRESH_COOKIE_OPTIONS } from '@utils/constants';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import {
+  ACCESS_COOKIE_OPTIONS,
+  COOKIE_NAMES,
+  REFRESH_COOKIE_OPTIONS,
+} from '@shared/utils/constants';
 
 import * as AdminAuthService from '@/services/auth/admin.auth.service';
 

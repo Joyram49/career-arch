@@ -7,10 +7,9 @@ import {
   emitWithdrawn,
 } from '@config/socket';
 import { enqueueEmail } from '@jobs/queues/email.queue';
-import { BadRequestError, ConflictError, NotFoundError } from '@utils/apiError';
-import { buildPaginationMeta } from '@utils/pagination';
-
-import { extractPagination } from '@/utils/queryBuilder';
+import { BadRequestError, ConflictError, NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta } from '@shared/utils/pagination';
+import { extractPagination } from '@shared/utils/queryBuilder';
 
 import { createIncentiveForHire } from '../incentive/incentive.service';
 

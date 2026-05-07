@@ -1,6 +1,6 @@
 import * as UserService from '@services/profile/user.profile.service';
-import { sendSuccess } from '@utils/apiResponse';
-import { COOKIE_NAMES } from '@utils/constants';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import { COOKIE_NAMES } from '@shared/utils/constants';
 
 import { type UpdateProfileInput } from '@/validations/user.validation';
 

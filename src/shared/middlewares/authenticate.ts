@@ -1,17 +1,21 @@
 import { redis, RedisKeys } from '@config/redis';
-import { sendError } from '@utils/apiResponse';
-import { COOKIE_NAMES } from '@utils/constants';
-import { verifyAccessToken } from '@utils/token';
+import { sendError } from '@shared/utils/apiResponse';
+import { COOKIE_NAMES } from '@shared/utils/constants';
+import { verifyAccessToken } from '@shared/utils/token';
 import jwt from 'jsonwebtoken';
 
-import type { IAuthenticatedRequest, IJwtPayload } from '@app-types/index';
-import type { NextFunction, Request, Response } from 'express';
+import type { IJwtPayload } from '@app-types/index';
+import type { NextFunction, Request, RequestHandler, Response } from 'express';
 
 /**
  * Verifies access token from Authorization header or HttpOnly cookie.
  * Attaches decoded payload to req.user
  */
-export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
+export const authenticate: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     // 1. Extract token from header or cookie
     const token = extractToken(req);
@@ -38,28 +42,33 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
     }
 
     // 3. Check if token JTI is blacklisted (logged out)
-    const blacklisted = await redis.get(RedisKeys.blacklistToken(decoded.jti));
+    const jti = extractJtiFromPayload(decoded);
+    if (jti === null) {
+      sendError(res, 'Invalid access token', 401);
+      return;
+    }
+    const blacklisted = await redis.get(RedisKeys.blacklistToken(jti));
     if (blacklisted !== null) {
       sendError(res, 'Token has been revoked. Please log in again.', 401);
       return;
     }
 
     // 4. Attach payload to request
-    (req as IAuthenticatedRequest).user = decoded;
+    attachUserToRequest(req, decoded);
     next();
   } catch (error) {
     next(error);
   }
-}
+};
 
 /**
  * Optional authentication — attaches user if token present, otherwise continues
  */
-export async function optionalAuthenticate(
+export const optionalAuthenticate: RequestHandler = async (
   req: Request,
   _res: Response,
   next: NextFunction,
-): Promise<void> {
+): Promise<void> => {
   try {
     const token = extractToken(req);
     if (token === null || token.length === 0) {
@@ -68,15 +77,20 @@ export async function optionalAuthenticate(
     }
 
     const decoded = verifyAccessToken(token);
-    const blacklisted = await redis.get(RedisKeys.blacklistToken(decoded.jti));
+    const jti = extractJtiFromPayload(decoded);
+    if (jti === null) {
+      next();
+      return;
+    }
+    const blacklisted = await redis.get(RedisKeys.blacklistToken(jti));
     if (blacklisted === null) {
-      (req as IAuthenticatedRequest).user = decoded;
+      attachUserToRequest(req, decoded);
     }
   } catch {
     // Silently ignore auth errors for optional routes
   }
   next();
-}
+};
 
 function extractToken(req: Request): string | null {
   // Priority 1: Authorization header
@@ -92,4 +106,24 @@ function extractToken(req: Request): string | null {
   }
 
   return null;
+}
+
+function extractJtiFromPayload(payload: unknown): string | null {
+  if (typeof payload !== 'object' || payload === null || !('jti' in payload)) {
+    return null;
+  }
+
+  const maybePayload = payload as { jti?: unknown };
+  return typeof maybePayload.jti === 'string' && maybePayload.jti.length > 0
+    ? maybePayload.jti
+    : null;
+}
+
+function attachUserToRequest(req: Request, payload: IJwtPayload): void {
+  Object.defineProperty(req, 'user', {
+    value: payload,
+    writable: true,
+    configurable: true,
+    enumerable: true,
+  });
 }

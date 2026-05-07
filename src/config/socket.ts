@@ -2,7 +2,7 @@
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 import { redis, RedisKeys } from '@config/redis';
-import { verifyAccessToken } from '@utils/token';
+import { verifyAccessToken } from '@shared/utils/token';
 import { Server as SocketServer } from 'socket.io';
 
 import type { IJwtPayload } from '@app-types/index';

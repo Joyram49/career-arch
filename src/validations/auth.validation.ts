@@ -1,4 +1,4 @@
-import { PASSWORD } from '@utils/constants';
+import { PASSWORD } from '@shared/utils/constants';
 import { z } from 'zod';
 
 // ── Password validation rule (reusable) ───────────────────────────────────

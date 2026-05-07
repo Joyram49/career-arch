@@ -1,9 +1,13 @@
 import * as OrgAuthController from '@controllers/auth/org.auth.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { forgotPasswordLimiter, loginLimiter, registerLimiter } from '@middlewares/rateLimiter';
-import { validate } from '@middlewares/validate';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import {
+  forgotPasswordLimiter,
+  loginLimiter,
+  registerLimiter,
+} from '@shared/middlewares/rateLimiter';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import {
   forgotPasswordSchema,
   orgLoginSchema,

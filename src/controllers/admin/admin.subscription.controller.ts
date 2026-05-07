@@ -1,7 +1,7 @@
 import * as AdminPlanService from '@services/admin/admin.subscription.service';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import { QueryBuilder } from '@shared/utils/queryBuilder';
 
-import { sendSuccess } from '@/utils/apiResponse';
-import { QueryBuilder } from '@/utils/queryBuilder';
 import { adminListSubscriptionsSchema } from '@/validations/subscription.validation';
 
 import type { Request, Response } from 'express';

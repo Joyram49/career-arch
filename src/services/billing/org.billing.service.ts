@@ -3,10 +3,11 @@
 // GET BILLING INFO
 // ─────────────────────────────────────────────
 
+import { BadRequestError, NotFoundError } from '@shared/utils/apiError';
+
 import { prisma } from '@/config/database';
 import { logger } from '@/config/logger';
 import { stripe } from '@/config/stripe';
-import { BadRequestError, NotFoundError } from '@/utils/apiError';
 
 export interface IBillingInfo {
   isPaymentMethodOnFile: boolean;

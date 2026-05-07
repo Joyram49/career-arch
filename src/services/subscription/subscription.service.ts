@@ -2,17 +2,17 @@ import {
   type IInvoiceResponse,
   type IMySubscriptionResponse,
   type IPlanFeatures,
-} from '@app-types/subscription';
+} from '@app-types/subscription.type';
 import { prisma } from '@config/database';
 import { env } from '@config/env';
 import { stripe } from '@config/stripe';
-import { BadRequestError, NotFoundError } from '@utils/apiError';
+import { BadRequestError, NotFoundError } from '@shared/utils/apiError';
+import { parseFeatures } from '@shared/utils/planFeaturesSchema';
 import { format, startOfMonth } from 'date-fns';
 
 import { logger } from '@/config/logger';
 import { enqueueEmail } from '@/jobs/queues/email.queue';
 import { getPlanFeatures } from '@/services/admin/admin.plan.service';
-import { parseFeatures } from '@/utils/planFeaturesSchema';
 
 import type { SubscriptionPlan } from '@prisma/client';
 import type Stripe from 'stripe';

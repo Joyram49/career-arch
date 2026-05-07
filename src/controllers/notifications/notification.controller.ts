@@ -1,5 +1,5 @@
 import * as NotificationService from '@services/notifications/notification.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { ListNotificationsQuery } from '@validations/notification.validation';

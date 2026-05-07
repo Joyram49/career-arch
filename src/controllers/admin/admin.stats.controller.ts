@@ -1,5 +1,5 @@
 import * as AdminStatsService from '@services/admin/admin.stats.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { Request, Response } from 'express';
 

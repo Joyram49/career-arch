@@ -1,10 +1,11 @@
 import * as SavedJobController from '@controllers/user/saved.job.controller';
 import * as UserController from '@controllers/user/user.profile.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { uploadAvatarMiddleware, uploadResumeMiddleware } from '@middlewares/upload';
-import { validate } from '@middlewares/validate';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import { checkSaveJobLimit } from '@shared/middlewares/checkSaveJobLimit';
+import { uploadAvatarMiddleware, uploadResumeMiddleware } from '@shared/middlewares/upload';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import {
   changePasswordSchema,
   deactivateAccountSchema,
@@ -12,7 +13,6 @@ import {
 } from '@validations/user.validation';
 import { Router } from 'express';
 
-import { checkSaveJobLimit } from '@/middlewares/checkSaveJobLimit';
 import { jobIdParamForSaveSchema } from '@/validations/application.validation';
 
 const router = Router();

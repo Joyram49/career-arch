@@ -1,6 +1,6 @@
 import { prisma } from '@config/database';
-import { ConflictError, NotFoundError } from '@utils/apiError';
-import { buildPaginationMeta, parsePagination } from '@utils/pagination';
+import { ConflictError, NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta, parsePagination } from '@shared/utils/pagination';
 
 import type { Prisma } from '@prisma/client';
 

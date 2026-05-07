@@ -1,4 +1,4 @@
-import { sendError } from '@utils/apiResponse';
+import { sendError } from '@shared/utils/apiResponse';
 
 import type { Role } from '@prisma/client';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';

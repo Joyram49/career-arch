@@ -1,5 +1,5 @@
-import { sendError } from '@utils/apiResponse';
-import { HTTP_STATUS, RATE_LIMIT } from '@utils/constants';
+import { sendError } from '@shared/utils/apiResponse';
+import { HTTP_STATUS, RATE_LIMIT } from '@shared/utils/constants';
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
 import type { Request, Response } from 'express';

@@ -1,6 +1,6 @@
 import { prisma } from '@config/database';
 import { redis, RedisKeys } from '@config/redis';
-import { NotFoundError, UnauthorizedError } from '@utils/apiError';
+import { NotFoundError, UnauthorizedError } from '@shared/utils/apiError';
 import {
   extractJti,
   generateAccessToken,
@@ -9,7 +9,7 @@ import {
   getTokenTtl,
   hashToken,
   verifyRefreshToken,
-} from '@utils/token';
+} from '@shared/utils/token';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 

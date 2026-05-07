@@ -7,7 +7,7 @@ import {
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
-} from '@utils/apiError';
+} from '@shared/utils/apiError';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -16,7 +16,7 @@ import {
   getExpiryDate,
   hashToken,
   verifyRefreshToken,
-} from '@utils/token';
+} from '@shared/utils/token';
 import bcrypt from 'bcryptjs';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import qrcode from 'qrcode';
@@ -275,7 +275,7 @@ export async function validateTwoFa(data: {
   // Verify the temp token
   let decoded;
   try {
-    const { verifyAccessToken } = await import('@utils/token');
+    const { verifyAccessToken } = await import('@shared/utils/token');
     decoded = verifyAccessToken(data.tempToken);
   } catch {
     throw new UnauthorizedError('Invalid or expired session. Please log in again.');
@@ -330,7 +330,7 @@ export async function validateTwoFa(data: {
 
 export async function logoutUser(accessToken: string, refreshToken: string): Promise<void> {
   // 1. Blacklist the access token (TTL = remaining lifetime)
-  const { extractJti, getTokenTtl: getTtl } = await import('@utils/token');
+  const { extractJti, getTokenTtl: getTtl } = await import('@shared/utils/token');
   const jti = extractJti(accessToken);
   const ttl = getTtl(accessToken);
 

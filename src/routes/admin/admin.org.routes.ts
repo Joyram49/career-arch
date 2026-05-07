@@ -1,10 +1,10 @@
 import * as AdminOrgController from '@controllers/admin/admin.org.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import { Router } from 'express';
 
-import { validate } from '@/middlewares/validate';
 import { adminListOrgSchema } from '@/validations/admin.validation';
 
 const router = Router();

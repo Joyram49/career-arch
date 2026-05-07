@@ -1,5 +1,5 @@
 import * as ApplicationService from '@services/application/application.service';
-import { sendCreated, sendSuccess } from '@utils/apiResponse';
+import { sendCreated, sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type {

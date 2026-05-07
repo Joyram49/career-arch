@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import { prisma } from '@config/database';
-import { BadRequestError, NotFoundError } from '@utils/apiError';
-import { buildPaginationMeta, parsePagination } from '@utils/pagination';
-import { sanitizeHtml, sanitizeOptionalHtml } from '@utils/sanitize';
-import { generateSlug } from '@utils/slug';
+import { BadRequestError, NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta, parsePagination } from '@shared/utils/pagination';
+import { sanitizeHtml, sanitizeOptionalHtml } from '@shared/utils/sanitize';
+import { generateSlug } from '@shared/utils/slug';
 
 import type { IPaginationResult } from '@app-types/index';
 import type { Job, JobStatus, JobType, Prisma, SubscriptionPlan } from '@prisma/client';

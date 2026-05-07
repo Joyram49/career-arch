@@ -1,7 +1,7 @@
 import { deleteFromCloudinary, uploadAvatarToCloudinary } from '@services/upload/upload.service';
+import { NotFoundError } from '@shared/utils/apiError';
 
 import { prisma } from '@/config/database';
-import { NotFoundError } from '@/utils/apiError';
 import { type UpdateOrgProfileInput } from '@/validations/org.validation';
 
 // ─────────────────────────────────────────────

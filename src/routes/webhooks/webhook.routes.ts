@@ -1,5 +1,5 @@
 import { handleStripeWebhook } from '@controllers/webhooks/webhook.controller';
-import { asyncHandler } from '@utils/asyncHandler';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import express, { Router } from 'express';
 
 const router = Router();

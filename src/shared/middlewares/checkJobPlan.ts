@@ -1,6 +1,6 @@
 import { prisma } from '@config/database';
-import { sendError } from '@utils/apiResponse';
-import { PLAN_HIERARCHY } from '@utils/constants';
+import { sendError } from '@shared/utils/apiResponse';
+import { PLAN_HIERARCHY } from '@shared/utils/constants';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';

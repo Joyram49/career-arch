@@ -1,10 +1,10 @@
-import { sendCreated, sendSuccess } from '@utils/apiResponse';
+import { sendCreated, sendSuccess } from '@shared/utils/apiResponse';
 import {
   ACCESS_COOKIE_OPTIONS,
   COOKIE_NAMES,
   REFRESH_COOKIE_OPTIONS,
   REFRESH_COOKIE_OPTIONS_REMEMBER_ME,
-} from '@utils/constants';
+} from '@shared/utils/constants';
 
 import * as UserAuthService from '@/services/auth/user.auth.service';
 

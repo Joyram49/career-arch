@@ -7,8 +7,8 @@ import {
   uploadAvatarToCloudinary,
   uploadResumeToCloudinary,
 } from '@services/upload/upload.service';
-import { BadRequestError, NotFoundError, UnauthorizedError } from '@utils/apiError';
-import { extractJti, getTokenTtl, hashToken } from '@utils/token';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '@shared/utils/apiError';
+import { extractJti, getTokenTtl, hashToken } from '@shared/utils/token';
 import bcrypt from 'bcryptjs';
 
 import { enqueueEmail } from '@/jobs/queues/email.queue';

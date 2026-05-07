@@ -2,8 +2,8 @@ import crypto from 'crypto';
 
 import cloudinary from '@config/cloudinary';
 import { logger } from '@config/logger';
-import { BadRequestError } from '@utils/apiError';
-import { FILE_UPLOAD } from '@utils/constants';
+import { BadRequestError } from '@shared/utils/apiError';
+import { FILE_UPLOAD } from '@shared/utils/constants';
 
 // ── Key generators ─────────────────────────────────────────────────────────
 

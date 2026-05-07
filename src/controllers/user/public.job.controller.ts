@@ -1,5 +1,5 @@
 import * as PublicJobService from '@services/jobs/public.job.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { PublicJobSearchQuery } from '@validations/public.jobs.validation';

@@ -1,10 +1,10 @@
 import { type SubscriptionPlan, type SubscriptionStatus } from '@prisma/client';
+import { BadRequestError, NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta } from '@shared/utils/pagination';
+import { extractPagination } from '@shared/utils/queryBuilder';
 
 import { prisma } from '@/config/database';
 import { stripe } from '@/config/stripe';
-import { BadRequestError, NotFoundError } from '@/utils/apiError';
-import { buildPaginationMeta } from '@/utils/pagination';
-import { extractPagination } from '@/utils/queryBuilder';
 import { type AdminListSubscriptionsQuery } from '@/validations/subscription.validation';
 
 import type Stripe from 'stripe';

@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { prisma } from '@config/database';
-import { NotFoundError } from '@utils/apiError';
-import { buildPaginationMeta } from '@utils/pagination';
-import { extractPagination } from '@utils/queryBuilder';
+import { NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta } from '@shared/utils/pagination';
+import { extractPagination } from '@shared/utils/queryBuilder';
 
 import type { Role } from '@prisma/client';
 import type { ListNotificationsQuery } from '@validations/notification.validation';

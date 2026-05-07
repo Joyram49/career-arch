@@ -1,5 +1,5 @@
 import * as OrgProfileService from '@services/profile/org.profile.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { UpdateOrgProfileInput } from '@validations/org.validation';

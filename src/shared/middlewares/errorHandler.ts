@@ -1,8 +1,8 @@
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 import { Prisma } from '@prisma/client';
-import { ApiError } from '@utils/apiError';
-import { sendError } from '@utils/apiResponse';
+import { ApiError } from '@shared/utils/apiError';
+import { sendError } from '@shared/utils/apiResponse';
 import jwt from 'jsonwebtoken';
 
 import type { NextFunction, Request, Response } from 'express';

@@ -4,7 +4,7 @@ import { env } from '@config/env';
 import { logger } from '@config/logger';
 import { stripe } from '@config/stripe';
 import * as SubscriptionService from '@services/subscription/subscription.service';
-import { sendError, sendSuccess } from '@utils/apiResponse';
+import { sendError, sendSuccess } from '@shared/utils/apiResponse';
 
 import { enqueueEmail } from '@/jobs/queues/email.queue';
 

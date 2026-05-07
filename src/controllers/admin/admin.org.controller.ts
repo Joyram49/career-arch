@@ -1,7 +1,7 @@
 import * as AdminOrgService from '@services/admin/admin.org.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import { QueryBuilder } from '@shared/utils/queryBuilder';
 
-import { QueryBuilder } from '@/utils/queryBuilder';
 import { adminListOrgSchema } from '@/validations/admin.validation';
 
 import type { Request, Response } from 'express';

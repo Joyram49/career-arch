@@ -1,6 +1,6 @@
 /* eslint-disable no-duplicate-imports */
-import { BadRequestError } from '@utils/apiError';
-import { FILE_UPLOAD } from '@utils/constants';
+import { BadRequestError } from '@shared/utils/apiError';
+import { FILE_UPLOAD } from '@shared/utils/constants';
 import multer from 'multer';
 
 import type { Request } from 'express';
