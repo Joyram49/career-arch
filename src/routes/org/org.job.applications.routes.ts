@@ -1,8 +1,8 @@
 import * as OrgApplicationController from '@controllers/application/org.application.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { validate } from '@middlewares/validate';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import { listJobApplicationsSchema } from '@validations/application.validation';
 import { Router } from 'express';
 

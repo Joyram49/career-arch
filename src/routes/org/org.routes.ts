@@ -1,11 +1,11 @@
 import * as OrgBillingController from '@controllers/org/org.billing.controller';
 import * as OrgProfileController from '@controllers/org/org.profile.controller';
 import * as TestController from '@controllers/test/payment-method.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { uploadAvatarMiddleware } from '@middlewares/upload';
-import { validate } from '@middlewares/validate';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import { uploadAvatarMiddleware } from '@shared/middlewares/upload';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import {
   createPaymentMethodSchema,
   savePaymentMethodSchema,

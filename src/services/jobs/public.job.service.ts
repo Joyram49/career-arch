@@ -1,6 +1,6 @@
 import { prisma } from '@config/database';
-import { NotFoundError } from '@utils/apiError';
-import { buildPaginationMeta } from '@utils/pagination';
+import { NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta } from '@shared/utils/pagination';
 
 import type { IJwtPayload } from '@app-types/index';
 import type { Prisma, SubscriptionPlan } from '@prisma/client';

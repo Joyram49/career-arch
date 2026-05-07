@@ -1,5 +1,5 @@
 import * as AdminPlanService from '@services/admin/admin.plan.service';
-import { sendCreated, sendNoContent, sendSuccess } from '@utils/apiResponse';
+import { sendCreated, sendNoContent, sendSuccess } from '@shared/utils/apiResponse';
 
 import { type CreatePlanInput, type UpdatePlanInput } from '@/validations/subscription.validation';
 

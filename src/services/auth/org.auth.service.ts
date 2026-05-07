@@ -7,7 +7,7 @@ import {
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
-} from '@utils/apiError';
+} from '@shared/utils/apiError';
 import {
   extractJti,
   generateAccessToken,
@@ -18,7 +18,7 @@ import {
   getTokenTtl,
   hashToken,
   verifyRefreshToken,
-} from '@utils/token';
+} from '@shared/utils/token';
 import bcrypt from 'bcryptjs';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import qrcode from 'qrcode';
@@ -188,7 +188,7 @@ export async function validateOrgTwoFa(data: {
   tempToken: string;
   otp: string;
 }): Promise<{ tokens: ITokenPair; organization: IOrgAuthResponse }> {
-  const { verifyAccessToken } = await import('@utils/token');
+  const { verifyAccessToken } = await import('@shared/utils/token');
 
   let decoded;
   try {

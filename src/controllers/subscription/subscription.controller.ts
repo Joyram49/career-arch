@@ -1,5 +1,5 @@
 import * as SubscriptionService from '@services/subscription/subscription.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { Request, Response } from 'express';

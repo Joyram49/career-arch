@@ -1,5 +1,6 @@
+import { sendSuccess } from '@shared/utils/apiResponse';
+
 import * as OrgBillingService from '@/services/billing/org.billing.service';
-import { sendSuccess } from '@/utils/apiResponse';
 import { type CreatePaymentMethodInput } from '@/validations/org.validation';
 
 import type { Request, Response } from 'express';

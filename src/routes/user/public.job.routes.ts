@@ -1,7 +1,7 @@
 import * as PublicJobController from '@controllers/user/public.job.controller';
-import { optionalAuthenticate } from '@middlewares/authenticate';
-import { validate } from '@middlewares/validate';
-import { asyncHandler } from '@utils/asyncHandler';
+import { optionalAuthenticate } from '@shared/middlewares/authenticate';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import { jobSlugParamSchema, publicJobSearchSchema } from '@validations/public.jobs.validation';
 import { Router } from 'express';
 

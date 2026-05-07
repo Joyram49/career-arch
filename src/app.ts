@@ -1,9 +1,9 @@
 import { env } from '@config/env';
 import { morganStream } from '@config/logger';
-import { errorHandler, notFoundHandler } from '@middlewares/errorHandler';
-import { generalLimiter } from '@middlewares/rateLimiter';
 import router from '@routes/index';
 import webHookRoutes from '@routes/webhooks/webhook.routes';
+import { errorHandler, notFoundHandler } from '@shared/middlewares/errorHandler';
+import { generalLimiter } from '@shared/middlewares/rateLimiter';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';

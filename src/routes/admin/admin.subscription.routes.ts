@@ -1,8 +1,8 @@
 import * as AdminSubscriptionController from '@controllers/admin/admin.subscription.controller';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import { Router } from 'express';
 
-import { validate } from '@/middlewares/validate';
-import { asyncHandler } from '@/utils/asyncHandler';
 import {
   adminListSubscriptionsSchema,
   adminRefundSchema,

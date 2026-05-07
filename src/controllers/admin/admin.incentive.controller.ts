@@ -1,7 +1,7 @@
 import * as IncentiveService from '@services/incentive/incentive.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import { QueryBuilder } from '@shared/utils/queryBuilder';
 
-import { QueryBuilder } from '@/utils/queryBuilder';
 import {
   adminListIncentivesSchema,
   type ResolveDisputeInput,

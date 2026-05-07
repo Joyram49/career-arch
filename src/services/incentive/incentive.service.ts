@@ -3,10 +3,10 @@
 import { prisma } from '@config/database';
 import { env } from '@config/env';
 import { stripe } from '@config/stripe';
-import { BadRequestError, NotFoundError } from '@utils/apiError';
-import { INCENTIVE } from '@utils/constants';
-import { buildPaginationMeta } from '@utils/pagination';
-import { extractPagination } from '@utils/queryBuilder';
+import { BadRequestError, NotFoundError } from '@shared/utils/apiError';
+import { INCENTIVE } from '@shared/utils/constants';
+import { buildPaginationMeta } from '@shared/utils/pagination';
+import { extractPagination } from '@shared/utils/queryBuilder';
 
 import { logger } from '@/config/logger';
 import { emitIncentiveCreated } from '@/config/socket';

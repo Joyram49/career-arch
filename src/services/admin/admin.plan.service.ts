@@ -1,11 +1,10 @@
 import { prisma } from '@config/database';
 import { stripe } from '@config/stripe';
-import { BadRequestError, ConflictError, NotFoundError } from '@utils/apiError';
+import { BadRequestError, ConflictError, NotFoundError } from '@shared/utils/apiError';
+import { parseFeatures } from '@shared/utils/planFeaturesSchema';
 import { type CreatePlanInput, type UpdatePlanInput } from '@validations/subscription.validation';
 
-import { parseFeatures } from '@/utils/planFeaturesSchema';
-
-import type { IPlanCatalogueResponse, IPlanFeatures } from '@app-types/subscription';
+import type { IPlanCatalogueResponse, IPlanFeatures } from '@app-types/subscription.type';
 import type { SubscriptionPlan } from '@prisma/client';
 
 // ─────────────────────────────────────────────

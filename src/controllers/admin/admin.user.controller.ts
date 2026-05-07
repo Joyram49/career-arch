@@ -1,7 +1,7 @@
 import * as AdminUserService from '@services/admin/admin.user.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import { QueryBuilder } from '@shared/utils/queryBuilder';
 
-import { QueryBuilder } from '@/utils/queryBuilder';
 import { adminListUsersSchema } from '@/validations/user.validation';
 
 import type { IAuthenticatedRequest } from '@app-types/index';

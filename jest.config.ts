@@ -15,10 +15,14 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
-    '^@middlewares/(.*)$': '<rootDir>/src/middlewares/$1',
+
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
-    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    // ── Shared ─────────────────────────────────────────────────────────
+    '^@shared/middlewares/(.*)$': '<rootDir>/src/shared/middlewares/$1',
+    '^@shared/utils/(.*)$': '<rootDir>/src/shared/utils/$1',
+    '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+
     '^@validations/(.*)$': '<rootDir>/src/validations/$1',
     '^@jobs/(.*)$': '<rootDir>/src/jobs/$1',
     '^@app-types/(.*)$': '<rootDir>/src/types/$1',

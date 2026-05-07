@@ -1,9 +1,9 @@
 import * as AdminAuthController from '@controllers/auth/admin.auth.controller';
-import { authenticate } from '@middlewares/authenticate';
-import { authorize } from '@middlewares/authorize';
-import { loginLimiter } from '@middlewares/rateLimiter';
-import { validate } from '@middlewares/validate';
-import { asyncHandler } from '@utils/asyncHandler';
+import { authenticate } from '@shared/middlewares/authenticate';
+import { authorize } from '@shared/middlewares/authorize';
+import { loginLimiter } from '@shared/middlewares/rateLimiter';
+import { validate } from '@shared/middlewares/validate';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 import { adminLoginSchema } from '@validations/auth.validation';
 import { Router } from 'express';
 

@@ -5,12 +5,12 @@
 import { prisma } from '@config/database';
 import { stripe } from '@config/stripe';
 import { type Prisma } from '@prisma/client';
-import { BadRequestError, NotFoundError } from '@utils/apiError';
+import { BadRequestError, NotFoundError } from '@shared/utils/apiError';
+import { buildPaginationMeta } from '@shared/utils/pagination';
+import { extractPagination } from '@shared/utils/queryBuilder';
 
 import { env } from '@/config/env';
 import { enqueueEmail } from '@/jobs/queues/email.queue';
-import { buildPaginationMeta } from '@/utils/pagination';
-import { extractPagination } from '@/utils/queryBuilder';
 import { type AdminListOrgQuery } from '@/validations/admin.validation';
 // sendOrgApprovedEmail will be created in the email templates phase
 // import { sendOrgApprovedEmail } from '@services/email.service';

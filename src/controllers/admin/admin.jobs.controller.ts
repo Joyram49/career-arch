@@ -1,7 +1,7 @@
 import * as AdminJobsService from '@services/jobs/admin.jobs.service';
-import { sendSuccess } from '@utils/apiResponse';
+import { sendSuccess } from '@shared/utils/apiResponse';
+import { QueryBuilder } from '@shared/utils/queryBuilder';
 
-import { QueryBuilder } from '@/utils/queryBuilder';
 import { adminListJobsSchema, type TakedownJobInput } from '@/validations/admin.jobs.validation';
 
 import type { Request, Response } from 'express';

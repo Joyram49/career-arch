@@ -54,6 +54,10 @@
       "@routes/*": ["src/routes/*"],
       "@services/*": ["src/services/*"],
       "@utils/*": ["src/utils/*"],
+      /* Shared — cross-cutting, zero business logic */
+      "@shared/*": ["src/shared/*"],
+      "@shared/middlewares/*": ["src/shared/middlewares/*"],
+      "@shared/utils/*": ["src/shared/utils/*"],
       "@validations/*": ["src/validations/*"],
       "@jobs/*": ["src/jobs/*"],
       "@app-types/*": ["src/types/*"],
