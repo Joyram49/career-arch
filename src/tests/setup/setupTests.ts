@@ -4,7 +4,7 @@ import { jest } from '@jest/globals';
 // ── Mock the entire email service ──────────────────────────────────────────
 // Prevents real emails from being sent during tests.
 // Every email function becomes a no-op spy you can assert on.
-jest.mock('@modules/email/service', () => ({
+jest.mock('@modules/email/services', () => ({
   sendEmail: jest.fn(() => undefined),
   sendVerificationEmail: jest.fn(() => undefined),
   sendOrgVerificationEmail: jest.fn(() => undefined),
