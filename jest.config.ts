@@ -24,7 +24,7 @@ const config: Config = {
     '^@modules/incentives/(.*)$': '<rootDir>/src/modules/incentives/$1',
     '^@modules/notifications/(.*)$': '<rootDir>/src/modules/notifications/$1',
     '^@modules/uploads/(.*)$': '<rootDir>/src/modules/uploads/$1',
-    '^@modules/email/(.*)$': '<rootDir>/src/modules/email/$1',
+    '^@modules/email/(.*)$': '<rootDir>/src/modules/email/services/$1',
     '^@modules/admin/(.*)$': '<rootDir>/src/modules/admin/$1',
     '^@modules/(.*)$': '<rootDir>/src/modules/$1',
     // ── Shared ─────────────────────────────────────────────────────────
