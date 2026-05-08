@@ -18,6 +18,19 @@ const config: Config = {
 
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
+    // ── Feature modules ────────────────────────────────────────────────
+    '^@modules/auth/(.*)$': '<rootDir>/src/modules/auth/$1',
+    '^@modules/users/(.*)$': '<rootDir>/src/modules/users/$1',
+    '^@modules/organizations/(.*)$': '<rootDir>/src/modules/organizations/$1',
+    '^@modules/jobs/(.*)$': '<rootDir>/src/modules/jobs/$1',
+    '^@modules/applications/(.*)$': '<rootDir>/src/modules/applications/$1',
+    '^@modules/subscriptions/(.*)$': '<rootDir>/src/modules/subscriptions/$1',
+    '^@modules/incentives/(.*)$': '<rootDir>/src/modules/incentives/$1',
+    '^@modules/notifications/(.*)$': '<rootDir>/src/modules/notifications/$1',
+    '^@modules/uploads/(.*)$': '<rootDir>/src/modules/uploads/$1',
+    '^@modules/email/(.*)$': '<rootDir>/src/modules/email/$1',
+    '^@modules/admin/(.*)$': '<rootDir>/src/modules/admin/$1',
+    '^@modules/(.*)$': '<rootDir>/src/modules/$1',
     // ── Shared ─────────────────────────────────────────────────────────
     '^@shared/middlewares/(.*)$': '<rootDir>/src/shared/middlewares/$1',
     '^@shared/utils/(.*)$': '<rootDir>/src/shared/utils/$1',

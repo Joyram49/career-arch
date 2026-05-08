@@ -1,8 +1,8 @@
 import { redis } from '@config/redis';
+import { cleanupExpiredJobs } from '@modules/jobs/services/job.service';
 import { Queue, Worker } from 'bullmq';
 
 import { logger } from '@/config/logger';
-import { cleanupExpiredJobs } from '@/services/jobs/job.service';
 
 const QUEUE_NAME = 'job-cleanup';
 

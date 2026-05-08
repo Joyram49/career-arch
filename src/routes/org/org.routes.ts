@@ -1,16 +1,11 @@
 import * as OrgBillingController from '@controllers/org/org.billing.controller';
 import * as OrgProfileController from '@controllers/org/org.profile.controller';
-import * as TestController from '@controllers/test/payment-method.controller';
 import { authenticate } from '@shared/middlewares/authenticate';
 import { authorize } from '@shared/middlewares/authorize';
 import { uploadAvatarMiddleware } from '@shared/middlewares/upload';
 import { validate } from '@shared/middlewares/validate';
 import { asyncHandler } from '@shared/utils/asyncHandler';
-import {
-  createPaymentMethodSchema,
-  savePaymentMethodSchema,
-  updateOrgProfileSchema,
-} from '@validations/org.validation';
+import { savePaymentMethodSchema, updateOrgProfileSchema } from '@validations/org.validation';
 import { Router } from 'express';
 
 const router = Router();
@@ -186,11 +181,11 @@ router.post('/billing/setup-intent', asyncHandler(OrgBillingController.createSet
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/billing/test/create-payment-method',
-  validate(createPaymentMethodSchema),
-  asyncHandler(TestController.createPaymentMethod),
-);
+// router.post(
+//   '/billing/test/create-payment-method',
+//   validate(createPaymentMethodSchema),
+//   asyncHandler(TestController.createPaymentMethod),
+// );
 
 /**
  * @swagger
