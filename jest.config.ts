@@ -14,6 +14,7 @@ const config: Config = {
     '^@config/stripe$': '<rootDir>/src/tests/setup/mocks/stripe.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@config/(.*)$': '<rootDir>/src/config/$1',
+    '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     // ── Feature modules ────────────────────────────────────────────────
     '^@modules/auth/(.*)$': '<rootDir>/src/modules/auth/$1',
     '^@modules/users/(.*)$': '<rootDir>/src/modules/users/$1',
