@@ -204,7 +204,8 @@ describe('Incentive System', () => {
 
   describe('createIncentiveForHire (internal)', () => {
     it('should create an incentive record directly in DB', async () => {
-      const { createIncentiveForHire } = await import('@/services/incentive/incentive.service');
+      const { createIncentiveForHire } =
+        await import('@modules/incentives/services/incentive.service');
 
       await createIncentiveForHire(
         testOrgId,
@@ -238,7 +239,8 @@ describe('Incentive System', () => {
     });
 
     it('should NOT create a duplicate for the same applicationId', async () => {
-      const { createIncentiveForHire } = await import('@/services/incentive/incentive.service');
+      const { createIncentiveForHire } =
+        await import('@modules/incentives/services/incentive.service');
 
       // Prisma unique constraint on applicationId should prevent duplicate
       await expect(
@@ -706,7 +708,8 @@ describe('Incentive System', () => {
 
   describe('markOverdueIncentives (internal cron function)', () => {
     it('should mark PENDING incentives past dueAt as OVERDUE', async () => {
-      const { markOverdueIncentives } = await import('@/services/incentive/incentive.service');
+      const { markOverdueIncentives } =
+        await import('@modules/admin/services/admin.incentives.service');
 
       // Create a PENDING incentive with dueAt in the past
       const bcrypt = await import('bcryptjs');
@@ -753,7 +756,8 @@ describe('Incentive System', () => {
     });
 
     it('should NOT mark PENDING incentives with future dueAt as OVERDUE', async () => {
-      const { markOverdueIncentives } = await import('@/services/incentive/incentive.service');
+      const { markOverdueIncentives } =
+        await import('@modules/admin/services/admin.incentives.service');
 
       // Create a PENDING incentive with dueAt in the future
       const bcrypt = await import('bcryptjs');

@@ -1,7 +1,6 @@
 import { env } from '@config/env';
 import { morganStream } from '@config/logger';
 import router from '@routes/index';
-import webHookRoutes from '@routes/webhooks/webhook.routes';
 import { errorHandler, notFoundHandler } from '@shared/middlewares/errorHandler';
 import { generalLimiter } from '@shared/middlewares/rateLimiter';
 import cookieParser from 'cookie-parser';
@@ -10,6 +9,8 @@ import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
+
+import webHookRoutes from '@/modules/stripe/routes/webhook.routes';
 
 import { swaggerSetup } from './swagger';
 

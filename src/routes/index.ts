@@ -1,25 +1,24 @@
+import adminIncentiveRoutes from '@modules/admin/routes/admin.incentives.routes';
+import adminJobsRoutes from '@modules/admin/routes/admin.jobs.routes';
+import adminOrgRoutes from '@modules/admin/routes/admin.orgs.routes';
+import adminPlansRoutes from '@modules/admin/routes/admin.plans.routes';
+import adminStatsRoutes from '@modules/admin/routes/admin.stats.routes';
+import adminSubscriptionsRoutes from '@modules/admin/routes/admin.subscriptions.routes';
+import adminUserRoutes from '@modules/admin/routes/admin.users.routes';
+import orgApplicationRoutes from '@modules/applications/routes/org.application.routes';
+import orgJobApplicationRoutes from '@modules/applications/routes/org.job.applications.routes';
+import applicationRoutes from '@modules/applications/routes/user.application.routes';
+import adminAuthRoutes from '@modules/auth/routes/admin.auth.routes';
+import orgAuthRoutes from '@modules/auth/routes/org.auth.routes';
+import userAuthRoutes from '@modules/auth/routes/user.auth.routes';
+import orgIncentiveRoutes from '@modules/incentives/routes/org.incentive.routes';
+import orgJobsRoutes from '@modules/jobs/routes/org.jobs.routes';
+import publicJobRoutes from '@modules/jobs/routes/public.job.routes';
+import notificationRoutes from '@modules/notifications/routes/notification.routes';
+import orgRoutes from '@modules/organizations/routes/org.routes';
+import subscriptionRoutes from '@modules/subscriptions/routes/subscription.routes';
+import userRoutes from '@modules/users/routes/user.routes';
 import { Router } from 'express';
-
-import adminDashboardRoutes from './admin/admin.dashboard.routes';
-import adminIncentiveRoutes from './admin/admin.incentive.routes';
-import adminJobsRoutes from './admin/admin.jobs.routes';
-import adminOrgRoutes from './admin/admin.org.routes';
-import adminPlansRoutes from './admin/admin.plan.routes';
-import adminSubscriptionsRoutes from './admin/admin.subscription.routes';
-import adminUserRoutes from './admin/admin.user.routes';
-import applicationRoutes from './application/application.routes';
-import orgApplicationRoutes from './application/org.application.routes';
-import adminAuthRoutes from './auth/auth.admin.routes';
-import orgAuthRoutes from './auth/auth.org.routes';
-import userAuthRoutes from './auth/auth.user.routes';
-import notificationRoutes from './notifications/notification.routes';
-import orgIncentiveRoutes from './org/org.incentive.routes';
-import orgJobApplicationRoutes from './org/org.job.applications.routes';
-import orgJobsRoutes from './org/org.jobs.routes';
-import orgRoutes from './org/org.routes';
-import subscriptionRoutes from './subscription/subscription.routes';
-import publicJobRoutes from './user/public.job.routes';
-import userRoutes from './user/user.routes';
 
 const router = Router();
 
@@ -61,7 +60,7 @@ router.use('/admin/plans', adminPlansRoutes);
 router.use('/admin/subscriptions', adminSubscriptionsRoutes);
 router.use('/admin/incentives', adminIncentiveRoutes);
 router.use('/admin/jobs', adminJobsRoutes);
-router.use('/admin/dashboard', adminDashboardRoutes);
+router.use('/admin/dashboard', adminStatsRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {

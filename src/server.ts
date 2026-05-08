@@ -19,7 +19,7 @@ import { config } from 'dotenv';
 import app from './app';
 import { initSocket } from './config/socket';
 import { emailQueue } from './jobs/queues/email.queue';
-import { emailWorker } from './jobs/queues/email.worker';
+import { emailWorker } from './jobs/workers/email.worker';
 
 config();
 

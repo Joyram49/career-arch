@@ -1,8 +1,8 @@
 import { redis } from '@config/redis';
+import { markOverdueIncentives } from '@modules/admin/services/admin.incentives.service';
 import { Queue, Worker } from 'bullmq';
 
 import { logger } from '@/config/logger';
-import { markOverdueIncentives } from '@/services/incentive/incentive.service';
 
 const QUEUE_NAME = 'incentive-overdue';
 
