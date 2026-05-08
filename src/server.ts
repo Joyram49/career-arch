@@ -24,7 +24,7 @@ import { emailWorker } from './jobs/workers/email.worker';
 config();
 
 const PORT = env.PORT;
-let server: ReturnType<typeof app.listen> | undefined;
+let server: ReturnType<typeof http.createServer> | undefined;
 
 // ── Startup sequence ───────────────────────────────────────────────────────
 async function start(): Promise<void> {
@@ -48,10 +48,10 @@ async function start(): Promise<void> {
     // 5. Attach Socket.IO to the HTTP server
     initSocket(httpServer);
 
-    // 6. Start HTTP server
-    server = app.listen(PORT, () => {
+    // 6. Start HTTP server on all interfaces (required for platforms like Render).
+    server = httpServer.listen(PORT, '0.0.0.0', () => {
       logger.info(`🚀 CareerArch API running on port ${PORT}`);
-      logger.info(`📖 API Docs: http://localhost:${PORT}/api-docs`);
+      logger.info(`📖 API Docs: http://0.0.0.0:${PORT}/api-docs`);
       logger.info(`🌍 Environment: ${env.NODE_ENV}`);
     });
 
