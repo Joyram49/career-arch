@@ -20,11 +20,22 @@ function loadTemplate(
   templateName: string,
   variables: Record<string, string | number | boolean>,
 ): string {
-  const basePath =
-    process.env['NODE_ENV'] === 'production'
-      ? path.join(process.cwd(), 'dist')
-      : path.join(process.cwd(), 'src');
-  const templatePath = path.join(basePath, 'modules', 'email', 'templates', `${templateName}.html`);
+  const candidatePaths = [
+    // Preferred in compiled/runtime environments (dist/modules/email/services -> ../templates).
+    path.resolve(__dirname, '..', 'templates', `${templateName}.html`),
+    // Fallback for source execution (ts-node / local dev).
+    path.join(process.cwd(), 'src', 'modules', 'email', 'templates', `${templateName}.html`),
+    // Fallback for compiled execution launched from project root.
+    path.join(process.cwd(), 'dist', 'modules', 'email', 'templates', `${templateName}.html`),
+  ];
+
+  const templatePath = candidatePaths.find((candidatePath) => fs.existsSync(candidatePath));
+
+  if (templatePath === undefined) {
+    throw new Error(
+      `Email template "${templateName}.html" not found. Checked: ${candidatePaths.join(', ')}`,
+    );
+  }
 
   let html = fs.readFileSync(templatePath, 'utf-8');
 

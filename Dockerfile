@@ -21,6 +21,8 @@ RUN npm ci
 COPY . .
 RUN npm run db:generate
 RUN npm run build
+RUN mkdir -p dist/modules/email/templates \
+  && cp -R src/modules/email/templates/. dist/modules/email/templates/
 
 # ── Stage 3: Development (ts-node + nodemon, no build needed) ─────────────
 FROM base AS development
