@@ -1,4 +1,4 @@
-import * as ApplicationService from '@services/application/application.service';
+import * as ApplicationService from '@modules/applications/services/application.service';
 import { sendCreated, sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';

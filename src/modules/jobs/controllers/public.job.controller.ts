@@ -1,4 +1,4 @@
-import * as PublicJobService from '@services/jobs/public.job.service';
+import * as PublicJobService from '@modules/jobs/services/public.job.service';
 import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';

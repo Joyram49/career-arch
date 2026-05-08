@@ -13,7 +13,7 @@ import { validate } from '@shared/middlewares/validate';
 import { asyncHandler } from '@shared/utils/asyncHandler';
 import { Router } from 'express';
 
-import { jobIdParamForSaveSchema } from '@/validations/application.validation';
+import { jobIdParamForSaveSchema } from '@/modules/applications/validations/application.validation';
 
 const router = Router();
 

@@ -21,7 +21,7 @@ import {
   sendSubscriptionDowngradedEmail,
   sendTwoFaEnabledEmail,
   sendVerificationEmail,
-} from '@services/email.service';
+} from '@modules/email/services/email.service';
 import { Worker, type Job } from 'bullmq';
 
 // ─────────────────────────────────────────────

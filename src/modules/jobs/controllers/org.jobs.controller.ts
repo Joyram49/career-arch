@@ -1,4 +1,4 @@
-import * as JobService from '@services/jobs/job.service';
+import * as JobService from '@modules/jobs/services/job.service';
 import { sendCreated, sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';

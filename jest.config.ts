@@ -14,10 +14,6 @@ const config: Config = {
     '^@config/stripe$': '<rootDir>/src/tests/setup/mocks/stripe.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@config/(.*)$': '<rootDir>/src/config/$1',
-    '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
-
-    '^@routes/(.*)$': '<rootDir>/src/routes/$1',
-    '^@services/(.*)$': '<rootDir>/src/services/$1',
     // ── Feature modules ────────────────────────────────────────────────
     '^@modules/auth/(.*)$': '<rootDir>/src/modules/auth/$1',
     '^@modules/users/(.*)$': '<rootDir>/src/modules/users/$1',
@@ -35,8 +31,6 @@ const config: Config = {
     '^@shared/middlewares/(.*)$': '<rootDir>/src/shared/middlewares/$1',
     '^@shared/utils/(.*)$': '<rootDir>/src/shared/utils/$1',
     '^@shared/(.*)$': '<rootDir>/src/shared/$1',
-
-    '^@validations/(.*)$': '<rootDir>/src/validations/$1',
     '^@jobs/(.*)$': '<rootDir>/src/jobs/$1',
     '^@app-types/(.*)$': '<rootDir>/src/types/$1',
   },

@@ -1,8 +1,9 @@
 import { type IAuthenticatedRequest } from '@app-types/auth.types';
 import { prisma } from '@config/database';
-import { getPlanFeatures } from '@services/admin/admin.plan.service';
 import { sendError } from '@shared/utils/apiResponse';
 import { startOfMonth } from 'date-fns';
+
+import { getPlanFeatures } from '@/modules/admin/services/admin.plans.service';
 
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 

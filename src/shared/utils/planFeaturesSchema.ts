@@ -1,4 +1,4 @@
-import { planFeaturesSchema } from '@/validations/subscription.validation';
+import { planFeaturesSchema } from '@/modules/admin/validations/admin.plans.validation';
 
 import { BadRequestError } from './apiError';
 

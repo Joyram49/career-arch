@@ -1,4 +1,4 @@
-import { handleStripeWebhook } from '@controllers/webhooks/webhook.controller';
+import { handleStripeWebhook } from '@modules/stripe/controllers/webhook.controller';
 import { asyncHandler } from '@shared/utils/asyncHandler';
 import express, { Router } from 'express';
 

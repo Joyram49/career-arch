@@ -1,8 +1,7 @@
 import * as UserService from '@modules/users/services/user.profile.service';
+import { type UpdateProfileInput } from '@modules/users/validations/user.validation';
 import { sendSuccess } from '@shared/utils/apiResponse';
 import { COOKIE_NAMES } from '@shared/utils/constants';
-
-import { type UpdateProfileInput } from '@/validations/user.validation';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { Request, Response } from 'express';

@@ -48,12 +48,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@config/*": ["src/config/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@models/*": ["src/models/*"],
       "@routes/*": ["src/routes/*"],
-      "@services/*": ["src/services/*"],
-      "@utils/*": ["src/utils/*"],
       /* Feature modules — colocated controller/service/validation/route */
       "@modules/*": ["src/modules/*"],
       "@modules/auth/*": ["src/modules/auth/*"],
@@ -67,11 +62,12 @@
       "@modules/uploads/*": ["src/modules/uploads/*"],
       "@modules/email/*": ["src/modules/email/*"],
       "@modules/admin/*": ["src/modules/admin/*"],
+      "@modules/stripe/*": ["src/modules/stripe/*"],
+
       /* Shared — cross-cutting, zero business logic */
       "@shared/*": ["src/shared/*"],
       "@shared/middlewares/*": ["src/shared/middlewares/*"],
       "@shared/utils/*": ["src/shared/utils/*"],
-      "@validations/*": ["src/validations/*"],
       "@jobs/*": ["src/jobs/*"],
       "@app-types/*": ["src/types/*"],
       "@lib/*": ["src/lib/*"]

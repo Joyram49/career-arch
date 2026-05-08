@@ -2,7 +2,7 @@ import * as OrgProfileService from '@modules/organizations/services/org.profile.
 import { sendSuccess } from '@shared/utils/apiResponse';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
-import type { UpdateOrgProfileInput } from '@validations/org.validation';
+import type { UpdateOrgProfileInput } from '@modules/organizations/validations/org.validation';
 import type { Request, Response } from 'express';
 
 // ── GET /org/profile ───────────────────────────────────────────────────────

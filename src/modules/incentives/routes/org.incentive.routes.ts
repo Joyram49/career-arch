@@ -1,4 +1,4 @@
-import * as OrgIncentiveController from '@controllers/org/org.incentive.controller';
+import * as OrgIncentiveController from '@modules/incentives/controllers/org.incentive.controller';
 import {
   disputeIncentiveSchema,
   incentiveIdParamSchema,

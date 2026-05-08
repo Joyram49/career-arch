@@ -1,7 +1,7 @@
 import { type SubscriptionPlan } from '@prisma/client';
 
 import { prisma } from '@/config/database';
-import { getPlanFeatures } from '@/services/admin/admin.plan.service';
+import { getPlanFeatures } from '@/modules/admin/services/admin.plans.service';
 import { NotFoundError } from '@/shared/utils/apiError';
 
 import { type IInvoiceResponse, type IPlanFeatures } from '../types';
