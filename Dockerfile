@@ -1,6 +1,13 @@
-FROM node:20-alpine AS base
+FROM node:20-bookworm-slim AS base
 
 WORKDIR /app
+
+# Prisma + Node native deps (SSL) and healthcheck tooling
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    openssl \
+    curl \
+  && rm -rf /var/lib/apt/lists/*
 
 # ── Stage 1: Production dependencies only ─────────────────────────────────
 FROM base AS deps
@@ -54,6 +61,6 @@ USER careerarch
 EXPOSE 5000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:5000/api/v1/health || exit 1
+  CMD curl -fsS http://localhost:5000/api/v1/health || exit 1
 
 CMD ["node", "dist/server.js"]
