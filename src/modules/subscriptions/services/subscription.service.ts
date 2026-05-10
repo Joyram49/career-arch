@@ -300,6 +300,8 @@ export async function handleSubscriptionCreated(subscription: Stripe.Subscriptio
     throw new BadRequestError('User ID is required');
   }
 
+  logger.info('subscription', { subscription });
+
   const stripeSubId = subscription.id;
 
   await prisma.subscription.update({

@@ -1,5 +1,6 @@
 import * as PublicJobService from '@modules/jobs/services/public.job.service';
 import { sendSuccess } from '@shared/utils/apiResponse';
+import { getParsedQuery } from '@shared/utils/requestQuery';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { PublicJobSearchQuery } from '@modules/jobs/validations/public.jobs.validation';
@@ -9,7 +10,7 @@ import type { Request, Response } from 'express';
 export async function searchJobs(req: Request, res: Response): Promise<Response> {
   // optionalAuthenticate attaches user if token present — null if guest
   const user = (req as Partial<IAuthenticatedRequest>).user ?? null;
-  const query = req.query as unknown as PublicJobSearchQuery;
+  const query = getParsedQuery<PublicJobSearchQuery>(req);
 
   const { data: jobs, meta } = await PublicJobService.searchPublicJobs(user, query);
   return sendSuccess(res, { jobs }, 'Jobs retrieved', 200, meta as never);
