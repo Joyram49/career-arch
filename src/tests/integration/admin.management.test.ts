@@ -287,7 +287,8 @@ describe('Admin: User Management', () => {
     it('should reactivate a suspended user', async () => {
       const res = await request(app)
         .patch(`/api/v1/admin/users/${testUserId}/activate`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({});
 
       expect(res.status).toBe(200);
 
@@ -298,7 +299,8 @@ describe('Admin: User Management', () => {
     it('should reject activating already active user', async () => {
       const res = await request(app)
         .patch(`/api/v1/admin/users/${testUserId}/activate`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({});
 
       expect(res.status).toBe(400);
     });
