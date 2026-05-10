@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { type IEmailJobData } from '@app-types/email.types';
-import { sendTransactionalMail } from '@config/email';
+import { defaultMailOptions, transporter } from '@config/email';
 import { env } from '@config/env';
 import { logger } from '@config/logger';
 
@@ -61,7 +61,8 @@ export async function sendEmail(data: IEmailJobData): Promise<void> {
   try {
     const html = loadTemplate(data.template, data.variables);
 
-    await sendTransactionalMail({
+    await transporter.sendMail({
+      ...defaultMailOptions,
       to: data.to,
       subject: data.subject,
       html,
