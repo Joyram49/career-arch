@@ -147,10 +147,10 @@ describe('User Profile', () => {
       const res = await request(app)
         .put('/api/v1/user/profile')
         .set('Authorization', `Bearer ${userToken}`)
-        .send({ bio: 'I am a software engineer.', headline: 'Senior Dev' });
+        .send({ summary: 'I am a software engineer.', headline: 'Senior Dev' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.profile.bio).toBe('I am a software engineer.');
+      expect(res.body.data.user.profile.summary).toBe('I am a software engineer.');
       expect(res.body.data.user.profile.headline).toBe('Senior Dev');
     });
 
@@ -161,8 +161,8 @@ describe('User Profile', () => {
         .send({ firstName: 'Updated', lastName: 'Name' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.firstName).toBe('Updated');
-      expect(res.body.data.user.lastName).toBe('Name');
+      expect(res.body.data.user.profile.firstName).toBe('Updated');
+      expect(res.body.data.user.profile.lastName).toBe('Name');
     });
 
     it('should update phone number', async () => {
@@ -190,11 +190,10 @@ describe('User Profile', () => {
       const res = await request(app)
         .put('/api/v1/user/profile')
         .set('Authorization', `Bearer ${userToken}`)
-        .send({ city: 'Dhaka', country: 'Bangladesh' });
+        .send({ location: 'Dhaka, Bangladesh' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.profile.city).toBe('Dhaka');
-      expect(res.body.data.user.profile.country).toBe('Bangladesh');
+      expect(res.body.data.user.profile.location).toBe('Dhaka, Bangladesh');
     });
 
     it('should accept empty update (no fields changed)', async () => {
