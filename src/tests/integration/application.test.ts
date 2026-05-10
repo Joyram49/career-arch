@@ -29,7 +29,6 @@ let orgId: string;
 let userToken: string;
 let userId: string;
 let publishedJobId: string;
-let _publishedJobSlug: string;
 let applicationId: string;
 
 // ─────────────────────────────────────────────
@@ -93,7 +92,10 @@ async function createAndPublishJob(title = 'Test Job For Applications'): Promise
     });
 
   const jobId = createRes.body.data.job.id as string;
-  publishedJobSlug = createRes.body.data.job.slug as string;
+  const _publishedJobSlug = createRes.body.data.job.slug as string;
+  if (_publishedJobSlug.length === 0) {
+    throw new Error('Published job slug is empty');
+  }
 
   await request(app)
     .patch(`/api/v1/org/jobs/${jobId}/publish`)
