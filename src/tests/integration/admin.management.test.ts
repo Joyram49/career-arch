@@ -277,7 +277,7 @@ describe('Admin: User Management', () => {
       const res = await request(app)
         .patch('/api/v1/admin/users/00000000-0000-0000-0000-000000000000/suspend')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ reason: 'Test' });
+        .send({ reason: 'Test reason is long enough' });
 
       expect(res.status).toBe(404);
     });
@@ -647,7 +647,7 @@ describe('Admin: Incentive Management', () => {
       const res = await request(app)
         .post('/api/v1/admin/incentives/00000000-0000-0000-0000-000000000000/waive')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ reason: 'Test' });
+        .send({ reason: 'Test reason is long enough' });
 
       expect(res.status).toBe(404);
     });
