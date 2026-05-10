@@ -201,7 +201,7 @@ describe('Admin: User Management', () => {
 
     it('should filter users by email keyword', async () => {
       const res = await request(app)
-        .get(`/api/v1/admin/users?q=${testUserCreds.email}`)
+        .get(`/api/v1/admin/users?search=${testUserCreds.email}`)
         .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.status).toBe(200);
@@ -343,7 +343,7 @@ describe('Admin: Organization Management', () => {
 
     it('should filter by email keyword', async () => {
       const res = await request(app)
-        .get(`/api/v1/admin/organizations?q=${testOrgCreds.email}`)
+        .get(`/api/v1/admin/organizations?search=${testOrgCreds.email}`)
         .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.status).toBe(200);
