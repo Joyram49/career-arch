@@ -382,8 +382,8 @@ describe('Saved Jobs', () => {
       expect(Array.isArray(res.body.data.savedJobs)).toBe(true);
       expect(res.body.meta).toBeDefined();
 
-      const saved = res.body.data.savedJobs as { jobId: string }[];
-      expect(saved.some((s) => s.jobId === savedJobId)).toBe(true);
+      const saved = res.body.data.savedJobs as { job?: { id?: string } }[];
+      expect(saved.some((s) => s.job?.id === savedJobId)).toBe(true);
     });
 
     it('should include job details in saved jobs', async () => {
