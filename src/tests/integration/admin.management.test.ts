@@ -735,6 +735,10 @@ describe('Admin: Dashboard Stats', () => {
     });
 
     it('should return 403 with non-admin token', async () => {
+      await prisma.user.update({
+        where: { id: testUserId },
+        data: { isActive: true },
+      });
       const userLogin = await request(app)
         .post('/api/v1/auth/user/login')
         .send({ email: testUserCreds.email, password: testUserCreds.password });
