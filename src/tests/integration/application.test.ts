@@ -345,9 +345,10 @@ describe('User Applications', () => {
       expect(res.status).toBe(200);
       expect(res.body.message).toContain('withdrawn');
 
-      // Verify deleted from DB
-      const deleted = await prisma.application.findUnique({ where: { id: withdrawId } });
-      expect(deleted).toBeNull();
+      // Verify soft-withdrawal status in DB
+      const withdrawn = await prisma.application.findUnique({ where: { id: withdrawId } });
+      expect(withdrawn).not.toBeNull();
+      expect(withdrawn?.status).toBe('WITHDRAWN');
     });
 
     it('should reject withdrawing a SHORTLISTED application', async () => {
