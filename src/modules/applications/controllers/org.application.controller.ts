@@ -1,5 +1,6 @@
 import * as ApplicationService from '@modules/applications/services/application.service';
 import { sendSuccess } from '@shared/utils/apiResponse';
+import { getParsedQuery } from '@shared/utils/requestQuery';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type {
@@ -12,7 +13,7 @@ import type { Request, Response } from 'express';
 // ── GET /org/applications ──────────────────────────────────────────────────
 export async function listAllApplications(req: Request, res: Response): Promise<Response> {
   const { sub } = (req as IAuthenticatedRequest).user;
-  const query = req.query as unknown as ListOrgApplicationsQuery;
+  const query = getParsedQuery<ListOrgApplicationsQuery>(req);
 
   const { data: applications, meta } = await ApplicationService.listOrgApplications(sub, query);
   return sendSuccess(res, { applications }, 'Applications retrieved', 200, meta as never);
@@ -41,7 +42,7 @@ export async function updateStatus(req: Request, res: Response): Promise<Respons
 export async function listApplicationsForJob(req: Request, res: Response): Promise<Response> {
   const { sub } = (req as IAuthenticatedRequest).user;
   const { jobId } = req.params as { jobId: string };
-  const query = req.query as unknown as ListJobApplicationsQuery;
+  const query = getParsedQuery<ListJobApplicationsQuery>(req);
 
   const { data: applications, meta } = await ApplicationService.listJobApplications(
     sub,

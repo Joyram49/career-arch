@@ -1,5 +1,6 @@
 import * as NotificationService from '@modules/notifications/services/notification.service';
 import { sendSuccess } from '@shared/utils/apiResponse';
+import { getParsedQuery } from '@shared/utils/requestQuery';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type { ListNotificationsQuery } from '@modules/notifications/validations/notification.validation';
@@ -9,7 +10,7 @@ import type { Request, Response } from 'express';
 
 export async function listNotifications(req: Request, res: Response): Promise<Response> {
   const { sub, role } = (req as IAuthenticatedRequest).user;
-  const query = req.query as unknown as ListNotificationsQuery;
+  const query = getParsedQuery<ListNotificationsQuery>(req);
 
   const { notifications, meta, unreadCount } = await NotificationService.listNotifications(
     sub,

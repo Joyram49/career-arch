@@ -262,7 +262,10 @@ describe('Admin Auth API', () => {
       const token = loginRes.body.data.accessToken as string;
       const cookies = loginRes.headers['set-cookie'] as unknown as string[];
 
-      await request(app).post('/api/v1/auth/admin/logout').set('Authorization', `Bearer ${token}`);
+      await request(app)
+        .post('/api/v1/auth/admin/logout')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookies);
 
       // Refresh token should be revoked
       const refreshRes = await request(app)

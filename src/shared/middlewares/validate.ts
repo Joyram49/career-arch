@@ -1,6 +1,7 @@
 import { sendError } from '@shared/utils/apiResponse';
 
 import type { IFieldError } from '@app-types/index';
+import type { RequestWithValidatedQuery } from '@shared/utils/requestQuery';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import type { ZodError, ZodTypeAny } from 'zod';
 
@@ -26,10 +27,18 @@ export const validate =
       return;
     }
 
-    // Attach parsed/coerced values back to request
-    const parsed = result.data as { body?: Record<string, unknown> };
+    // Attach parsed/coerced values back to request (defaults, transforms, coercions).
+    const parsed = result.data as {
+      body?: Record<string, unknown>;
+      query?: Record<string, unknown>;
+      params?: Record<string, unknown>;
+    };
     if (parsed.body !== undefined) {
       req.body = parsed.body;
+    }
+    // Express may expose `req.query` as read-only; stash Zod output separately.
+    if (parsed.query !== undefined) {
+      (req as RequestWithValidatedQuery).validatedQuery = parsed.query;
     }
 
     next();

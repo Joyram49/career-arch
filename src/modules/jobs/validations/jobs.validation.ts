@@ -104,9 +104,13 @@ export const createJobSchema = z.object({
 // UPDATE JOB
 // ─────────────────────────────────────────────
 
-// All fields optional on update — only provided fields are changed
+// All fields optional on update — only provided fields are changed.
+// `isRemote` must not reuse jobBodyShape.isRemote.optional(): that chains `.default(false)`,
+// so partial bodies like `{ title }` parse with isRemote=false and trip the location/remote refine.
 const updateBodyShape = Object.fromEntries(
-  Object.entries(jobBodyShape).map(([k, v]) => [k, v.optional()]),
+  Object.entries(jobBodyShape).map(([k, v]) =>
+    k === 'isRemote' ? [k, z.boolean().optional()] : [k, v.optional()],
+  ),
 ) as { [K in keyof typeof jobBodyShape]: z.ZodOptional<(typeof jobBodyShape)[K]> };
 
 export const updateJobSchema = z.object({

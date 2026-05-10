@@ -11,7 +11,8 @@ describe('Org Auth API', () => {
   const testRunId = Date.now();
 
   const testOrg = {
-    email: `testOrg-${testRunId}@example.com`,
+    // Must match Zod email normalization (lowercased) so Prisma lookups match stored rows
+    email: `testorg-${testRunId}@example.com`,
     password: 'Test@123456',
     companyName: 'TestCorp Inc.',
   };
@@ -178,7 +179,7 @@ describe('Org Auth API', () => {
     });
 
     it('should return success if already verified', async () => {
-      const uniqueEmail = `alreadyVerified-${testRunId}@example.com`;
+      const uniqueEmail = `alreadyverified-${testRunId}@example.com`;
       createdOrgEmails.push(uniqueEmail);
 
       await request(app)

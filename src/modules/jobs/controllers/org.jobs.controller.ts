@@ -1,5 +1,6 @@
 import * as JobService from '@modules/jobs/services/job.service';
 import { sendCreated, sendSuccess } from '@shared/utils/apiResponse';
+import { getParsedQuery } from '@shared/utils/requestQuery';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type {
@@ -33,7 +34,7 @@ export async function getJob(req: Request, res: Response): Promise<Response> {
 // ── List Own Jobs ──────────────────────────────────────────────────────────
 export async function listJobs(req: Request, res: Response): Promise<Response> {
   const { sub: orgId } = (req as IAuthenticatedRequest).user;
-  const query = req.query as unknown as ListOrgJobsQuery;
+  const query = getParsedQuery<ListOrgJobsQuery>(req);
 
   const { data: jobs, meta } = await JobService.listOrgJobs(orgId, query);
 
@@ -94,7 +95,7 @@ export async function restoreJob(req: Request, res: Response): Promise<Response>
 // ── List Deleted Jobs (trash view) ─────────────────────────────────────────
 export async function listDeletedJobs(req: Request, res: Response): Promise<Response> {
   const { sub: orgId } = (req as IAuthenticatedRequest).user;
-  const query = req.query as unknown as ListDeletedJobsQuery;
+  const query = getParsedQuery<ListDeletedJobsQuery>(req);
 
   const { data: deletedJobs, meta } = await JobService.listDeletedJobs(orgId, query);
 

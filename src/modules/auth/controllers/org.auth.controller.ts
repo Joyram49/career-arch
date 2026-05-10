@@ -5,6 +5,7 @@ import {
   REFRESH_COOKIE_OPTIONS,
   REFRESH_COOKIE_OPTIONS_REMEMBER_ME,
 } from '@shared/utils/constants';
+import { getParsedQuery } from '@shared/utils/requestQuery';
 
 import * as OrgAuthService from '@/modules/auth/services/org.auth.service';
 
@@ -25,7 +26,7 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
 // ── Verify Email ───────────────────────────────────────────────────────────
 export async function verifyEmail(req: Request, res: Response): Promise<Response> {
-  const { token } = req.query as { token: string };
+  const { token } = getParsedQuery<{ token: string }>(req);
   const result = await OrgAuthService.verifyOrgEmail(token);
   return sendSuccess(res, null, result.message);
 }

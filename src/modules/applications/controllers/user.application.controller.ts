@@ -1,5 +1,6 @@
 import * as ApplicationService from '@modules/applications/services/application.service';
 import { sendCreated, sendSuccess } from '@shared/utils/apiResponse';
+import { getParsedQuery } from '@shared/utils/requestQuery';
 
 import type { IAuthenticatedRequest } from '@app-types/index';
 import type {
@@ -20,7 +21,7 @@ export async function applyToJob(req: Request, res: Response): Promise<Response>
 // ── GET /applications ──────────────────────────────────────────────────────
 export async function listMyApplications(req: Request, res: Response): Promise<Response> {
   const { sub } = (req as IAuthenticatedRequest).user;
-  const query = req.query as unknown as ListUserApplicationsQuery;
+  const query = getParsedQuery<ListUserApplicationsQuery>(req);
 
   const { data: applications, meta } = await ApplicationService.listUserApplications(sub, query);
   return sendSuccess(res, { applications }, 'Applications retrieved', 200, meta as never);
