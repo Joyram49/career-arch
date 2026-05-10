@@ -693,24 +693,22 @@ describe('Admin: Dashboard Stats', () => {
 
       const { stats } = res.body.data as {
         stats: {
-          totalUsers: number;
-          totalOrganizations: number;
-          totalJobs: number;
-          totalApplications: number;
-          totalRevenue: number;
-          activeSubscriptions: number;
+          users: { total: number };
+          organizations: { total: number };
+          jobs: { total: number };
+          applications: { total: number };
+          revenue: { mrrCents: number };
         };
       };
 
-      expect(typeof stats.totalUsers).toBe('number');
-      expect(typeof stats.totalOrganizations).toBe('number');
-      expect(typeof stats.totalJobs).toBe('number');
-      expect(typeof stats.totalApplications).toBe('number');
-      expect(typeof stats.totalRevenue).toBe('number');
-      expect(typeof stats.activeSubscriptions).toBe('number');
+      expect(typeof stats.users.total).toBe('number');
+      expect(typeof stats.organizations.total).toBe('number');
+      expect(typeof stats.jobs.total).toBe('number');
+      expect(typeof stats.applications.total).toBe('number');
+      expect(typeof stats.revenue.mrrCents).toBe('number');
 
-      expect(stats.totalUsers).toBeGreaterThanOrEqual(1);
-      expect(stats.totalOrganizations).toBeGreaterThanOrEqual(1);
+      expect(stats.users.total).toBeGreaterThanOrEqual(1);
+      expect(stats.organizations.total).toBeGreaterThanOrEqual(1);
     });
 
     it('should return 401 without auth', async () => {
