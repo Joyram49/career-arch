@@ -29,7 +29,7 @@ let orgId: string;
 let userToken: string;
 let userId: string;
 let publishedJobId: string;
-let publishedJobSlug: string;
+let _publishedJobSlug: string;
 let applicationId: string;
 
 // ─────────────────────────────────────────────
