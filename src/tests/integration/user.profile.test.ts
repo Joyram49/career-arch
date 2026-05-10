@@ -29,11 +29,39 @@ let orgId: string;
 let orgToken: string;
 let savedJobId: string;
 
+async function ensureFreePlan(): Promise<void> {
+  await prisma.planCatalogue.upsert({
+    where: { key: 'FREE' },
+    update: {},
+    create: {
+      key: 'FREE',
+      displayName: 'Free',
+      monthlyPriceCents: 0,
+      isActive: true,
+      sortOrder: 0,
+      features: {
+        jobBrowseLimit: 20,
+        applyMonthlyLimit: 5,
+        saveJobsLimit: 5,
+        canViewOrgProfile: false,
+        resumeVersions: 1,
+        canDownloadHistory: false,
+        earlyJobAlerts: false,
+        prioritySearch: false,
+        aiResumeTips: false,
+        badge: null,
+      },
+    },
+  });
+}
+
 // ─────────────────────────────────────────────
 // SETUP / TEARDOWN
 // ─────────────────────────────────────────────
 
 beforeAll(async () => {
+  await ensureFreePlan();
+
   // Setup user
   await request(app).post('/api/v1/auth/user/register').send(userCreds);
   const user = await prisma.user.update({
@@ -450,16 +478,12 @@ describe('Saved Jobs', () => {
         data: { savedJobCount: 5 },
       });
 
-      // Ensure plan is FREE
-      const freePlan = await prisma.planCatalogue.findFirst({ where: { key: 'FREE' } });
-      if (freePlan !== null) {
-        await prisma.subscription.updateMany({
-          where: { userId },
-          data: { plan: freePlan.key },
-        });
-      } else {
-        throw new Error('FREE plan not found');
-      }
+      // Ensure plan is FREE (self-seeded to avoid CI order dependency)
+      await ensureFreePlan();
+      await prisma.subscription.updateMany({
+        where: { userId },
+        data: { plan: 'FREE' },
+      });
 
       const res = await request(app)
         .post(`/api/v1/user/jobs/${savedJobId}/save`)
