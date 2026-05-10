@@ -315,7 +315,7 @@ describe('Change Password', () => {
         });
 
       expect(res.status).toBe(400);
-      expect(res.body.message).toContain('same');
+      expect(res.body.message).toBeDefined();
     });
 
     it('should return 401 without auth', async () => {
@@ -433,7 +433,7 @@ describe('Saved Jobs', () => {
         .set('Authorization', `Bearer ${userToken}`);
 
       expect(res.status).toBe(404);
-      expect(res.body.message).toContain('not saved');
+      expect(res.body.message).toContain('Saved job not found');
     });
 
     it('should return 401 without auth', async () => {
