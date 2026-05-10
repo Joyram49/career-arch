@@ -32,6 +32,9 @@ services:
         sync: false
       - key: JWT_REFRESH_SECRET
         sync: false
+      # Prefer BREVO_API_KEY here (SMTP is blocked on free web services — see Render changelog).
+      - key: BREVO_API_KEY
+        sync: false
       - key: BREVO_SMTP_KEY
         sync: false
       - key: BREVO_SMTP_USER
