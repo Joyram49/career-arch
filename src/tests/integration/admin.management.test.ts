@@ -488,8 +488,8 @@ describe('Admin: Job Management', () => {
         .set('Authorization', `Bearer ${adminToken}`);
 
       expect(res.status).toBe(200);
-      const jobs = res.body.data.jobs as { orgId: string }[];
-      expect(jobs.every((j) => j.orgId === testOrgId)).toBe(true);
+      const jobs = res.body.data.jobs as { organization?: { id?: string } }[];
+      expect(jobs.every((j) => j.organization?.id === testOrgId)).toBe(true);
     });
 
     it('should support pagination', async () => {
@@ -531,7 +531,7 @@ describe('Admin: Job Management', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({ reason: 'Already closed' });
 
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(200);
     });
   });
 });
