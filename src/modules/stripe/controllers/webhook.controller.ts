@@ -35,7 +35,6 @@ export async function handleStripeWebhook(req: Request, res: Response): Promise<
     return sendError(res, `Webhook Error: ${message}`, 400);
   }
 
-
   try {
     await routeStripeEvent(event);
   } catch (err) {
