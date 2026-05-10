@@ -497,17 +497,17 @@ describe('Org Application Management', () => {
 
   // ── Update Application Status ──────────────────────────────────────────────
   describe('PATCH /api/v1/org/applications/:id/status', () => {
-    it('should update status from PENDING to REVIEWING', async () => {
+    it('should update status from PENDING to UNDER_REVIEW', async () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
         .set('Authorization', `Bearer ${orgToken}`)
-        .send({ status: 'REVIEWING' });
+        .send({ status: 'UNDER_REVIEW' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.application.status).toBe('REVIEWING');
+      expect(res.body.data.application.status).toBe('UNDER_REVIEW');
     });
 
-    it('should update status from REVIEWING to SHORTLISTED', async () => {
+    it('should update status from UNDER_REVIEW to SHORTLISTED', async () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
         .set('Authorization', `Bearer ${orgToken}`)
@@ -517,24 +517,24 @@ describe('Org Application Management', () => {
       expect(res.body.data.application.status).toBe('SHORTLISTED');
     });
 
-    it('should update status from SHORTLISTED to INTERVIEW', async () => {
+    it('should update status from SHORTLISTED to INTERVIEW_SCHEDULED', async () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
         .set('Authorization', `Bearer ${orgToken}`)
-        .send({ status: 'INTERVIEW' });
+        .send({ status: 'INTERVIEW_SCHEDULED' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.application.status).toBe('INTERVIEW');
+      expect(res.body.data.application.status).toBe('INTERVIEW_SCHEDULED');
     });
 
-    it('should update status from INTERVIEW to OFFER', async () => {
+    it('should update status from INTERVIEW_SCHEDULED to OFFERED', async () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
         .set('Authorization', `Bearer ${orgToken}`)
-        .send({ status: 'OFFER' });
+        .send({ status: 'OFFERED' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.application.status).toBe('OFFER');
+      expect(res.body.data.application.status).toBe('OFFERED');
     });
 
     it('should reject invalid status value', async () => {
@@ -591,16 +591,16 @@ describe('Org Application Management', () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
         .set('Authorization', `Bearer ${orgToken}`)
-        .send({ status: 'REVIEWING' });
+        .send({ status: 'UNDER_REVIEW' });
 
       expect(res.status).toBe(400);
-      expect(res.body.message).toContain('hired');
+      expect(res.body.message).toContain('HIRED');
     });
 
     it('should return 401 without auth', async () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
-        .send({ status: 'REVIEWING' });
+        .send({ status: 'UNDER_REVIEW' });
 
       expect(res.status).toBe(401);
     });
@@ -609,7 +609,7 @@ describe('Org Application Management', () => {
       const res = await request(app)
         .patch(`/api/v1/org/applications/${applicationId}/status`)
         .set('Authorization', `Bearer ${userToken}`)
-        .send({ status: 'REVIEWING' });
+        .send({ status: 'UNDER_REVIEW' });
 
       expect(res.status).toBe(403);
     });
