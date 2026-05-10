@@ -38,7 +38,7 @@ let testUserId: string;
 let testOrgId: string;
 let testJobId: string;
 let testApplicationId: string;
-let testIncentiveId: string;
+let testIncentiveId = '';
 
 // ─────────────────────────────────────────────
 // SETUP / TEARDOWN
@@ -126,6 +126,22 @@ beforeAll(async () => {
   testApplicationId = appRes.body.data.application.id as string;
 
   // Set application to HIRED to create incentive
+  await request(app)
+    .patch(`/api/v1/org/applications/${testApplicationId}/status`)
+    .set('Authorization', `Bearer ${orgToken}`)
+    .send({ status: 'UNDER_REVIEW' });
+  await request(app)
+    .patch(`/api/v1/org/applications/${testApplicationId}/status`)
+    .set('Authorization', `Bearer ${orgToken}`)
+    .send({ status: 'SHORTLISTED' });
+  await request(app)
+    .patch(`/api/v1/org/applications/${testApplicationId}/status`)
+    .set('Authorization', `Bearer ${orgToken}`)
+    .send({ status: 'INTERVIEW_SCHEDULED' });
+  await request(app)
+    .patch(`/api/v1/org/applications/${testApplicationId}/status`)
+    .set('Authorization', `Bearer ${orgToken}`)
+    .send({ status: 'OFFERED' });
   await request(app)
     .patch(`/api/v1/org/applications/${testApplicationId}/status`)
     .set('Authorization', `Bearer ${orgToken}`)
@@ -585,7 +601,7 @@ describe('Admin: Incentive Management', () => {
       expect(res.body.data.stats).toBeDefined();
       expect(typeof res.body.data.stats.totalPending).toBe('number');
       expect(typeof res.body.data.stats.totalPaid).toBe('number');
-      expect(typeof res.body.data.stats.totalRevenue).toBe('number');
+      expect(typeof res.body.data.stats.totalCollectedCents).toBe('number');
     });
   });
 
@@ -599,8 +615,8 @@ describe('Admin: Incentive Management', () => {
 
       expect(res.status).toBe(200);
       expect(res.body.data.incentive.id).toBe(testIncentiveId);
-      expect(res.body.data.incentive.organization).toBeDefined();
-      expect(res.body.data.incentive.application).toBeDefined();
+      expect(res.body.data.incentive.candidate).toBeDefined();
+      expect(res.body.data.incentive.job).toBeDefined();
     });
 
     it('should return 404 for non-existent incentive', async () => {
@@ -660,7 +676,7 @@ describe('Admin: Incentive Management', () => {
       const res = await request(app)
         .post('/api/v1/admin/incentives/00000000-0000-0000-0000-000000000000/resolve-dispute')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ resolution: 'WAIVE' });
+        .send({ resolution: 'waive' });
 
       expect(res.status).toBe(404);
     });
