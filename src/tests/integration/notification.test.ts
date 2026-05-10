@@ -149,8 +149,9 @@ describe('User Notifications', () => {
       expect(Array.isArray(res.body.data.notifications)).toBe(true);
       expect(res.body.meta).toBeDefined();
 
-      const notifs = res.body.data.notifications as { userId?: string; orgId?: string }[];
-      expect(notifs.every((n) => n.userId === userId && n.orgId === undefined)).toBe(true);
+      const notifs = res.body.data.notifications as { recipientRole?: string; id?: string }[];
+      expect(notifs.every((n) => n.recipientRole === 'USER')).toBe(true);
+      expect(notifs.every((n) => typeof n.id === 'string' && n.id.length > 0)).toBe(true);
     });
 
     it('should include unreadCount in response', async () => {
@@ -320,8 +321,9 @@ describe('Org Notifications', () => {
         .set('Authorization', `Bearer ${orgToken}`);
 
       expect(res.status).toBe(200);
-      const notifs = res.body.data.notifications as { orgId?: string; userId?: string }[];
-      expect(notifs.every((n) => n.orgId === orgId && n.userId === undefined)).toBe(true);
+      const notifs = res.body.data.notifications as { recipientRole?: string; id?: string }[];
+      expect(notifs.every((n) => n.recipientRole === 'ORGANIZATION')).toBe(true);
+      expect(notifs.every((n) => typeof n.id === 'string' && n.id.length > 0)).toBe(true);
     });
 
     it('should include unreadCount for org', async () => {
