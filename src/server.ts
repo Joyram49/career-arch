@@ -14,6 +14,10 @@ import {
   scheduleIncentiveOverdueCron,
 } from '@jobs/workers/incentive-overdue.worker';
 import { jobCleanupWorker, scheduleJobCleanupCron } from '@jobs/workers/job-cleanup.worker';
+import {
+  scheduleUnverifiedAccountCleanup,
+  unverifiedAccountCleanupWorker,
+} from '@jobs/workers/unverified-account-cleanup.worker';
 import { config } from 'dotenv';
 
 import app from './app';
@@ -40,6 +44,7 @@ async function start(): Promise<void> {
       await scheduleMonthlyReset();
       await scheduleIncentiveOverdueCron();
       await scheduleJobCleanupCron();
+      await scheduleUnverifiedAccountCleanup();
     }
 
     // 4. Create HTTP server from Express app
@@ -88,6 +93,7 @@ function shutdown(signal: string): void {
         await emailQueue.close();
         await incentiveOverdueWorker.close();
         await jobCleanupWorker.close();
+        await unverifiedAccountCleanupWorker.close();
 
         await disconnectDatabase();
         await redis.quit();

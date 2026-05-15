@@ -39,11 +39,16 @@ export async function registerUser(data: {
   // Check duplicate email
   const existing = await prisma.user.findUnique({
     where: { email: data.email },
-    select: { id: true },
+    select: { id: true, isEmailVerified: true, emailVerifyToken: true },
   });
 
   if (existing !== null) {
-    throw new ConflictError('An account with this email already exists');
+    if (existing.isEmailVerified) {
+      throw new ConflictError('An account with this email already exists');
+    }
+    throw new ConflictError(
+      'An unverified account with this email already exists. Please check your inbox for the verification email.',
+    );
   }
 
   // Hash password
