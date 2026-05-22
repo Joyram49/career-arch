@@ -74,51 +74,51 @@ async function main(): Promise<void> {
     },
   });
 
-  await prisma.planCatalogue.upsert({
-    where: { key: 'BASIC' },
-    update: {
-      displayName: 'Basic',
-      description: 'For active job seekers who want more reach and visibility.',
-      monthlyPriceCents: 999,
-      isActive: true,
-      sortOrder: 1,
-      features: PLAN_FEATURES.BASIC,
-    },
-    create: {
-      key: 'BASIC',
-      displayName: 'Basic',
-      description: 'For active job seekers who want more reach and visibility.',
-      monthlyPriceCents: 999,
-      stripeProductId: null, // Admin sets via dashboard → synced to Stripe
-      stripePriceId: null,
-      isActive: true,
-      sortOrder: 1,
-      features: PLAN_FEATURES.BASIC,
-    },
-  });
+  // await prisma.planCatalogue.upsert({
+  //   where: { key: 'BASIC' },
+  //   update: {
+  //     displayName: 'Basic',
+  //     description: 'For active job seekers who want more reach and visibility.',
+  //     monthlyPriceCents: 999,
+  //     isActive: true,
+  //     sortOrder: 1,
+  //     features: PLAN_FEATURES.BASIC,
+  //   },
+  //   create: {
+  //     key: 'BASIC',
+  //     displayName: 'Basic',
+  //     description: 'For active job seekers who want more reach and visibility.',
+  //     monthlyPriceCents: 999,
+  //     stripeProductId: null, // Admin sets via dashboard → synced to Stripe
+  //     stripePriceId: null,
+  //     isActive: true,
+  //     sortOrder: 1,
+  //     features: PLAN_FEATURES.BASIC,
+  //   },
+  // });
 
-  await prisma.planCatalogue.upsert({
-    where: { key: 'PREMIUM' },
-    update: {
-      displayName: 'Premium',
-      description: 'Unlimited access, AI tools, and top placement in search.',
-      monthlyPriceCents: 2499,
-      isActive: true,
-      sortOrder: 2,
-      features: PLAN_FEATURES.PREMIUM,
-    },
-    create: {
-      key: 'PREMIUM',
-      displayName: 'Premium',
-      description: 'Unlimited access, AI tools, and top placement in search.',
-      monthlyPriceCents: 2499,
-      stripeProductId: null, // Admin sets via dashboard → synced to Stripe
-      stripePriceId: null,
-      isActive: true,
-      sortOrder: 2,
-      features: PLAN_FEATURES.PREMIUM,
-    },
-  });
+  // await prisma.planCatalogue.upsert({
+  //   where: { key: 'PREMIUM' },
+  //   update: {
+  //     displayName: 'Premium',
+  //     description: 'Unlimited access, AI tools, and top placement in search.',
+  //     monthlyPriceCents: 2499,
+  //     isActive: true,
+  //     sortOrder: 2,
+  //     features: PLAN_FEATURES.PREMIUM,
+  //   },
+  //   create: {
+  //     key: 'PREMIUM',
+  //     displayName: 'Premium',
+  //     description: 'Unlimited access, AI tools, and top placement in search.',
+  //     monthlyPriceCents: 2499,
+  //     stripeProductId: null, // Admin sets via dashboard → synced to Stripe
+  //     stripePriceId: null,
+  //     isActive: true,
+  //     sortOrder: 2,
+  //     features: PLAN_FEATURES.PREMIUM,
+  //   },
+  // });
 
   logger.info('✅ Plan catalogue seeded (3 plans)');
 
@@ -139,66 +139,66 @@ async function main(): Promise<void> {
   logger.info(`✅ Admin created: ${admin.email}`);
 
   // ── Create demo user ─────────────────────────────────────────────────────
-  const userPassword = await bcrypt.hash('User@123456', 12);
+  // const userPassword = await bcrypt.hash('User@123456', 12);
 
-  const user = await prisma.user.upsert({
-    where: { email: 'demo@careerarch.com' },
-    update: {},
-    create: {
-      email: 'demo@careerarch.com',
-      password: userPassword,
-      isEmailVerified: true,
-      profile: {
-        create: {
-          firstName: 'Demo',
-          lastName: 'User',
-          headline: 'Full Stack Developer',
-          location: 'New York, USA',
-          skills: ['TypeScript', 'Node.js', 'React'],
-          experienceYears: 3,
-        },
-      },
-      subscription: {
-        create: {
-          plan: 'FREE',
-          status: 'ACTIVE',
-          applyCountThisMonth: 0,
-          applyCountResetAt: new Date(),
-          savedJobCount: 0,
-        },
-      },
-    },
-  });
+  // const user = await prisma.user.upsert({
+  //   where: { email: 'demo@careerarch.com' },
+  //   update: {},
+  //   create: {
+  //     email: 'demo@careerarch.com',
+  //     password: userPassword,
+  //     isEmailVerified: true,
+  //     profile: {
+  //       create: {
+  //         firstName: 'Demo',
+  //         lastName: 'User',
+  //         headline: 'Full Stack Developer',
+  //         location: 'New York, USA',
+  //         skills: ['TypeScript', 'Node.js', 'React'],
+  //         experienceYears: 3,
+  //       },
+  //     },
+  //     subscription: {
+  //       create: {
+  //         plan: 'FREE',
+  //         status: 'ACTIVE',
+  //         applyCountThisMonth: 0,
+  //         applyCountResetAt: new Date(),
+  //         savedJobCount: 0,
+  //       },
+  //     },
+  //   },
+  // });
 
-  logger.info(`✅ Demo user created: ${user.email}`);
+  // logger.info(`✅ Demo user created: ${user.email}`);
 
   // ── Create demo organization ─────────────────────────────────────────────
-  const orgPassword = await bcrypt.hash('Org@123456', 12);
+  // const orgPassword = await bcrypt.hash('Org@123456', 12);
 
-  const org = await prisma.organization.upsert({
-    where: { email: 'techcorp@careerarch.com' },
-    update: {},
-    create: {
-      email: 'techcorp@careerarch.com',
-      password: orgPassword,
-      isEmailVerified: true,
-      isApproved: true,
-      profile: {
-        create: {
-          companyName: 'TechCorp Inc.',
-          website: 'https://techcorp.example.com',
-          industry: 'Technology',
-          companySize: '51-200',
-          foundedYear: 2015,
-          description: 'A leading technology company building innovative solutions.',
-          location: 'San Francisco, CA',
-          country: 'USA',
-        },
-      },
-    },
-  });
+  // const org = await prisma.organization.upsert({
+  //   where: { email: 'techcorp@careerarch.com' },
+  //   update: {},
+  //   create: {
+  //     email: 'techcorp@careerarch.com',
+  //     password: orgPassword,
+  //     isEmailVerified: true,
+  //     isApproved: true,
+  //     profile: {
+  //       create: {
+  //         companyName: 'TechCorp Inc.',
+  //         website: 'https://techcorp.example.com',
+  //         industry: 'Technology',
+  //         companySize: '51-200',
+  //         foundedYear: 2015,
+  //         description: 'A leading technology company building innovative solutions.',
+  //         location: 'San Francisco, CA',
+  //         country: 'USA',
+  //       },
+  //     },
+  //   },
+  // });
 
-  logger.info(`✅ Demo organization created: ${org.email}`);
+  // logger.info(`✅ Demo organization created: ${org.email}`);
 
   logger.info('\n🎉 Seeding complete!');
   logger.info('\nCredentials:');

@@ -107,11 +107,16 @@ export async function logout(req: Request, res: Response): Promise<Response> {
 // ── Refresh Token ──────────────────────────────────────────────────────────
 export async function refreshToken(req: Request, res: Response): Promise<Response> {
   const rawRefreshToken = (req.cookies[COOKIE_NAMES.REFRESH_TOKEN] as string | undefined) ?? '';
+  const rememberMe = req.cookies[COOKIE_NAMES.REMEMBER_ME] === 'true';
 
   const tokens = await UserAuthService.refreshUserToken(rawRefreshToken);
 
   res.cookie(COOKIE_NAMES.ACCESS_TOKEN, tokens.accessToken, ACCESS_COOKIE_OPTIONS);
-  res.cookie(COOKIE_NAMES.REFRESH_TOKEN, tokens.refreshToken, REFRESH_COOKIE_OPTIONS);
+  res.cookie(
+    COOKIE_NAMES.REFRESH_TOKEN,
+    tokens.refreshToken,
+    rememberMe ? REFRESH_COOKIE_OPTIONS_REMEMBER_ME : REFRESH_COOKIE_OPTIONS,
+  );
 
   return sendSuccess(res, { accessToken: tokens.accessToken }, 'Token refreshed');
 }
