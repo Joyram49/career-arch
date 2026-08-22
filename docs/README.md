@@ -23,7 +23,7 @@ through a feature-rich, secure, and scalable platform.
 
 ## 🗂️ Project Phases
 
-### Phase 1 — Project Structure & Documentation ✅ _(Current)_
+### Phase 1 — Project Structure & Documentation
 
 - Project architecture design
 - Tech stack finalization
@@ -32,7 +32,7 @@ through a feature-rich, secure, and scalable platform.
 - Database schema design
 - Folder structure setup
 
-### Phase 2 — Auth Backend APIs _(Next)_
+### Phase 2 — Auth Backend APIs
 
 - Sign Up / Sign In
 - Access Token + Refresh Token

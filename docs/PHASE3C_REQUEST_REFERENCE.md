@@ -75,7 +75,7 @@ Authorization: Bearer <adminToken>
 
 ### 3. POST /admin/plans
 
-**Create BASIC plan — syncs Product + Price to Stripe**
+#### Create BASIC plan — syncs Product + Price to Stripe
 
 > ⚠️ Only `BASIC` or `PREMIUM` are valid keys. `FREE` is system-managed. Run
 > this once after first deploy to connect BASIC to Stripe.
@@ -114,7 +114,7 @@ Content-Type: application/json
 
 ### 4. POST /admin/plans (PREMIUM)
 
-**Create PREMIUM plan — syncs Product + Price to Stripe**
+#### Create PREMIUM plan — syncs Product + Price to Stripe
 
 **Headers:**
 
@@ -167,7 +167,7 @@ Content-Type: application/json
 
 ### 5. PUT /admin/plans/:id
 
-**Update plan — display info only (no price change)**
+#### Update plan — display info only (no price change)
 
 **Headers:**
 
@@ -195,7 +195,7 @@ Content-Type: application/json
 
 ### 6. PUT /admin/plans/:id (price change)
 
-**Update plan — price change (archives old Stripe Price, creates new one)**
+#### Update plan — price change (archives old Stripe Price, creates new one)
 
 > ⚠️ Existing subscribers keep their current price until next renewal.
 
@@ -218,7 +218,7 @@ Content-Type: application/json
 
 ### 7. PUT /admin/plans/:id (feature update)
 
-**Update plan — modify feature flags only**
+#### Update plan — modify feature flags only
 
 **Headers:**
 
@@ -413,7 +413,7 @@ Authorization: Bearer <adminToken>
 
 ### 14. POST /admin/subscriptions/:id/refund
 
-**Refund last paid invoice for a subscription**
+#### Refund last paid invoice for a subscription
 
 **Headers:**
 
@@ -646,7 +646,7 @@ Authorization: Bearer <userToken>
 
 ### 17. POST /subscription/checkout
 
-**Create Stripe Checkout session (new subscription)**
+#### Create Stripe Checkout session (new subscription)
 
 > Redirects user to Stripe's hosted payment page. After payment, Stripe fires
 > `checkout.session.completed` webhook.
@@ -826,7 +826,7 @@ Authorization: Bearer <userToken>
 
 ### 21. POST /webhooks/stripe
 
-**Stripe sends this — you never call it manually**
+#### Stripe sends this — you never call it manually
 
 > The webhook route uses `express.raw()` — do NOT send JSON from Postman. For
 > local testing use the Stripe CLI:

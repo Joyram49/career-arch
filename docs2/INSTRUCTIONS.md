@@ -10,7 +10,7 @@
 **CareerArch** — Production-grade job portal backend **Stack:** Node.js v20 ·
 Express 5 · TypeScript (strict) · PostgreSQL 16 · Prisma 7 · Redis · BullMQ ·
 Stripe · Socket.IO · Zod 4 · Cloudinary · Nodemailer (Brevo) **Repo:**
-https://github.com/Joyram49/career-arch **Status:** Phase 3 complete. Tests +
+<https://github.com/Joyram49/career-arch> **Status:** Phase 3 complete. Tests +
 OAuth + Frontend pending.
 
 ---
