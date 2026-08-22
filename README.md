@@ -1,9 +1,12 @@
 # 🏢 CareerArch — Bird's Eye View Documentation
 
 > **Version:** 1.0.0 | **Status:** Phase 3 Complete (Test cases & OAuth pending)
-> **Live API:** https://career-arch.onrender.com/api/v1 **API Docs:**
-> https://career-arch.onrender.com/api-docs **Repo:**
-> https://github.com/Joyram49/career-arch
+> **Live API:**
+> [https://career-arch.onrender.com/api/v1](https://career-arch.onrender.com/api/v1)
+> **API Docs:**
+> [https://career-arch.onrender.com/api-docs](https://career-arch.onrender.com/api-docs)
+> **Repo:**
+> [https://github.com/Joyram49/career-arch](https://github.com/Joyram49/career-arch)
 
 ---
 
@@ -70,49 +73,50 @@ When an organization marks a candidate as **HIRED**:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                          │
-│         Next.js 15 Frontend (planned — Phase 4)              │
-│    User Dashboard | Org Dashboard | Admin Dashboard          │
+│                        CLIENT LAYER                         │
+│         Next.js 15 Frontend (planned — Phase 4)             │
+│    User Dashboard | Org Dashboard | Admin Dashboard         │
 └───────────────────────────┬─────────────────────────────────┘
                             │ HTTP + WebSocket
 ┌───────────────────────────▼─────────────────────────────────┐
-│                     EXPRESS API (Node.js v20)                 │
-│                                                               │
+│                     EXPRESS API (Node.js v20)               │
+│                                                             │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
 │  │  REST Routes│  │ Socket.IO    │  │  Stripe Webhooks    │ │
 │  │  /api/v1/.. │  │ (real-time)  │  │  /api/v1/webhooks/  │ │
 │  └──────┬──────┘  └──────┬───────┘  └──────────┬──────────┘ │
-│         │                │                       │            │
-│  ┌──────▼──────────────────────────────────────▼──────────┐  │
-│  │             MIDDLEWARE STACK                             │  │
-│  │  Helmet · CORS · HPP · Rate Limiters · Cookie Parser    │  │
-│  │  authenticate · authorize · validate (Zod) · asyncHandler│  │
-│  │  checkApplyLimit · checkJobPlan · checkSaveJobLimit      │  │
-│  │  requireOrgReady · checkOrgProfileAccess                 │  │
-│  └──────────────────────────┬───────────────────────────── ┘  │
-│                             │                                  │
-│  ┌──────────────────────────▼───────────────────────────────┐ │
-│  │                   SERVICE LAYER                           │ │
-│  │  Auth · Jobs · Applications · Subscriptions · Incentives │ │
-│  │  Profile · Notifications · Email · Upload · Admin        │ │
-│  └──────────┬───────────────────────────┬────────────────── ┘ │
-│             │                           │                      │
-│  ┌──────────▼──────────┐   ┌────────────▼────────────────┐    │
-│  │   BullMQ Workers    │   │     External Services        │    │
-│  │  email.worker.ts    │   │  Stripe SDK (payments)       │    │
-│  │  subscription-reset │   │  Cloudinary (file uploads)   │    │
-│  │  incentive-overdue  │   │  Brevo SMTP (email relay)    │    │
-│  │  job-cleanup        │   │  Socket.IO (real-time)       │    │
-│  └──────────┬──────────┘   └─────────────────────────────┘    │
-└─────────────┼───────────────────────────────────────────────── ┘
+│         │                │                       │          │
+│  ┌──────▼──────────────────────────────────────▼──────────┐ │
+│  │             MIDDLEWARE STACK                           │ │
+│  │  Helmet · CORS · HPP · Rate Limiters · Cookie Parser   │ │
+│  │  authenticate · authorize · validate (Zod)             │ │
+│  │  checkApplyLimit · checkJobPlan · checkSaveJobLimit    │ │
+│  │  requireOrgReady · checkOrgProfileAccess · asyncHandler│ │
+│  └──────────────────────────┬─────────────────────────────┘ │
+│                             │                               │
+│  ┌──────────────────────────▼─────────────────────────────┐ │
+│  │                   SERVICE LAYER                        │ │
+│  │      Auth · Jobs · Applications · Subscriptions        | |
+|  |           · Incentives . Profile · Notifications       │ │
+│  │          · Email · Upload · Admin                      │ │
+│  └──────────┬───────────────────────────┬─────────────────┘ │
+│             │                           │                   │
+│  ┌──────────▼──────────┐   ┌────────────▼────────────────┐  │
+│  │   BullMQ Workers    │   │     External Services       │  │
+│  │  email.worker.ts    │   │  Stripe SDK (payments)      │  │
+│  │  subscription-reset │   │  Cloudinary (file uploads)  │  │
+│  │  incentive-overdue  │   │  Brevo SMTP (email relay)   │  │
+│  │  job-cleanup        │   │  Socket.IO (real-time)      │  │
+│  └──────────┬──────────┘   └─────────────────────────────┘  │
+└─────────────┼───────────────────────────────────────────────┘
               │
 ┌─────────────▼───────────────────────────────────────────────┐
-│                    DATA LAYER                                  │
-│  PostgreSQL 16 (Prisma 7)        Redis (ioredis)              │
-│  • All domain models             • JWT blacklist (logout)     │
-│  • RefreshToken table            • BullMQ job queues          │
-│  • PlanCatalogue                 • 2FA temp tokens            │
-│  • HiringIncentive               • Rate limit counters        │
+│                    DATA LAYER                               │
+│  PostgreSQL 16 (Prisma 7)        Redis (ioredis)            │
+│  • All domain models             • JWT blacklist (logout)   │
+│  • RefreshToken table            • BullMQ job queues        │
+│  • PlanCatalogue                 • 2FA temp tokens          │
+│  • HiringIncentive               • Rate limit counters      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -905,38 +909,3 @@ External services:
 | Phase 5    | E2E tests, Playwright, Vercel frontend deployment                           | ⏳ Not started |
 
 ---
-
-## 21. Seeded Accounts (Development)
-
-| Role         | Email                   | Password     |
-| ------------ | ----------------------- | ------------ |
-| Admin        | admin@careerarch.com    | Admin@123456 |
-| User         | demo@careerarch.com     | User@123456  |
-| Organization | techcorp@careerarch.com | Org@123456   |
-
-> Note: BASIC and PREMIUM plans have no Stripe IDs after seeding. Admin must
-> create plans via `POST /admin/plans` to connect them to Stripe.
-
----
-
-## 22. Key Architecture Decisions
-
-| Decision                            | What                                               | Why                                                              |
-| ----------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
-| Separate User & Organization models | Two Prisma models, not one `users` table with role | Different fields, flows, and business rules                      |
-| Hashed tokens in DB                 | SHA-256 of verify/reset tokens stored              | Raw token travels in email only, never stored plain              |
-| JTI blacklist in Redis              | Logout adds JTI with TTL                           | Stateless JWT becomes revocable                                  |
-| Refresh token rotation              | Each refresh revokes old token                     | Detects theft — if used, bulk revoke                             |
-| `enqueueEmail` always async         | Never `await sendEmail()` in service               | Email failure never fails the API response                       |
-| Socket.IO singleton                 | `getIO()` from socket.ts module                    | Avoids passing io through every service                          |
-| `hasUnpaidIncentives` denormalized  | Boolean on Organization                            | `requireOrgReady` checks in O(1)                                 |
-| Slug set once at creation           | Never regenerated on title update                  | SEO stability                                                    |
-| `requiredPlan` on Job               | Org sets minimum plan to apply                     | Supports plan-gated job posting                                  |
-| PlanCatalogue in DB                 | Admin manages via dashboard                        | No env vars needed for Stripe price IDs                          |
-| In-memory rate limiter              | `express-rate-limit` default store                 | Sufficient for single instance; swap to Redis store when scaling |
-
----
-
-_Last updated: Phase 3 backend complete. Deployment live. Tests + OAuth +
-frontend pending._ _Maintained by: Joyram49 (Joy Ram Das)_ _Repo:
-https://github.com/Joyram49/career-arch_
