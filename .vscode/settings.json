@@ -1,4 +1,12 @@
 {
   "prisma.pinToPrisma6": true,
-  "cSpell.words": ["careerarch"]
+  "cSpell.words": [
+    "appendonly",
+    "careerarch",
+    "Glassdoor",
+    "healthcheck",
+    "isready",
+    "redisinsight",
+    "topbar"
+  ]
 }

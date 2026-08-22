@@ -57,8 +57,9 @@ export const transporter = nodemailer.createTransport({
 2. Click your name → **SMTP & API**
 3. Go to the **SMTP** tab
 4. Copy:
-   - **SMTP Login** → `BREVO_SMTP_USER`
-   - **SMTP Key** (generate if needed) → `BREVO_SMTP_KEY`
+
+- **SMTP Login** → `BREVO_SMTP_USER`
+- **SMTP Key** (generate if needed) → `BREVO_SMTP_KEY`
 
 ---
 
