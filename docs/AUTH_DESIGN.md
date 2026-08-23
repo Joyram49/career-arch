@@ -20,9 +20,9 @@
 // Access Token
 interface JWTPayload {
   sub: string; // user/org/admin ID
-  role: "USER" | "ORGANIZATION" | "ADMIN";
+  role: 'USER' | 'ORGANIZATION' | 'ADMIN';
   email: string;
-  plan?: "FREE" | "BASIC" | "PREMIUM"; // only for USER
+  plan?: 'FREE' | 'BASIC' | 'PREMIUM'; // only for USER
   iat: number;
   exp: number;
 }
@@ -113,7 +113,7 @@ POST /auth/user/refresh-token
 (reads refresh_token from HttpOnly cookie)
         │
         ▼
-Extract refresh token from cookie
+Extract refresh token from c ookie
 Find in DB, check isRevoked = false and not expired
         │
         ▼
@@ -232,7 +232,7 @@ export const authorize =
   (...roles: Role[]) =>
   (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ success: false, message: "Forbidden" });
+      return res.status(403).json({ success: false, message: 'Forbidden' });
     }
     next();
   };
@@ -245,7 +245,7 @@ export const requireSubscription =
       return res.status(403).json({
         success: false,
         message: `Requires ${minPlan} plan`,
-        upgradeUrl: "/subscription/plans",
+        upgradeUrl: '/subscription/plans',
       });
     }
     next();

@@ -15,7 +15,7 @@
 | Password Hashing | **bcryptjs**                | Secure password storage                  |
 | Email            | **Nodemailer + Brevo SMTP** | Transactional emails (300/day free)      |
 | Payment          | **Stripe SDK**              | Subscriptions + one-time incentives      |
-| File Upload      | **Multer + AWS S3**         | Resume/profile image uploads             |
+| File Upload      | **Multer + Cloudinary**     | Resume/profile image uploads             |
 | Background Jobs  | **BullMQ + Redis**          | Email queues, async tasks                |
 | Validation       | **Zod**                     | Request schema validation                |
 | Rate Limiting    | **express-rate-limit**      | Brute force protection                   |
@@ -64,7 +64,7 @@
 | Cloud (Frontend) | **Vercel** (planned)             |
 | Database Hosting | **Supabase** (PostgreSQL)        |
 | Redis Hosting    | **Upstash** (free tier, TCP TLS) |
-| File Storage     | **AWS S3**                       |
+| File Storage     | **Cloudinary**                   |
 | Monitoring       | **Sentry**                       |
 | Email Service    | **Brevo** (SMTP relay)           |
 

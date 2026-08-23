@@ -12,7 +12,7 @@ Backend   → Render          (Docker, free tier)
 Database  → Supabase        (PostgreSQL, free tier)
 Redis     → Upstash         (free tier, 10k commands/day)
 Email     → Brevo           (SMTP relay, 300 emails/day free)
-Files     → AWS S3          (resume + avatar uploads)
+Files     → Cloudinary      (resume + avatar uploads)
 Payments  → Stripe          (test/live keys)
 Monitoring→ Sentry          (error tracking)
 ```
@@ -31,7 +31,7 @@ User
  │                   ├──► Supabase PostgreSQL (db.[ref].supabase.co:5432)
  │                   ├──► Upstash Redis      (rediss://...upstash.io:6379)
  │                   ├──► Brevo SMTP         (smtp-relay.brevo.com:587)
- │                   ├──► AWS S3             (file uploads)
+ │                   ├──► Cloudinary         (file uploads)
  │                   └──► Stripe             (payments)
 ```
 
