@@ -83,8 +83,6 @@ router.post(
   asyncHandler(UserAuthController.login),
 );
 
-router.post('/logout', asyncHandler(UserAuthController.logout));
-
 router.post('/refresh-token', asyncHandler(UserAuthController.refreshToken));
 
 router.get(
@@ -121,6 +119,8 @@ router.post(
 
 // ── Protected routes (require valid access token) ──────────────────────────
 router.use(authenticate, authorize('USER'));
+
+router.post('/logout', asyncHandler(UserAuthController.logout));
 
 router.get('/me', asyncHandler(UserAuthController.getMe));
 
