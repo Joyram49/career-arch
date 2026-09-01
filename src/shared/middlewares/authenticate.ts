@@ -94,6 +94,7 @@ export const optionalAuthenticate: RequestHandler = async (
 
 function extractToken(req: Request): string | null {
   // Priority 1: Authorization header
+
   const authHeader = req.headers['authorization'];
   if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
     return authHeader.slice(7);
