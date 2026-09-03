@@ -78,6 +78,11 @@ export async function listUsers(query: AdminListUsersQuery): Promise<{
         subscription: {
           select: { plan: true },
         },
+        _count: {
+          select: {
+            applications: true,
+          },
+        },
       },
     }),
     prisma.user.count({ where }),

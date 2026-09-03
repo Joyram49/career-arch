@@ -188,6 +188,9 @@ export interface IAdminUserListItem {
   subscription: {
     plan: string;
   } | null;
+  _count: {
+    applications: number;
+  };
 }
 
 export interface IAdminUserDetail extends IAdminUserListItem {
@@ -206,7 +209,7 @@ export interface IAdminUserDetail extends IAdminUserListItem {
     experienceYears: number;
   } | null;
   subscription: {
-    plan: string;
+    plan: SubscriptionPlan;
     status: string;
     currentPeriodEnd: Date | null;
   } | null;
