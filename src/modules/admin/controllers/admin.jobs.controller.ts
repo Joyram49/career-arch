@@ -1,6 +1,7 @@
 import * as AdminJobsService from '@modules/admin/services/admin.jobs.service';
 import {
   adminListJobsSchema,
+  type ArchiveJobInput,
   type TakedownJobInput,
 } from '@modules/admin/validations/admin.jobs.validation';
 import { sendSuccess } from '@shared/utils/apiResponse';
@@ -25,6 +26,27 @@ export async function takedownJob(req: Request, res: Response): Promise<Response
   const { reason } = req.body as TakedownJobInput;
 
   const result = await AdminJobsService.takedownJob(id, reason);
+
+  return sendSuccess(res, null, result.message);
+}
+
+// ── PATCH /admin/jobs/:id/republish ────────────────────────────────────────
+
+export async function republishJob(req: Request, res: Response): Promise<Response> {
+  const { id } = req.params as { id: string };
+
+  const result = await AdminJobsService.republishJob(id);
+
+  return sendSuccess(res, null, result.message);
+}
+
+// ── PATCH /admin/jobs/:id/archive ──────────────────────────────────────────
+
+export async function archiveJob(req: Request, res: Response): Promise<Response> {
+  const { id } = req.params as { id: string };
+  const { reason } = req.body as ArchiveJobInput;
+
+  const result = await AdminJobsService.archiveJob(id, reason);
 
   return sendSuccess(res, null, result.message);
 }

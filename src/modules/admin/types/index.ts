@@ -21,6 +21,17 @@ export interface IAdminJobListItem {
   views: number;
   publishedAt: Date | null;
   createdAt: Date;
+
+  // ── Newly exposed for filtering/sorting on the frontend ────────────────
+  salaryMin: number | null;
+  salaryMax: number | null;
+  salaryCurrency: string;
+  vacancies: number;
+  skills: string[];
+  experienceLevel: string | null;
+  category: string | null;
+  deadline: Date | null;
+
   organization: {
     id: string;
     email: string;
