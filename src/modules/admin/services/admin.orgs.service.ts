@@ -232,7 +232,7 @@ export async function listOrganizations(query: AdminListOrgQuery): Promise<{
           ? { profile: { foundedYear: direction } }
           : { createdAt: direction }; // default
 
-  const [data, total] = await Promise.all([
+  const [rows, total] = await Promise.all([
     prisma.organization.findMany({
       where,
       orderBy,
@@ -264,6 +264,53 @@ export async function listOrganizations(query: AdminListOrgQuery): Promise<{
     }),
     prisma.organization.count({ where }),
   ]);
+
+  // ── Enrich page with hired-count + unpaid-incentive aggregates ────────────
+  // Neither of these can be expressed as a nested Prisma `_count`/`select` on
+  // Organization directly (hires require crossing the Job → Application
+  // relation; incentives live on a sibling table), so we batch-load them in
+  // two extra queries scoped to just the org IDs on this page — never per-row.
+
+  const orgIds = rows.map((row) => row.id);
+
+  const [hiredApplications, incentiveAgg] =
+    orgIds.length > 0
+      ? await Promise.all([
+          prisma.application.findMany({
+            where: { status: 'HIRED', job: { orgId: { in: orgIds } } },
+            select: { job: { select: { orgId: true } } },
+          }),
+          prisma.hiringIncentive.groupBy({
+            by: ['orgId'],
+            where: {
+              orgId: { in: orgIds },
+              status: { in: ['PENDING', 'OVERDUE', 'DISPUTED'] },
+            },
+            _sum: { amount: true },
+            _count: { id: true },
+          }),
+        ])
+      : [[], []];
+
+  const hiredCountByOrg = new Map<string, number>();
+  for (const application of hiredApplications) {
+    const { orgId } = application.job;
+    hiredCountByOrg.set(orgId, (hiredCountByOrg.get(orgId) ?? 0) + 1);
+  }
+
+  const incentivesByOrg = new Map<string, { unpaidAmountCents: number; unpaidCount: number }>();
+  for (const row of incentiveAgg) {
+    incentivesByOrg.set(row.orgId, {
+      unpaidAmountCents: Math.round((row._sum.amount ?? 0) * 100),
+      unpaidCount: row._count.id,
+    });
+  }
+
+  const data: IAdminOrgListItem[] = rows.map((row) => ({
+    ...row,
+    hiredCount: hiredCountByOrg.get(row.id) ?? 0,
+    incentives: incentivesByOrg.get(row.id) ?? { unpaidAmountCents: 0, unpaidCount: 0 },
+  }));
 
   return {
     data,
