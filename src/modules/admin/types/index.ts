@@ -52,6 +52,13 @@ export interface IAdminOrgListItem {
   _count: {
     jobs: number;
   };
+  // Count of applications with status HIRED across all of this org's jobs
+  hiredCount: number;
+  // Currently-unpaid incentives (PENDING + OVERDUE + DISPUTED), aggregated
+  incentives: {
+    unpaidAmountCents: number;
+    unpaidCount: number;
+  };
 }
 
 // ─────────────────────────────────────────────
