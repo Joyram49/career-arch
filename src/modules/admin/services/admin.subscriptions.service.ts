@@ -8,6 +8,7 @@ import { stripe } from '@/config/stripe';
 
 import { type IAdminSubscription } from '../types';
 
+import type { Prisma } from '@prisma/client';
 import type Stripe from 'stripe';
 
 // ─────────────────────────────────────────────
@@ -20,14 +21,24 @@ export async function listSubscriptions(query: AdminListSubscriptionsQuery): Pro
 }> {
   const { limit, page, skip } = extractPagination(query);
 
-  const where = {
+  const where: Prisma.SubscriptionWhereInput = {
     ...(query.plan !== undefined && { plan: query.plan }),
-    ...(query.status !== undefined && {
-      status: query.status,
+    ...(query.status !== undefined && { status: query.status }),
+    ...(query.search !== undefined && {
+      user: {
+        OR: [
+          { email: { contains: query.search, mode: 'insensitive' } },
+          { profile: { firstName: { contains: query.search, mode: 'insensitive' } } },
+          { profile: { lastName: { contains: query.search, mode: 'insensitive' } } },
+        ],
+      },
     }),
   };
 
-  const [subscriptions, total] = await Promise.all([
+  // Fetch subscriptions + total (existing pattern) alongside plan prices —
+  // independent queries, so Promise.all keeps them parallel rather than
+  // serialized (same "nested Promise.all" style used elsewhere for bucketing).
+  const [subscriptions, total, plans] = await Promise.all([
     prisma.subscription.findMany({
       where,
       skip,
@@ -44,9 +55,17 @@ export async function listSubscriptions(query: AdminListSubscriptionsQuery): Pro
       },
     }),
     prisma.subscription.count({ where }),
+    prisma.planCatalogue.findMany({ select: { key: true, monthlyPriceCents: true } }),
   ]);
 
-  return { subscriptions, meta: buildPaginationMeta(total, page, limit) };
+  const priceMap = Object.fromEntries(plans.map((p) => [p.key, p.monthlyPriceCents]));
+
+  const subscriptionsWithAmount: IAdminSubscription[] = subscriptions.map((sub) => ({
+    ...sub,
+    amountCents: priceMap[sub.plan] ?? 0,
+  }));
+
+  return { subscriptions: subscriptionsWithAmount, meta: buildPaginationMeta(total, page, limit) };
 }
 
 // ─────────────────────────────────────────────

@@ -169,6 +169,7 @@ export interface IAdminSubscription {
   id: string;
   plan: SubscriptionPlan;
   status: SubscriptionStatus;
+  amountCents: number;
   currentPeriodStart: Date | null;
   currentPeriodEnd: Date | null;
   cancelAtPeriodEnd: boolean;
