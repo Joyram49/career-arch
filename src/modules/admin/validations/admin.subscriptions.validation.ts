@@ -16,6 +16,7 @@ export const adminListSubscriptionsSchema = z.object({
     limit: z.coerce.number().int().min(1).max(100).optional().default(20),
     plan: z.enum(['FREE', 'BASIC', 'PREMIUM']).optional(),
     status: z.enum(['ACTIVE', 'INACTIVE', 'CANCELLED', 'PAST_DUE']).optional(),
+    search: z.string().trim().min(1).optional(),
   }),
 });
 

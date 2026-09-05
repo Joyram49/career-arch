@@ -41,13 +41,18 @@ export const adminListIncentivesSchema = z.object({
   query: z.object({
     status: z.enum(['PENDING', 'PAID', 'WAIVED', 'DISPUTED', 'OVERDUE']).optional(),
     orgId: z.string().uuid('Invalid organization ID').optional(),
+    search: z
+      .string()
+      .trim()
+      .min(1, 'Search term cannot be empty')
+      .max(100, 'Search term must be at most 100 characters')
+      .optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(20),
     sortBy: z.enum(['createdAt', 'dueAt', 'paidAt']).default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
   }),
 });
-
 // ── Admin — waive incentive ────────────────────────────────────────────────
 
 export const waiveIncentiveSchema = z.object({

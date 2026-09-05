@@ -26,9 +26,32 @@ export async function listAdminIncentives(query: AdminListIncentivesQuery): Prom
 }> {
   const { page, limit, skip } = extractPagination(query);
 
+  const searchTerm = query.search?.trim();
+
   const where: Prisma.HiringIncentiveWhereInput = {
     ...(query.status !== undefined && { status: query.status }),
     ...(query.orgId !== undefined && { orgId: query.orgId }),
+    ...(searchTerm !== undefined &&
+      searchTerm.length > 0 && {
+        OR: [
+          {
+            organization: {
+              profile: { companyName: { contains: searchTerm, mode: 'insensitive' } },
+            },
+          },
+          {
+            application: {
+              user: { profile: { firstName: { contains: searchTerm, mode: 'insensitive' } } },
+            },
+          },
+          {
+            application: {
+              user: { profile: { lastName: { contains: searchTerm, mode: 'insensitive' } } },
+            },
+          },
+          { application: { user: { email: { contains: searchTerm, mode: 'insensitive' } } } },
+        ],
+      }),
   };
 
   const direction: Prisma.SortOrder = query.sortOrder ?? 'desc';

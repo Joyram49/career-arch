@@ -10,9 +10,14 @@ export interface IIncentiveResponse {
   status: IncentiveStatus;
   dueAt: Date | null;
   paidAt: Date | null;
+  hiredAt: Date | null;
   stripePaymentIntentId: string | null;
   createdAt: Date;
   updatedAt: Date;
+  organization: {
+    id: string;
+    companyName: string;
+  } | null;
   candidate: {
     firstName: string;
     lastName: string;
@@ -23,7 +28,6 @@ export interface IIncentiveResponse {
     slug: string;
   } | null;
 }
-
 export interface IIncentiveStats {
   totalCollectedCents: number;
   totalPending: number;
