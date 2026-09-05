@@ -31,15 +31,17 @@ const INCENTIVE_INCLUDE = {
     include: {
       user: {
         include: {
-          profile: {
-            select: { firstName: true, lastName: true },
-          },
+          profile: { select: { firstName: true, lastName: true } },
         },
       },
     },
   },
-  job: {
-    select: { title: true, slug: true },
+  job: { select: { title: true, slug: true } },
+  organization: {
+    select: {
+      id: true,
+      profile: { select: { companyName: true } },
+    },
   },
 } as const satisfies Prisma.HiringIncentiveInclude;
 
@@ -63,9 +65,14 @@ export function mapIncentive(
     status: raw.status,
     dueAt: raw.dueAt,
     paidAt: raw.paidAt,
+    hiredAt: raw.application.updatedAt,
     stripePaymentIntentId: raw.stripePaymentIntentId,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
+    organization:
+      raw.organization.profile !== null
+        ? { id: raw.organization.id, companyName: raw.organization.profile.companyName }
+        : null,
     candidate:
       raw.application.user.profile !== null
         ? {

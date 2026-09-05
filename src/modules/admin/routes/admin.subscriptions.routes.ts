@@ -18,6 +18,10 @@ const router = Router();
  *   get:
  *     summary: List all user subscriptions (paginated, filterable)
  *     tags: [Admin Subscriptions]
+ *   - in: query
+ *         name: search
+ *         schema: { type: string }
+ *         description: Search by user email, first name, or last name
  */
 router.get(
   '/',
