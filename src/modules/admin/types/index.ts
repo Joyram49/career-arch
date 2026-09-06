@@ -1,6 +1,9 @@
 import {
   type JobStatus,
   type JobType,
+  type PaymentStatus,
+  type PaymentType,
+  type Prisma,
   type SubscriptionPlan,
   type SubscriptionStatus,
 } from '@prisma/client';
@@ -241,4 +244,97 @@ export interface IAdminUserStatusResponse {
   id: string;
   email: string;
   isActive: boolean;
+}
+
+// ─────────────────────────────────────────────
+// TRANSACTIONS RESPONSE TYPE
+// ─────────────────────────────────────────────
+
+export interface IAdminTransactionPartyUser {
+  id: string;
+  email: string;
+  name: string | null;
+}
+
+export interface IAdminTransactionPartyOrg {
+  id: string;
+  email: string;
+  companyName: string | null;
+}
+
+export interface IAdminTransactionSubscriptionInfo {
+  id: string;
+  plan: SubscriptionPlan;
+  // NOTE: schema currently only supports monthly billing
+  // (PlanCatalogue.monthlyPriceCents, Stripe recurring.interval = 'month').
+  // Hardcoded until yearly plans are introduced — see admin.transactions.service.ts.
+  billingCycle: 'MONTHLY';
+}
+
+export interface IAdminTransactionListItem {
+  id: string;
+  type: PaymentType;
+  status: PaymentStatus;
+  amountCents: number;
+  currency: string;
+  description: string | null;
+  stripePaymentIntentId: string | null;
+  stripeInvoiceId: string | null;
+  stripeRefundId: string | null;
+  stripeChargeId: string | null;
+  isRefunded: boolean;
+  isFailed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  user: IAdminTransactionPartyUser | null;
+  organization: IAdminTransactionPartyOrg | null;
+  subscription: IAdminTransactionSubscriptionInfo | null;
+}
+
+export interface IAdminTransactionDetail extends IAdminTransactionListItem {
+  metaData: Prisma.JsonValue | null;
+}
+
+// ─────────────────────────────────────────────
+// TRANSACTIONS STATS RESPONSE TYPE
+// ─────────────────────────────────────────────
+
+export interface IAdminTransactionStats {
+  monthlyRevenueCents: number;
+  previousMonthRevenueCents: number;
+  monthlyTransactionCount: number;
+  todayRevenueCents: number;
+  todayTransactionCount: number;
+  totalRefundedCents: number;
+  totalRefundedCount: number;
+  totalFailedCents: number;
+  totalFailedCount: number;
+  totalPendingCents: number;
+  totalPendingCount: number;
+  revenueBySourceThisMonth: {
+    subscriptionCents: number;
+    incentiveCents: number;
+  };
+}
+
+// ─────────────────────────────────────────────
+// TRANSACTIONS REVENUE TIMELINE (CHART)
+// ─────────────────────────────────────────────
+
+// Reuses the same range vocabulary as the dashboard revenue-trend chart
+export type TransactionsChartRange = RevenueTrendRange;
+
+export interface IRevenueTimelineBucket {
+  label: string;
+  startDate: string;
+  endDate: string;
+  subscriptionRevenueCents: number;
+  incentiveRevenueCents: number;
+  refundedCents: number;
+  netRevenueCents: number;
+}
+
+export interface IRevenueTimelineData {
+  range: TransactionsChartRange;
+  buckets: IRevenueTimelineBucket[];
 }
