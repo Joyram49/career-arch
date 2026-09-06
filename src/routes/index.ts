@@ -4,6 +4,7 @@ import adminOrgRoutes from '@modules/admin/routes/admin.orgs.routes';
 import adminPlansRoutes from '@modules/admin/routes/admin.plans.routes';
 import adminStatsRoutes from '@modules/admin/routes/admin.stats.routes';
 import adminSubscriptionsRoutes from '@modules/admin/routes/admin.subscriptions.routes';
+import adminTransactionsRoutes from '@modules/admin/routes/admin.transactions.routes';
 import adminUserRoutes from '@modules/admin/routes/admin.users.routes';
 import orgApplicationRoutes from '@modules/applications/routes/org.application.routes';
 import orgJobApplicationRoutes from '@modules/applications/routes/org.job.applications.routes';
@@ -61,6 +62,7 @@ router.use('/admin/subscriptions', adminSubscriptionsRoutes);
 router.use('/admin/incentives', adminIncentiveRoutes);
 router.use('/admin/jobs', adminJobsRoutes);
 router.use('/admin/dashboard', adminStatsRoutes);
+router.use('/admin/transactions', adminTransactionsRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────
 router.get('/health', (_req, res) => {
