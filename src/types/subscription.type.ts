@@ -11,7 +11,7 @@ export interface IPlanFeatures {
   earlyJobAlerts: boolean;
   prioritySearch: boolean;
   aiResumeTips: boolean;
-  badge: 'basic' | 'premium' | null;
+  badge: 'basic' | 'premium' | 'free' | null;
 }
 
 // ── Plan catalogue (what admin manages) ───────────────────────────────────
