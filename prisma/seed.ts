@@ -139,66 +139,66 @@ async function main(): Promise<void> {
   logger.info(`✅ Admin created: ${admin.email}`);
 
   // ── Create demo user ─────────────────────────────────────────────────────
-  // const userPassword = await bcrypt.hash('User@123456', 12);
+  const userPassword = await bcrypt.hash('User@123456', 12);
 
-  // const user = await prisma.user.upsert({
-  //   where: { email: 'demo@careerarch.com' },
-  //   update: {},
-  //   create: {
-  //     email: 'demo@careerarch.com',
-  //     password: userPassword,
-  //     isEmailVerified: true,
-  //     profile: {
-  //       create: {
-  //         firstName: 'Demo',
-  //         lastName: 'User',
-  //         headline: 'Full Stack Developer',
-  //         location: 'New York, USA',
-  //         skills: ['TypeScript', 'Node.js', 'React'],
-  //         experienceYears: 3,
-  //       },
-  //     },
-  //     subscription: {
-  //       create: {
-  //         plan: 'FREE',
-  //         status: 'ACTIVE',
-  //         applyCountThisMonth: 0,
-  //         applyCountResetAt: new Date(),
-  //         savedJobCount: 0,
-  //       },
-  //     },
-  //   },
-  // });
+  const user = await prisma.user.upsert({
+    where: { email: 'demo@careerarch.com' },
+    update: {},
+    create: {
+      email: 'demo@careerarch.com',
+      password: userPassword,
+      isEmailVerified: true,
+      profile: {
+        create: {
+          firstName: 'Demo',
+          lastName: 'User',
+          headline: 'Full Stack Developer',
+          location: 'New York, USA',
+          skills: ['TypeScript', 'Node.js', 'React'],
+          experienceYears: 3,
+        },
+      },
+      subscription: {
+        create: {
+          plan: 'FREE',
+          status: 'ACTIVE',
+          applyCountThisMonth: 0,
+          applyCountResetAt: new Date(),
+          savedJobCount: 0,
+        },
+      },
+    },
+  });
 
-  // logger.info(`✅ Demo user created: ${user.email}`);
+  logger.info(`✅ Demo user created: ${user.email}`);
 
   // ── Create demo organization ─────────────────────────────────────────────
-  // const orgPassword = await bcrypt.hash('Org@123456', 12);
+  const orgPassword = await bcrypt.hash('Org@123456', 12);
 
-  // const org = await prisma.organization.upsert({
-  //   where: { email: 'techcorp@careerarch.com' },
-  //   update: {},
-  //   create: {
-  //     email: 'techcorp@careerarch.com',
-  //     password: orgPassword,
-  //     isEmailVerified: true,
-  //     isApproved: true,
-  //     profile: {
-  //       create: {
-  //         companyName: 'TechCorp Inc.',
-  //         website: 'https://techcorp.example.com',
-  //         industry: 'Technology',
-  //         companySize: '51-200',
-  //         foundedYear: 2015,
-  //         description: 'A leading technology company building innovative solutions.',
-  //         location: 'San Francisco, CA',
-  //         country: 'USA',
-  //       },
-  //     },
-  //   },
-  // });
+  const org = await prisma.organization.upsert({
+    where: { email: 'techcorp@careerarch.com' },
+    update: {},
+    create: {
+      email: 'techcorp@careerarch.com',
+      password: orgPassword,
+      isEmailVerified: true,
+      isApproved: true,
+      profile: {
+        create: {
+          companyName: 'TechCorp Inc.',
+          website: 'https://techcorp.example.com',
+          industry: 'Technology',
+          companySize: '51-200',
+          foundedYear: 2015,
+          description: 'A leading technology company building innovative solutions.',
+          location: 'San Francisco, CA',
+          country: 'USA',
+        },
+      },
+    },
+  });
 
-  // logger.info(`✅ Demo organization created: ${org.email}`);
+  logger.info(`✅ Demo organization created: ${org.email}`);
 
   logger.info('\n🎉 Seeding complete!');
   logger.info('\nCredentials:');
