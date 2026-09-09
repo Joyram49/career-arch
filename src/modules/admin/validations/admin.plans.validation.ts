@@ -11,7 +11,7 @@ export const planFeaturesSchema = z.object({
   earlyJobAlerts: z.boolean(),
   prioritySearch: z.boolean(),
   aiResumeTips: z.boolean(),
-  badge: z.enum(['basic', 'premium']).nullable(),
+  badge: z.enum(['basic', 'premium', 'free']).nullable(),
 });
 
 // ─────────────────────────────────────────────
