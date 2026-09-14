@@ -15,9 +15,12 @@ export async function getDashboardStats(req: Request, res: Response): Promise<Re
 // ── GET /org/dashboard/jobs-performance ─────────────────────────────────
 export async function getJobsPerformance(req: Request, res: Response): Promise<Response> {
   const { sub } = (req as IAuthenticatedRequest).user;
-  // `validate()` middleware has already coerced + overwritten req.query.
   const { page, limit } = req.query as unknown as OrgJobsPerformanceQuery;
-  const result = await OrgStatsService.getOrgJobsPerformance(sub, page, limit);
+  // still arrive as raw strings. Parse them directly instead
+  const formattedPage = Number.isInteger(page) && page >= 1 ? page : 1;
+  const formattedLimit = Number.isInteger(limit) && limit >= 1 ? Math.min(limit, 50) : 5;
+
+  const result = await OrgStatsService.getOrgJobsPerformance(sub, formattedPage, formattedLimit);
   return sendSuccess(res, result, 'Job performance retrieved');
 }
 
