@@ -1,3 +1,5 @@
+import type { JobStatus, SubscriptionPlan } from '@prisma/client';
+
 export interface IOrgProfileResponse {
   id: string;
   orgId: string;
@@ -34,4 +36,42 @@ export interface IBillingInfo {
 export interface ISetupIntentResponse {
   clientSecret: string;
   customerId: string;
+}
+
+// ─────────────────────────────────────────────
+// ORG DASHBOARD (org.stats.*)
+// ─────────────────────────────────────────────
+
+export interface IOrgDashboardStats {
+  activeJobListings: number;
+  jobsExpiringSoon: number;
+  totalApplications: number;
+  newApplicationsThisWeek: number;
+  interviewsScheduled: number;
+  interviewsThisWeek: number;
+  successfulHires: number;
+  pendingIncentiveAmount: number;
+  pendingIncentiveCount: number;
+}
+
+export interface IOrgJobPerformanceItem {
+  id: string;
+  title: string;
+  slug: string;
+  status: JobStatus;
+  requiredPlan: SubscriptionPlan;
+  applicationsCount: number;
+  views: number;
+  daysActive: number;
+  deadline: string | null;
+}
+
+export interface IOrgRecentApplicant {
+  id: string;
+  applicationId: string;
+  candidateName: string;
+  candidateAvatarUrl: string | null;
+  jobId: string;
+  jobTitle: string;
+  appliedAt: string;
 }
