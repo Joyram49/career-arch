@@ -17,6 +17,7 @@ import orgJobsRoutes from '@modules/jobs/routes/org.jobs.routes';
 import publicJobRoutes from '@modules/jobs/routes/public.job.routes';
 import notificationRoutes from '@modules/notifications/routes/notification.routes';
 import orgRoutes from '@modules/organizations/routes/org.routes';
+import orgStatsRoutes from '@modules/organizations/routes/org.stats.routes';
 import subscriptionRoutes from '@modules/subscriptions/routes/subscription.routes';
 import userRoutes from '@modules/users/routes/user.routes';
 import { Router } from 'express';
@@ -46,6 +47,7 @@ router.use('/notifications', notificationRoutes);
 router.use('/org', orgRoutes);
 router.use('/org/jobs', orgJobsRoutes);
 router.use('/org/incentives', orgIncentiveRoutes);
+router.use('/org/dashboard', orgStatsRoutes);
 
 // Org application routes: /org/jobs/:jobId/applications
 // Mounted separately from orgJobsRoutes to avoid param conflicts
